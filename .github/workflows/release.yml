@@ -22,11 +22,22 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm install --no-save --force @napi-rs/canvas-darwin-x64@$(node -p "require('@napi-rs/canvas/package.json').version")
-      - run: npm run build
-      - run: npx electron-builder --mac dir --arm64 --x64
-      - run: '"dist/mac/Token Deck.app/Contents/MacOS/Token Deck" --smoke'
-      - run: '"dist/mac-arm64/Token Deck.app/Contents/MacOS/Token Deck" --smoke'
-      - run: npx electron-builder --mac dmg zip --arm64 --x64 --publish always
+      - name: mac dir
+        run: |
+          if [ -z "${CSC_LINK:-}" ]; then
+            unset CSC_LINK CSC_KEY_PASSWORD APPLE_ID APPLE_APP_SPECIFIC_PASSWORD APPLE_TEAM_ID
+          fi
+          npx electron-builder --mac dir --arm64 --x64 --publish never
+      - name: mac smoke
+        run: |
+          "dist/mac/Token Deck.app/Contents/MacOS/Token Deck" --smoke
+          "dist/mac-arm64/Token Deck.app/Contents/MacOS/Token Deck" --smoke
+      - name: mac publish
+        run: |
+          if [ -z "${CSC_LINK:-}" ]; then
+            unset CSC_LINK CSC_KEY_PASSWORD APPLE_ID APPLE_APP_SPECIFIC_PASSWORD APPLE_TEAM_ID
+          fi
+          npx electron-builder --mac dmg zip --arm64 --x64 --publish always
       - name: checksums
         run: |
           cd dist
@@ -45,6 +56,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: npx electron-builder --win dir --x64
-      - run: dist\win-unpacked\Token Deck.exe --smoke
+      - run: npx electron-builder --win dir --x64 --publish never
+      - name: windows smoke
+        shell: pwsh
+        run: '& "dist\win-unpacked\Token Deck.exe" --smoke'
       - run: npx electron-builder --win nsis --x64 --publish always
