@@ -1,0 +1,50 @@
+name: release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  mac:
+    runs-on: macos-15
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CSC_LINK: ${{ secrets.CSC_LINK }}
+      CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+      APPLE_ID: ${{ secrets.APPLE_ID }}
+      APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm install --no-save --force @napi-rs/canvas-darwin-x64@$(node -p "require('@napi-rs/canvas/package.json').version")
+      - run: npm run build
+      - run: npx electron-builder --mac dir --arm64 --x64
+      - run: '"dist/mac/Token Deck.app/Contents/MacOS/Token Deck" --smoke'
+      - run: '"dist/mac-arm64/Token Deck.app/Contents/MacOS/Token Deck" --smoke'
+      - run: npx electron-builder --mac dmg zip --arm64 --x64 --publish always
+      - name: checksums
+        run: |
+          cd dist
+          shasum -a 256 TokenDeck-mac-arm64.zip | awk '{print $1}' > TokenDeck-mac-arm64.zip.sha256
+          shasum -a 256 TokenDeck-mac-x64.zip | awk '{print $1}' > TokenDeck-mac-x64.zip.sha256
+          gh release upload "${GITHUB_REF_NAME}" TokenDeck-mac-arm64.zip.sha256 TokenDeck-mac-x64.zip.sha256 --clobber
+  windows:
+    runs-on: windows-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npx electron-builder --win dir --x64
+      - run: dist\win-unpacked\Token Deck.exe --smoke
+      - run: npx electron-builder --win nsis --x64 --publish always

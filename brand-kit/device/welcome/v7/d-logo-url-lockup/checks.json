@@ -1,0 +1,174 @@
+{
+  "outside_tiles": 0,
+  "darker_than_ink": 0,
+  "rim": 0,
+  "jpeg_bytes": 16652,
+  "halo_count": 0,
+  "halo_worst": 3.7,
+  "lime": {
+    "lime_pixels": 351,
+    "mean_dev": 30.7,
+    "max_dev": 81
+  },
+  "hard_rules_pass": true,
+  "variant": "d-logo-url-lockup",
+  "seed": 1513,
+  "layout_checks": "pass",
+  "layout": {
+    "key 1": "logo + URL lockup",
+    "key 2": "burst (rising band)",
+    "key 3": "burst (outer dust)",
+    "key 4": "burst source block + fragments",
+    "key 5": "burst (plume)",
+    "key 6": "slogan"
+  },
+  "type": {
+    "font": "Soehne Buch",
+    "size_px": 9.7,
+    "leading_px": 12,
+    "cap_height_px": 7,
+    "slogan": {
+      "pen_x": 234,
+      "cap_top": 152,
+      "ink_boxes": [
+        [
+          234,
+          152,
+          292,
+          161
+        ],
+        [
+          234,
+          164,
+          292,
+          173
+        ],
+        [
+          234,
+          176,
+          270,
+          183
+        ]
+      ],
+      "ink_x": [
+        234,
+        291
+      ],
+      "measure_centre_offset_px": -4.0,
+      "block_centre_offset_px": -0.5
+    },
+    "url": {
+      "pen_x": 21,
+      "cap_top": 66,
+      "ink_boxes": [
+        [
+          21,
+          66,
+          63,
+          75
+        ],
+        [
+          21,
+          78,
+          52,
+          87
+        ]
+      ]
+    }
+  },
+  "logo": {
+    "xy": [
+      20,
+      32
+    ],
+    "size": [
+      60,
+      17
+    ],
+    "clear_space_below_px": 17,
+    "group_centre_offset_px": [
+      -0.5,
+      0.0
+    ]
+  },
+  "lattice": {
+    "pitch": 5,
+    "square": 3,
+    "origin": [
+      0,
+      4
+    ],
+    "rule": "x = 5i, y = 4 + 5j"
+  },
+  "colours": {
+    "unlit": "#3C3E3A",
+    "lime": "#92E759",
+    "lime_dim": "#639840",
+    "white": "#FFFFFF"
+  },
+  "tokens": {
+    "key 4": {
+      "grid": "11 x 10, x 25-77, y 144-191",
+      "grid_centre_offset_px": [
+        1.0,
+        0.0
+      ],
+      "lit": 35,
+      "block": 23,
+      "lime": 8,
+      "lime_dim": 0,
+      "white": 4,
+      "unlit": 75
+    },
+    "key 5": {
+      "grid": "10 x 10, x 135-182, y 144-191",
+      "grid_centre_offset_px": [
+        0.0,
+        0.0
+      ],
+      "lit": 16,
+      "block": 0,
+      "lime": 4,
+      "lime_dim": 4,
+      "white": 8,
+      "unlit": 84
+    },
+    "key 2": {
+      "grid": "10 x 10, x 135-182, y 34-81",
+      "grid_centre_offset_px": [
+        0.0,
+        -0.5
+      ],
+      "lit": 13,
+      "block": 0,
+      "lime": 3,
+      "lime_dim": 1,
+      "white": 9,
+      "unlit": 87
+    },
+    "key 3": {
+      "grid": "9 x 10, x 245-287, y 34-81",
+      "grid_centre_offset_px": [
+        -0.5,
+        -0.5
+      ],
+      "lit": 9,
+      "block": 0,
+      "lime": 1,
+      "lime_dim": 1,
+      "white": 7,
+      "unlit": 81
+    }
+  },
+  "tokens_total": {
+    "lit": 73,
+    "white": 28,
+    "lime_incl_dim": 45,
+    "white_pct": 38.4,
+    "unlit": 327
+  },
+  "stream_adherence": {
+    "weakest_key": 0.424,
+    "mean": 0.597
+  }
+}

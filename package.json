@@ -1,0 +1,118 @@
+{
+  "name": "token-deck",
+  "version": "1.0.0",
+  "description": "The AI Usage Management Console",
+  "author": "Stigg",
+  "license": "MIT",
+  "private": true,
+  "main": "./out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build && node scripts/lint-fonts",
+    "preview": "electron-vite preview",
+    "test": "vitest run",
+    "lint-fonts": "node scripts/lint-fonts",
+    "icons": "node scripts/build-icons.mjs",
+    "export-tiles": "node scripts/export-site-tiles.mjs",
+    "dist:mac": "npm run build && electron-builder --mac dmg zip --arm64 --x64",
+    "dist:win": "npm run build && electron-builder --win nsis --x64"
+  },
+  "dependencies": {
+    "@napi-rs/canvas": "^1.1.0",
+    "chokidar": "^3.6.0",
+    "electron-store": "^8.2.0",
+    "electron-updater": "^6.8.0",
+    "lucide-react": "^0.468.0",
+    "node-hid": "^3.4.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^45.2.1",
+    "electron-builder": "^26.18.0",
+    "electron-vite": "^3.1.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.0",
+    "vitest": "^3.0.0"
+  },
+  "build": {
+    "appId": "io.stigg.tokendeck",
+    "productName": "Token Deck",
+    "artifactName": "TokenDeck-${os}-${arch}.${ext}",
+    "npmRebuild": false,
+    "asarUnpack": [
+      "**/*.node",
+      "**/node_modules/node-hid/**",
+      "**/node_modules/@napi-rs/**"
+    ],
+    "extraResources": [
+      {
+        "from": "resources",
+        "to": "resources"
+      }
+    ],
+    "files": [
+      "out/**",
+      "package.json"
+    ],
+    "publish": {
+      "provider": "github",
+      "owner": "stiggio",
+      "repo": "token-deck",
+      "releaseType": "release"
+    },
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "hardenedRuntime": true,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "extendInfo": {
+        "LSUIElement": true,
+        "NSAppleEventsUsageDescription": "Token Deck focuses the terminal window of the session you pick on the deck."
+      },
+      "icon": "build/icon.png"
+    },
+    "dmg": {
+      "title": "Token Deck"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "signAndEditExecutable": false,
+      "verifyUpdateCodeSignature": false,
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false
+    }
+  }
+}

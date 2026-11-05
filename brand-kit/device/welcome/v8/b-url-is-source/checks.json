@@ -1,0 +1,287 @@
+{
+  "outside_tiles": 0,
+  "darker_than_ink": 0,
+  "rim": 0,
+  "jpeg_bytes": 18910,
+  "halo_count": 0,
+  "halo_worst": 3.3,
+  "lime": {
+    "lime_pixels": 351,
+    "mean_dev": 31.3,
+    "max_dev": 80
+  },
+  "hard_rules_pass": true,
+  "layout": {
+    "version": "v8/b-url-is-source",
+    "seed": 467,
+    "layout": {
+      "key1": "logo",
+      "key2": "art: the rise",
+      "key3": "art: the dust",
+      "key4": "URL + source block",
+      "key5": "art: the run (the plume's lower stretch)",
+      "key6": "slogan"
+    },
+    "logo": {
+      "xy": [
+        20,
+        50
+      ],
+      "box": [
+        20,
+        50,
+        80,
+        67
+      ],
+      "centre_offset_vs_window": [
+        -0.5,
+        0.0
+      ]
+    },
+    "url": {
+      "size": 10.5,
+      "leading": 13,
+      "track": -0.06,
+      "align": "left",
+      "pen_x": 21,
+      "cap_top": 141,
+      "line_ink": [
+        [
+          21,
+          141,
+          65,
+          151
+        ],
+        [
+          21,
+          154,
+          54,
+          164
+        ]
+      ],
+      "clearing": "block",
+      "margin_px": 2,
+      "ink": [
+        21,
+        141,
+        64,
+        163
+      ],
+      "centre_offset_vs_window": [
+        -7.5,
+        -15.5
+      ]
+    },
+    "slogan": {
+      "size": 9.5,
+      "leading": 12,
+      "track": -0.06,
+      "align": "right",
+      "pen_x": 292,
+      "cap_top": 152,
+      "line_ink": [
+        [
+          235,
+          152,
+          292,
+          161
+        ],
+        [
+          235,
+          164,
+          292,
+          173
+        ],
+        [
+          257,
+          176,
+          292,
+          183
+        ]
+      ],
+      "mass_x_offset_vs_window": -0.9,
+      "ink": [
+        235,
+        152,
+        291,
+        182
+      ],
+      "centre_offset_vs_window": [
+        -3.5,
+        -0.5
+      ]
+    },
+    "source": {
+      "cells_a_b_cols_rows": [
+        1,
+        6,
+        5,
+        4
+      ],
+      "px": [
+        26,
+        171,
+        48,
+        188
+      ],
+      "lit_cells": 17
+    },
+    "boards": {
+      "key4": {
+        "board": [
+          21,
+          141,
+          12,
+          11
+        ],
+        "px": [
+          21,
+          141,
+          78,
+          193
+        ],
+        "centre_offset_vs_window": [
+          -0.5,
+          -0.5
+        ]
+      },
+      "key5": {
+        "board": [
+          130,
+          141,
+          12,
+          11
+        ],
+        "px": [
+          130,
+          141,
+          187,
+          193
+        ],
+        "centre_offset_vs_window": [
+          0.0,
+          -0.5
+        ]
+      },
+      "key2": {
+        "board": [
+          130,
+          28,
+          12,
+          13
+        ],
+        "px": [
+          130,
+          28,
+          187,
+          90
+        ],
+        "centre_offset_vs_window": [
+          0.0,
+          1.0
+        ]
+      },
+      "key3": {
+        "board": [
+          239,
+          28,
+          11,
+          13
+        ],
+        "px": [
+          239,
+          28,
+          291,
+          90
+        ],
+        "centre_offset_vs_window": [
+          -1.5,
+          1.0
+        ]
+      }
+    },
+    "tokens": {
+      "key4": {
+        "lime": 4,
+        "white": 0,
+        "source_lime": 17,
+        "depth_639840": 0,
+        "knocked_out": 50,
+        "unlit_2C2F2B": 61,
+        "bright_axis_deg_elongation": [
+          15.6,
+          2.39
+        ]
+      },
+      "key5": {
+        "lime": 9,
+        "white": 6,
+        "source_lime": 0,
+        "depth_639840": 0,
+        "knocked_out": 0,
+        "unlit_2C2F2B": 117,
+        "bright_axis_deg_elongation": [
+          29.7,
+          2.29
+        ]
+      },
+      "key2": {
+        "lime": 5,
+        "white": 9,
+        "source_lime": 0,
+        "depth_639840": 0,
+        "knocked_out": 0,
+        "unlit_2C2F2B": 142,
+        "bright_axis_deg_elongation": [
+          52.5,
+          1.91
+        ]
+      },
+      "key3": {
+        "lime": 4,
+        "white": 8,
+        "source_lime": 0,
+        "depth_639840": 3,
+        "knocked_out": 0,
+        "unlit_2C2F2B": 128,
+        "bright_axis_deg_elongation": [
+          129.8,
+          2.33
+        ]
+      }
+    },
+    "bright_total": 62,
+    "white_share_of_bright": 0.371,
+    "art_fails": [],
+    "seed_score": [
+      12.083,
+      {
+        "src": 17,
+        "frag": 2,
+        "5": [
+          6.6,
+          2.29,
+          6.0
+        ],
+        "2": [
+          0.8,
+          1.91,
+          8.1
+        ],
+        "3": [
+          8.3,
+          2.33,
+          6.0
+        ],
+        "triples": 2,
+        "chevrons": 2
+      }
+    ]
+  },
+  "rgb_halo_worst": [
+    5,
+    4,
+    7
+  ],
+  "rgb_halo_pixels_over_4": 23
+}

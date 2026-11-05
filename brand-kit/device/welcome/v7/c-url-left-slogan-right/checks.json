@@ -1,0 +1,206 @@
+{
+  "outside_tiles": 0,
+  "darker_than_ink": 0,
+  "rim": 0,
+  "jpeg_bytes": 15349,
+  "halo_count": 0,
+  "halo_worst": 3.2,
+  "lime": {
+    "lime_pixels": 279,
+    "mean_dev": 31.5,
+    "max_dev": 80
+  },
+  "hard_rules_pass": true,
+  "layout": {
+    "variant": "c-url-left-slogan-right",
+    "seed": 148,
+    "layout": {
+      "key1": "logo",
+      "key2": "art: the plume rising on a diagonal",
+      "key3": "art: the dust",
+      "key4": "URL",
+      "key5": "art: the source block and its debris",
+      "key6": "slogan"
+    },
+    "logo": {
+      "xy": [
+        20,
+        50
+      ],
+      "size": [
+        60,
+        17
+      ],
+      "centre_offset_vs_window": [
+        -0.5,
+        0.0
+      ]
+    },
+    "url": {
+      "size_px": 10.5,
+      "leading_px": 13,
+      "pen_x": 28.0,
+      "cap_top": 156,
+      "lines": [
+        "io.stigg.io",
+        "/usage"
+      ],
+      "cap_height": 8,
+      "line_ink": [
+        [
+          28,
+          156,
+          73,
+          166
+        ],
+        [
+          28,
+          169,
+          61,
+          179
+        ]
+      ],
+      "ink": [
+        28,
+        156,
+        73,
+        179
+      ],
+      "centre_offset_vs_window": [
+        0.0,
+        -0.5
+      ]
+    },
+    "slogan": {
+      "size_px": 9.5,
+      "leading_px": 12,
+      "pen_x": 235,
+      "cap_top": 153,
+      "lines": [
+        "The AI Usage",
+        "Management",
+        "Console"
+      ],
+      "cap_height": 7,
+      "line_ink": [
+        [
+          235,
+          153,
+          292,
+          162
+        ],
+        [
+          235,
+          165,
+          292,
+          174
+        ],
+        [
+          235,
+          177,
+          270,
+          184
+        ]
+      ],
+      "ink": [
+        235,
+        153,
+        292,
+        184
+      ],
+      "centre_offset_vs_window": [
+        -3.5,
+        0.5
+      ],
+      "note": "max size in key 6: 'Management' inks 57 px of region 6's 58 px at 9.5 px, 59 px at 9.75 px"
+    },
+    "lattice": {
+      "pitch": 5,
+      "square": 3,
+      "origin": [
+        4,
+        4
+      ],
+      "blocks": {
+        "key2": {
+          "px": [
+            134,
+            34,
+            182,
+            82
+          ],
+          "centre_offset_vs_window": [
+            -1.0,
+            -0.5
+          ]
+        },
+        "key3": {
+          "px": [
+            244,
+            34,
+            292,
+            82
+          ],
+          "centre_offset_vs_window": [
+            1.0,
+            -0.5
+          ]
+        },
+        "key5": {
+          "px": [
+            134,
+            144,
+            182,
+            192
+          ],
+          "centre_offset_vs_window": [
+            -1.0,
+            0.0
+          ]
+        }
+      },
+      "unlit": "#3C3E3A",
+      "lit": [
+        "#92E759",
+        "#FFFFFF"
+      ],
+      "depth": [
+        "#639840"
+      ]
+    },
+    "tokens": {
+      "key2": {
+        "lime": 6,
+        "white": 9,
+        "source_lime": 0,
+        "depth_639840": 6,
+        "unlit_3C3E3A": 79
+      },
+      "key3": {
+        "lime": 1,
+        "white": 8,
+        "source_lime": 0,
+        "depth_639840": 4,
+        "unlit_3C3E3A": 87
+      },
+      "key5": {
+        "lime": 7,
+        "white": 4,
+        "source_lime": 17,
+        "depth_639840": 4,
+        "unlit_3C3E3A": 68
+      }
+    },
+    "white_share_of_bright": 0.404,
+    "art_fails": [],
+    "bezel_continuity_0_12": 11,
+    "lime_core_vs_edge": {
+      "core_px": 124,
+      "core_mean_dev": 3.8,
+      "core_max_dev": 10,
+      "edge_px": 155,
+      "edge_mean_dev": 53.6,
+      "edge_max_dev": 80
+    }
+  }
+}

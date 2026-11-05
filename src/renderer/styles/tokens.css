@@ -1,0 +1,56 @@
+@font-face {
+  font-family: Geist;
+  src: url("../../../resources/fonts/Geist-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Geist;
+  src: url("../../../resources/fonts/Geist-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Geist Mono";
+  src: url("../../../resources/fonts/GeistMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --sg-bg-page: #131512;
+  --sg-bg-surface: #1a1c19;
+  --sg-bg-raised: #222421;
+  --sg-text-primary: #ffffff;
+  --sg-text-secondary: #9ea19d;
+  --sg-text-tertiary: #838682;
+  --sg-text-accent: #92e759;
+  --sg-text-on-accent: #131512;
+  --sg-border-default: #3c3e3a;
+  --sg-border-subtle: #2c2f2b;
+  --sg-accent: #92e759;
+  --sg-btn-primary-bg: #ffffff;
+  --sg-btn-primary-fg: #131512;
+  --sg-btn-primary-bg-hover: #92e759;
+  --sg-radius-sm: 4px;
+  --sg-radius-md: 8px;
+  --sg-font-sans: Geist, ui-sans-serif, sans-serif;
+  --sg-font-mono: "Geist Mono", ui-monospace, monospace;
+  --sg-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body {
+  background: var(--sg-bg-page);
+  color: var(--sg-text-primary);
+  font-family: var(--sg-font-sans);
+  font-weight: 400;
+  font-synthesis: none;
+}
+button, input { font: inherit; color: inherit; }
+h1, h2, h3, strong, b { font-weight: 400; }

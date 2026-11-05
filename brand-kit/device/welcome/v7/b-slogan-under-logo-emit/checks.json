@@ -1,0 +1,190 @@
+{
+  "outside_tiles": 0,
+  "darker_than_ink": 0,
+  "rim": 0,
+  "jpeg_bytes": 17300,
+  "halo_count": 0,
+  "halo_worst": 3.2,
+  "lime": {
+    "lime_pixels": 189,
+    "mean_dev": 31.3,
+    "max_dev": 83
+  },
+  "hard_rules_pass": true,
+  "variant": "b-slogan-under-logo-emit",
+  "seed": 662,
+  "layout": {
+    "key1": "logo",
+    "key2": "tokens: the stream leaving the wordmark (dense jet)",
+    "key3": "tokens: the fan (dust)",
+    "key4": "slogan, flush left with the logo",
+    "key5": "tokens: falling out of the stream (dust)",
+    "key6": "URL, centred"
+  },
+  "logo": {
+    "x": 20,
+    "y": 50,
+    "size": [
+      60,
+      17
+    ],
+    "wordmark_baseline": 62.7
+  },
+  "type": {
+    "face": "Soehne Buch",
+    "colour": "#FFFFFF",
+    "slogan": {
+      "size_px": 10.5,
+      "leading_px": 13,
+      "cap_height_px": 8,
+      "lines": [
+        "The AI Usage",
+        "Management",
+        "Console"
+      ],
+      "pen_x": 20,
+      "cap_top": 151,
+      "ink_boxes": [
+        [
+          20,
+          151,
+          82,
+          161
+        ],
+        [
+          20,
+          164,
+          82,
+          174
+        ],
+        [
+          20,
+          177,
+          59,
+          185
+        ]
+      ]
+    },
+    "url": {
+      "size_px": 10.5,
+      "leading_px": 13,
+      "cap_height_px": 8,
+      "lines": [
+        "io.stigg.io",
+        "/usage"
+      ],
+      "pen_x": 244,
+      "cap_top": 157,
+      "ink_boxes": [
+        [
+          244,
+          157,
+          289,
+          167
+        ],
+        [
+          244,
+          170,
+          277,
+          180
+        ]
+      ]
+    }
+  },
+  "lattice": {
+    "pitch_px": 6,
+    "square_px": 3,
+    "origin": [
+      130,
+      29
+    ],
+    "blocks": {
+      "key2": {
+        "x": [
+          130,
+          186
+        ],
+        "y": [
+          29,
+          85
+        ]
+      },
+      "key3": {
+        "x": [
+          244,
+          288
+        ],
+        "y": [
+          29,
+          85
+        ]
+      },
+      "key5": {
+        "x": [
+          130,
+          186
+        ],
+        "y": [
+          143,
+          193
+        ]
+      }
+    }
+  },
+  "colours": {
+    "canvas": "#131512",
+    "unlit": "#3C3E3A",
+    "lime_far_mid_near": [
+      "#436633",
+      "#639840",
+      "#92E759"
+    ],
+    "white_far_mid_near": [
+      "#6A6D69",
+      "#9EA19D",
+      "#FFFFFF"
+    ]
+  },
+  "tokens": {
+    "key2": {
+      "lattice_points": 100,
+      "lit": 25,
+      "unlit": 75,
+      "lime": 19,
+      "white": 6,
+      "lit_by_depth_far_mid_near": [
+        2,
+        5,
+        18
+      ]
+    },
+    "key3": {
+      "lattice_points": 80,
+      "lit": 11,
+      "unlit": 69,
+      "lime": 4,
+      "white": 7,
+      "lit_by_depth_far_mid_near": [
+        3,
+        2,
+        6
+      ]
+    },
+    "key5": {
+      "lattice_points": 90,
+      "lit": 10,
+      "unlit": 80,
+      "lime": 5,
+      "white": 5,
+      "lit_by_depth_far_mid_near": [
+        1,
+        2,
+        7
+      ]
+    }
+  },
+  "lit_total": 46,
+  "white_total": 18,
+  "white_share": 0.39,
+  "layout_checks": "pass"
+}

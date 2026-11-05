@@ -1,0 +1,315 @@
+{
+  "outside_tiles": 0,
+  "darker_than_ink": 0,
+  "rim": 0,
+  "jpeg_bytes": 18887,
+  "halo_count": 0,
+  "halo_worst": 3.2,
+  "lime": {
+    "lime_pixels": 351,
+    "mean_dev": 31.4,
+    "max_dev": 79
+  },
+  "hard_rules_pass": true,
+  "layout": {
+    "version": "v8",
+    "seed": 7,
+    "layout": {
+      "key1": "logo",
+      "key2": "the plume",
+      "key3": "the dust",
+      "key4": "URL set into its board",
+      "key5": "the source block and its debris",
+      "key6": "slogan"
+    },
+    "logo": {
+      "xy": [
+        20,
+        50
+      ],
+      "size": [
+        60,
+        17
+      ],
+      "box_centre_offset_vs_window": [
+        -0.5,
+        0.0
+      ]
+    },
+    "url": {
+      "size_px": 10.5,
+      "leading_px": 13,
+      "tracking_px": -0.06,
+      "align": "left",
+      "lines": [
+        "io.stigg.io",
+        "/usage"
+      ],
+      "cap_height_px": 8,
+      "line_ink": [
+        [
+          28,
+          156,
+          72,
+          166
+        ],
+        [
+          28,
+          169,
+          61,
+          179
+        ]
+      ],
+      "ink_inclusive": [
+        28,
+        156,
+        71,
+        178
+      ],
+      "size": [
+        44,
+        23
+      ],
+      "box_centre_offset_vs_window": [
+        -0.5,
+        -0.5
+      ],
+      "ink_mass_offset_vs_window": [
+        -1.9,
+        -0.6
+      ],
+      "air_to_nearest_token_px": {
+        "left": 4,
+        "right": 4,
+        "above": 7,
+        "below": 7
+      }
+    },
+    "slogan": {
+      "size_px": 9.5,
+      "leading_px": 12,
+      "tracking_px": -0.06,
+      "align": "right",
+      "right_ink_column": 291,
+      "cap_top": 152,
+      "cap_height_px": 7,
+      "lines": [
+        "The AI Usage",
+        "Management",
+        "Console"
+      ],
+      "line_ink": [
+        [
+          235,
+          152,
+          292,
+          161
+        ],
+        [
+          235,
+          164,
+          292,
+          173
+        ],
+        [
+          257,
+          176,
+          292,
+          183
+        ]
+      ],
+      "ink_inclusive": [
+        235,
+        152,
+        291,
+        182
+      ],
+      "size": [
+        57,
+        31
+      ],
+      "box_centre_offset_vs_window": [
+        -3.5,
+        -0.5
+      ],
+      "ink_mass_offset_vs_window": [
+        -1.0,
+        -1.4
+      ]
+    },
+    "boards": {
+      "key2": {
+        "x0_y0_cols_rows": [
+          130,
+          28,
+          12,
+          13
+        ],
+        "px_inclusive": [
+          130,
+          28,
+          187,
+          90
+        ],
+        "centre_offset_vs_window": [
+          0.0,
+          1.0
+        ]
+      },
+      "key3": {
+        "x0_y0_cols_rows": [
+          239,
+          28,
+          11,
+          13
+        ],
+        "px_inclusive": [
+          239,
+          28,
+          291,
+          90
+        ],
+        "centre_offset_vs_window": [
+          -1.5,
+          1.0
+        ]
+      },
+      "key4": {
+        "x0_y0_cols_rows": [
+          21,
+          141,
+          12,
+          11
+        ],
+        "px_inclusive": [
+          21,
+          141,
+          78,
+          193
+        ],
+        "centre_offset_vs_window": [
+          -0.5,
+          -0.5
+        ]
+      },
+      "key5": {
+        "x0_y0_cols_rows": [
+          130,
+          141,
+          12,
+          11
+        ],
+        "px_inclusive": [
+          130,
+          141,
+          187,
+          193
+        ],
+        "centre_offset_vs_window": [
+          0.0,
+          -0.5
+        ]
+      }
+    },
+    "key4_window_cells": 67,
+    "key4_landed": [
+      [
+        5,
+        9
+      ],
+      [
+        7,
+        1
+      ],
+      [
+        9,
+        9
+      ]
+    ],
+    "source_block": {
+      "cells_a_b_cols_rows": [
+        2,
+        4,
+        4,
+        6
+      ],
+      "px_inclusive": [
+        140,
+        161,
+        157,
+        188
+      ],
+      "lit_cells": 17,
+      "nearest_window_edge_px": 17
+    },
+    "tokens": {
+      "key2": {
+        "lime": 7,
+        "white": 10,
+        "depth_639840": 0,
+        "source_lime": 0,
+        "unlit_2C2F2B": 139,
+        "not_drawn_url_window": 0,
+        "nearest_lit_to_window_edge_px": 15,
+        "bright_axis_deg_elongation": [
+          -125.6,
+          1.83
+        ]
+      },
+      "key3": {
+        "lime": 5,
+        "white": 9,
+        "depth_639840": 3,
+        "source_lime": 0,
+        "unlit_2C2F2B": 126,
+        "not_drawn_url_window": 0,
+        "nearest_lit_to_window_edge_px": 16,
+        "bright_axis_deg_elongation": [
+          -15.0,
+          1.5
+        ]
+      },
+      "key4": {
+        "lime": 3,
+        "white": 0,
+        "depth_639840": 0,
+        "source_lime": 0,
+        "unlit_2C2F2B": 62,
+        "not_drawn_url_window": 67,
+        "nearest_lit_to_window_edge_px": 16,
+        "bright_axis_deg_elongation": [
+          90.0,
+          2.31
+        ]
+      },
+      "key5": {
+        "lime": 7,
+        "white": 4,
+        "depth_639840": 0,
+        "source_lime": 17,
+        "unlit_2C2F2B": 104,
+        "not_drawn_url_window": 0,
+        "nearest_lit_to_window_edge_px": 15,
+        "bright_axis_deg_elongation": [
+          -147.1,
+          1.16
+        ]
+      }
+    },
+    "bright_per_key": {
+      "2": 17,
+      "3": 14,
+      "4": 3,
+      "5": 28
+    },
+    "white_share_of_bright": 0.371,
+    "bezel_continuity_0_12": 12,
+    "art_fails": []
+  },
+  "rgb_halo_worst": [
+    5,
+    4,
+    7
+  ],
+  "rgb_halo_pixels_over_4": 19
+}

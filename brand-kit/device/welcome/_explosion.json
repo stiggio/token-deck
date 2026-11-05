@@ -1,0 +1,86 @@
+{
+  "file": "_explosion.svg",
+  "units": "mm",
+  "panel": [
+    320.0,
+    240.0
+  ],
+  "viewBox": [
+    0,
+    0,
+    320.0,
+    240.0
+  ],
+  "safe": 1.0,
+  "artBox": {
+    "x": 1.0,
+    "y": 1.0,
+    "w": 318.0,
+    "h": 238.0
+  },
+  "bbox": {
+    "x": 23.0,
+    "y": 3.0,
+    "w": 294.0,
+    "h": 194.0
+  },
+  "pitch": 5.0,
+  "square": 4.0,
+  "gap": 1.0,
+  "grid": {
+    "cols": 63,
+    "rows": 47,
+    "x0": 3.0,
+    "y0": 3.0
+  },
+  "counts": {
+    "tokens": 232,
+    "lime": 232,
+    "white": 0,
+    "source": 13,
+    "flying": 0,
+    "cellsFilled": 0.0784
+  },
+  "params": {
+    "panel": "320x240",
+    "safe": 1.0,
+    "pitch": 5.0,
+    "ratio": 0.8,
+    "source": "core",
+    "wave_amp": 4,
+    "wave_phase": 0,
+    "src_w": 20.0,
+    "src_h": 0.11,
+    "src_y": 0.72,
+    "erode": 0.6,
+    "spray": 400,
+    "reach": 1.0,
+    "spread0": 0.08,
+    "spread1": 0.34,
+    "tpow": 1.25,
+    "falloff": "pow",
+    "tau": 0.3,
+    "fanpow": 0.8,
+    "u0": 0.45,
+    "erode_pow": 1.5,
+    "dust_from": 2.0,
+    "dust_gap": 1.5,
+    "up": 0.5,
+    "rise": 0.45,
+    "air": 0,
+    "air_left": 4,
+    "model": "field",
+    "lam": 0.48,
+    "d0": 0.55,
+    "soft": 0.4,
+    "gap0": 0.0,
+    "gap1": 2.2,
+    "rays": 0,
+    "ray_angle": 14,
+    "ray_width": 0.8,
+    "ypow": 0.8,
+    "white": 0.0,
+    "white_from": 0.15,
+    "seed": 7
+  }
+}

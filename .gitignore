@@ -1,0 +1,18 @@
+# The build plan and its kit stay on disk, untracked: the repo is public, and the kit holds Söhne
+# (Klim licence: no third-party download) and Stigg-internal files. PLAN.md section 2 copies the
+# public subset into brand-kit/.
+/PLAN.md
+/assets/
+# Local working files for the coding agent
+/.cursor/
+/PROGRESS.md
+# PLAN.md section 2
+brand-kit/site-fonts/
+brand-kit/brand/stigg-ds/
+site/fonts/
+*.otf
+# Usual
+node_modules/
+out/
+dist/
+.DS_Store
