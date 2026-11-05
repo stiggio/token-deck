@@ -22,6 +22,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm install --no-save --force @napi-rs/canvas-darwin-x64@$(node -p "require('@napi-rs/canvas/package.json').version")
+      - run: npm run build
       - name: mac dir
         run: |
           if [ -z "${CSC_LINK:-}" ]; then
