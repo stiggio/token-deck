@@ -150,27 +150,40 @@ export function fitTitle(text: string, maxWidth = 50): string {
 
 export type Blit = { x: number; y: number; w: number; h: number }
 
-export function glyphRects(ch: string, x: number, y: number): Blit[] {
+/** Width used for alignment. Tight packing drops the 1px gap so a 6-letter word still fits at 2×. */
+export function inkWidth(text: string, tight = false): number {
+  if (!text) return 0
+  let n = 0
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i]!
+    const last = i === text.length - 1
+    n += tight || last ? glyphWidth(ch) : advance(ch)
+  }
+  return n
+}
+
+export function glyphRects(ch: string, x: number, y: number, scale = 1): Blit[] {
   const glyph = glyphFor(ch)
   const rects: Blit[] = []
   const paint = (rows: string[], y0: number) => {
     rows.forEach((row, ry) => {
       for (let rx = 0; rx < row.length; rx++) {
-        if (row[rx] === '1') rects.push({ x: x + rx, y: y0 + ry, w: 1, h: 1 })
+        if (row[rx] === '1') rects.push({ x: x + rx * scale, y: y0 + ry * scale, w: scale, h: scale })
       }
     })
   }
   paint(glyph.rows, y)
-  if (glyph.desc) paint(glyph.desc, y + 7)
+  if (glyph.desc) paint(glyph.desc, y + 7 * scale)
   return rects
 }
 
-export function textRects(text: string, x: number, y: number): Blit[] {
+export function textRects(text: string, x: number, y: number, scale = 1, tight = false): Blit[] {
   const rects: Blit[] = []
   let pen = x
-  for (const ch of text) {
-    rects.push(...glyphRects(ch, pen, y))
-    pen += advance(ch)
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i]!
+    rects.push(...glyphRects(ch, pen, y, scale))
+    if (i < text.length - 1) pen += (tight ? glyphWidth(ch) : advance(ch)) * scale
   }
   return rects
 }

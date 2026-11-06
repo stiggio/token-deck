@@ -8,12 +8,12 @@ type Place = { file: string; w: number; h: number; x: number; y: number }
 
 export const AGENT_PLACEMENT: Record<'agents' | 'sessions', Record<AgentId, Place>> = {
   agents: {
-    'claude-code': { file: 'claude-code.svg', w: 30, h: 30, x: 17, y: 10 },
-    cursor: { file: 'cursor.svg', w: 26, h: 29, x: 20, y: 10 },
-    codex: { file: 'codex.svg', w: 27, h: 27, x: 19, y: 11 },
-    opencode: { file: 'opencode.svg', w: 25, h: 27, x: 20, y: 11 },
-    amp: { file: 'amp.svg', w: 38, h: 20, x: 13, y: 15 },
-    devin: { file: 'devin.svg', w: 29, h: 32, x: 19, y: 9 }
+    'claude-code': { file: 'claude-code.svg', w: 38, h: 38, x: 13, y: 13 },
+    cursor: { file: 'cursor.svg', w: 33, h: 36, x: 16, y: 14 },
+    codex: { file: 'codex.svg', w: 34, h: 34, x: 15, y: 15 },
+    opencode: { file: 'opencode.svg', w: 31, h: 34, x: 16, y: 15 },
+    amp: { file: 'amp.svg', w: 48, h: 25, x: 8, y: 20 },
+    devin: { file: 'devin.svg', w: 36, h: 40, x: 14, y: 12 }
   },
   sessions: {
     'claude-code': { file: 'claude-code.svg', w: 18, h: 18, x: 23, y: 18 },

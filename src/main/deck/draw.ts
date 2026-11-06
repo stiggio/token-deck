@@ -1,5 +1,5 @@
 import type { SKRSContext2D } from '@napi-rs/canvas'
-import { textRects, measure } from './pixelfont'
+import { textRects, measure, inkWidth } from './pixelfont'
 
 export function fill(ctx: SKRSContext2D, color: string, x: number, y: number, w: number, h: number): void {
   ctx.fillStyle = color
@@ -110,6 +110,29 @@ export function text(
   ctx.fillStyle = color
   for (const rect of textRects(value, ox, y)) {
     if (rect.x < 0 || rect.y < 0 || rect.x > 63 || rect.y > 63) continue
+    ctx.fillRect(rect.x, rect.y, rect.w, rect.h)
+  }
+}
+
+/** 2× pixel font. Tight drops the letter gap when the word would otherwise run off the key. */
+export function textScaled(
+  ctx: SKRSContext2D,
+  value: string,
+  x: number,
+  y: number,
+  color: string,
+  align: 'left' | 'right' | 'center' = 'left',
+  scale = 2,
+  tight = false
+): void {
+  if (!value) return
+  const w = inkWidth(value, tight) * scale
+  let ox = x
+  if (align === 'right') ox = x - w
+  else if (align === 'center') ox = Math.round(x - w / 2)
+  ctx.fillStyle = color
+  for (const rect of textRects(value, ox, y, scale, tight)) {
+    if (rect.x > 63 || rect.y > 63 || rect.x + rect.w < 0 || rect.y + rect.h < 0) continue
     ctx.fillRect(rect.x, rect.y, rect.w, rect.h)
   }
 }

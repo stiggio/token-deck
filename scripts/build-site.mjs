@@ -74,6 +74,7 @@ a { color: inherit; }
 .btn { height: 44px; padding: 0 16px; border-radius: 4px; border: 1px solid transparent; background: #fff; color: #131512; font-family: inherit; font-size: 16px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
 .btn:hover { background: var(--lime); }
 .plain { color: var(--muted); line-height: 1.5; }
+.lead { color: var(--ink); font-size: 18px; line-height: 1.45; max-width: 38em; }
 .device { position: relative; margin: 48px 0 8px; }
 .device svg { width: 100%; height: auto; display: block; }
 .device svg [stroke] { stroke-width: 1px; vector-effect: non-scaling-stroke; }
@@ -93,6 +94,7 @@ footer { padding: 40px 0 64px; display: flex; justify-content: space-between; ga
   <header class="hero">
     <div class="lockup">${inline('brand-kit/design/token-deck-d-stacked-pixel-token.svg')}</div>
     <p class="tag">The AI Usage Management Console</p>
+    <p class="lead">The program for the deck in the box. It runs the coding apps on your computer: open one, see the chats already going, and choose the model the next chat will use.</p>
     <div class="installs">
       <div>
         <p class="eyebrow">Mac</p>
@@ -120,6 +122,7 @@ footer { padding: 40px 0 64px; display: flex; justify-content: space-between; ga
     <div>
       <p class="eyebrow">Agents</p>
       <h2>Jump to any coding agent. Turn the dial to hop windows.</h2>
+      <p class="lead">The coding apps on this computer. Use it to open Claude Code, Codex, Cursor, OpenCode, Amp, or Devin, and to move to one that is already running.</p>
     </div>
     ${inline('brand-kit/design/screens-v2/screens-mode1.svg')}
   </section>
@@ -127,6 +130,7 @@ footer { padding: 40px 0 64px; display: flex; justify-content: space-between; ga
     <div>
       <p class="eyebrow">Sessions</p>
       <h2>Every session and its context. See which one needs you.</h2>
+      <p class="lead">The chats already going. Use it to see which Claude Code or Codex conversation needs you, and to jump to that one. OpenCode shows up while it is running on this computer. Cursor, Amp, and Devin stay on Agents.</p>
     </div>
     ${inline('brand-kit/design/screens-v2/screens-mode2.svg')}
   </section>
@@ -134,6 +138,7 @@ footer { padding: 40px 0 64px; display: flex; justify-content: space-between; ga
     <div>
       <p class="eyebrow">Models &amp; usage</p>
       <h2>Six models, live 5H and 7D limits.</h2>
+      <p class="lead">What the next chat will run on. Use it to pick a model, and to see how much of the 5-hour and weekly allowance is left. That allowance is one key, shared by every model of the same app. A chat that is already running keeps its model.</p>
       <div class="legend">
         <div>Turn: effort. Press: Ultracode.</div>
         <div>Turn: agent. Press: last agent.</div>

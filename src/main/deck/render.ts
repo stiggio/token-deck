@@ -1,13 +1,12 @@
 import fs from 'fs'
 import { createCanvas, loadImage, type Canvas, type SKRSContext2D } from '@napi-rs/canvas'
-import { APPROVAL, C4, C8, C9, HAIR, INK, LIME, LIMIT, STALE, UNLIT, WHITE, WORKING } from './colors'
-import { disc, fill, ring, roundRect, strokeRect, text } from './draw'
+import { APPROVAL, C4, C8, HAIR, INK, LIME, LIMIT, STALE, UNLIT, WHITE, WORKING } from './colors'
+import { disc, fill, ring, roundRect, strokeRect, text, textScaled } from './draw'
 import { AGENT_PLACEMENT, loadGlyph, loadSvgFile } from './glyphs'
 import { hairlineColumns, layoutOffset, safeRect, windowCentreInTile, type LayoutName } from './geometry'
 import { resource } from '../paths'
-import { fitText, fitTitle, measure } from './pixelfont'
+import { fitText, fitTitle, inkWidth, measure } from './pixelfont'
 import type { AgentId, ModelPaint, SessionPaint, SessionStatus, TileSpec } from '../../shared/model'
-import { LAUNCH_ONLY } from '../../shared/model'
 
 const welcomeCache = new Map<number, Buffer>()
 
@@ -84,27 +83,15 @@ function emptySlot(ctx: SKRSContext2D, key: number, offset: boolean): void {
   }
 }
 
-function meter(ctx: SKRSContext2D, active: number, dx: number, dy: number): void {
-  for (let i = 0; i < 4; i++) {
-    fill(ctx, i < active ? LIME : UNLIT, 13 + i * 10 + dx, 46 + dy, 8, 8)
-  }
-}
-
 async function paintAgents(
   ctx: SKRSContext2D,
   spec: Extract<TileSpec, { kind: 'agents' }>,
   key: number,
   offset: boolean,
-  clip: boolean
+  _clip: boolean
 ): Promise<number> {
   const { dx, dy } = shift('agents', key, offset)
-  const launch = LAUNCH_ONLY.has(spec.agent)
-  const dim = launch && !spec.installed
-  await drawAgentGlyph(ctx, 'agents', spec.agent, dx, dy, dim)
-  if (!clip) {
-    if (launch) text(ctx, 'LAUNCH', 32 + dx, 47 + dy, dim ? STALE : C8, 'center')
-    else meter(ctx, Math.max(0, Math.min(4, spec.active)), dx, dy)
-  }
+  await drawAgentGlyph(ctx, 'agents', spec.agent, dx, dy, !spec.installed)
   return dy
 }
 
@@ -163,56 +150,61 @@ async function paintSession(
   return dy
 }
 
-function squares(ctx: SKRSContext2D, x0: number, y: number, lit: number, color: string, unlit: string): void {
-  for (let i = 0; i < 10; i++) {
-    fill(ctx, i < lit ? color : unlit, x0 + dxOf(i), y, 4, 4)
-  }
-}
-
-function dxOf(i: number): number {
-  return i * 5
-}
-
-function paintModel(ctx: SKRSContext2D, model: ModelPaint | null, key: number, offset: boolean, clip: boolean): number {
+function paintModel(ctx: SKRSContext2D, model: ModelPaint | null, key: number, offset: boolean, _clip: boolean): number {
   const { dx, dy } = shift('models', key, offset)
   if (!model) {
     emptySlot(ctx, key, offset)
     return dy
   }
-  const name = model.name
-  const shown = fitText(name, 49, 12)
-  if (model.current) {
-    roundRect(ctx, 2 + dx, 2 + dy, 57, 14, 2, LIME)
-    text(ctx, shown, 6 + dx, 6 + dy, INK)
-  } else {
-    text(ctx, shown, 6 + dx, 6 + dy, WHITE)
-  }
-  if (model.noQuota) {
-    text(ctx, 'NO QUOTA', 6 + dx, 20 + dy, C8)
-    text(ctx, 'DATA', 6 + dx, 30 + dy, C8)
-    return dy
-  }
-  const pctColor = model.stale ? C8 : WHITE
-  const litColor = model.stale ? STALE : model.current ? LIME : C9
-  const row = (label: string, pct: number | null, yText: number, ySq: number) => {
-    text(ctx, label, 6 + dx, yText + dy, C8)
-    const value = pct === null ? '--' : `${Math.round(pct)}%`
-    text(ctx, value, 54 + dx, yText + dy, pct === null ? C8 : pctColor, 'right')
-    const lit = pct === null ? 0 : Math.max(0, Math.min(10, Math.round(pct / 10)))
-    squares(ctx, 6 + dx, ySq + dy, lit, litColor, UNLIT)
-  }
-  row(model.fiveLabel, model.fiveHour, 20, 28)
-  if (!clip) {
-    row(model.sevenLabel, model.sevenDay, 36, 44)
-    if (model.stale) {
-      fill(ctx, C8, 6 + dx, 53 + dy, 4, 4)
-      text(ctx, 'STALE', 12 + dx, 52 + dy, C8)
-    } else if (model.shared) {
-      fill(ctx, model.current ? LIME : C8, 6 + dx, 53 + dy, 4, 4)
-      text(ctx, 'SHARED', 12 + dx, 52 + dy, C8)
-    }
+  const lines = modelNameLines(model.name)
+  const lineH = 14
+  const gap = lines.length > 1 ? 4 : 0
+  const block = lines.length * lineH + (lines.length - 1) * gap
+  let y = Math.round((64 - block) / 2) + dy
+  const color = model.current ? LIME : WHITE
+  for (const line of lines) {
+    textScaled(ctx, line, 32 + dx, y, color, 'center', 2, inkWidth(line, false) > 30)
+    y += lineH + gap
   }
   return dy
+}
+
+/** Up to three lines of 2× type. A line wider than 30px at 1× is drawn without the letter gap. */
+function modelNameLines(name: string): string[] {
+  const upper = name.toUpperCase()
+  if (inkWidth(upper, false) <= 30) return [upper]
+  const lines: string[] = []
+  for (const word of upper.split(' ').filter((part) => part.length > 0)) {
+    if (inkWidth(word, false) <= 30) {
+      lines.push(word)
+      continue
+    }
+    const bits = word.split('-').filter((part) => part.length > 0)
+    if (bits.length > 1 && bits.every((bit) => inkWidth(bit, false) <= 30)) lines.push(...bits)
+    else lines.push(word)
+  }
+  return lines.slice(0, 3)
+}
+
+function paintUsage(
+  ctx: SKRSContext2D,
+  spec: Extract<TileSpec, { kind: 'usage' }>,
+  key: number,
+  offset: boolean
+): number {
+  const { dx, dy } = shift('models', key, offset)
+  text(ctx, 'USAGE', 32 + dx, 4 + dy, LIME, 'center')
+  text(ctx, fitText(spec.agent, 56, 10), 32 + dx, 14 + dy, WHITE, 'center')
+  usageRow(ctx, spec.fiveLabel, spec.fiveHour, 26, dx, dy)
+  usageRow(ctx, spec.sevenLabel, spec.sevenDay, 44, dx, dy)
+  return dy
+}
+
+function usageRow(ctx: SKRSContext2D, label: string, pct: number | null, y: number, dx: number, dy: number): void {
+  text(ctx, label, 4 + dx, y + dy, C8)
+  text(ctx, pct === null ? '--' : `${Math.round(pct)}%`, 60 + dx, y + dy, WHITE, 'right')
+  fill(ctx, UNLIT, 4 + dx, y + 8 + dy, 56, 4)
+  if (pct !== null && pct > 0) fill(ctx, LIME, 4 + dx, y + 8 + dy, Math.max(3, Math.round(56 * Math.min(100, pct) / 100)), 4)
 }
 
 async function paintCustom(
@@ -290,6 +282,7 @@ export async function renderUpright(spec: TileSpec, key: number, offset = true, 
   if (spec.kind === 'agents') dy = await paintAgents(ctx, spec, key, offset, clip)
   else if (spec.kind === 'session') dy = await paintSession(ctx, spec.session, key, offset, clip)
   else if (spec.kind === 'model') dy = paintModel(ctx, spec.model, key, offset, clip)
+  else if (spec.kind === 'usage') dy = paintUsage(ctx, spec, key, offset)
   else if (spec.kind === 'custom') dy = await paintCustom(ctx, spec.custom?.lines ?? null, spec.custom?.iconFile, key, offset, clip)
   else if (spec.kind === 'connect') dy = await paintConnect(ctx, key, offset)
   else if (spec.kind === 'test') paintTest(ctx)

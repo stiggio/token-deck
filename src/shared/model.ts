@@ -34,6 +34,7 @@ export type TileSpec =
   | { kind: 'agents'; agent: AgentId; active: number; installed: boolean }
   | { kind: 'session'; session: SessionPaint | null }
   | { kind: 'model'; model: ModelPaint | null }
+  | { kind: 'usage'; agent: string; fiveHour: number | null; sevenDay: number | null; fiveLabel: string; sevenLabel: string }
   | { kind: 'custom'; custom: CustomPaint | null }
   | { kind: 'welcome' }
   | { kind: 'connect' }
