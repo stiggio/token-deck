@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
-import { Cable, Cpu, Info, Layers, SlidersHorizontal, Sparkles } from 'lucide-react'
+import { Info, LayoutGrid, Monitor, SlidersHorizontal } from 'lucide-react'
 import type { AgentId } from '../shared/model'
 import type { Snapshot } from '../shared/ipc'
 
-const PAGES = ['Device', 'Agents', 'Models', 'Modes', 'Burn', 'About'] as const
+const PAGES = ['Deck', 'This Mac', 'Models', 'About'] as const
 
 export function App() {
-  const [page, setPage] = useState<(typeof PAGES)[number]>('Device')
+  const [page, setPage] = useState<(typeof PAGES)[number]>('Deck')
   const [snap, setSnap] = useState<Snapshot | null>(null)
   useEffect(() => {
     const off = window.tokenDeck.onState(setSnap)
@@ -27,96 +27,186 @@ export function App() {
       </nav>
       <main>
         <section className="page">
-          {page === 'Device' && <Device snap={snap} />}
-          {page === 'Agents' && <Agents snap={snap} />}
+          {page === 'Deck' && <Deck snap={snap} />}
+          {page === 'This Mac' && <ThisMac snap={snap} />}
           {page === 'Models' && <Models snap={snap} />}
-          {page === 'Modes' && <Modes snap={snap} />}
-          {page === 'Burn' && <Burn snap={snap} />}
           {page === 'About' && <About snap={snap} />}
         </section>
         <Simulator snap={snap} />
       </main>
       {snap.wizard?.open && <Wizard snap={snap} />}
+      {snap.usageOpen && <UsagePopup snap={snap} />}
     </div>
   )
 }
 
 function Icon({ name }: { name: (typeof PAGES)[number] }) {
   const props = { size: 16, strokeWidth: 1, absoluteStrokeWidth: true }
-  if (name === 'Device') return <Cable {...props} />
-  if (name === 'Agents') return <Sparkles {...props} />
+  if (name === 'Deck') return <LayoutGrid {...props} />
+  if (name === 'This Mac') return <Monitor {...props} />
   if (name === 'Models') return <SlidersHorizontal {...props} />
-  if (name === 'Modes') return <Layers {...props} />
-  if (name === 'Burn') return <Cpu {...props} />
   return <Info {...props} />
 }
 
-function Device({ snap }: { snap: Snapshot }) {
+function Deck({ snap }: { snap: Snapshot }) {
+  const mode = snap.mode === 'sessions' || snap.mode === 'models' ? snap.mode : 'agents'
   return (
-    <>
-      <p className="eyebrow">Device</p>
-      <h1>{snap.device.message}</h1>
-      <div className="row"><span>Manufacturer</span><span>{snap.device.manufacturer || '—'}</span></div>
-      <div className="row"><span>Product</span><span>{snap.device.product || '—'}</span></div>
-      <div className="row"><span>Serial</span><span>{snap.device.serial || '—'}</span></div>
-      <div className="row"><span>Release</span><span>{snap.device.release || '—'}</span></div>
-      <div className="row"><span>Firmware</span><span>{snap.device.firmware || 'n/a'}</span></div>
-      <div className="row">
-        <label className="slider">Brightness {snap.brightness}
-          <input type="range" min={0} max={100} value={snap.brightness} onChange={(event) => void window.tokenDeck.invoke({ method: 'brightness', value: Number(event.target.value) })} />
-        </label>
+    <div className="guide">
+      <div className="guide-head">
+        <div>
+          <h1>{GUIDE[mode].title}</h1>
+          <p className="blurb">{GUIDE[mode].blurb}</p>
+        </div>
+        <span className={snap.device.phase === 'ready' ? 'live' : ''}>{snap.device.message}</span>
       </div>
-      <div className="row">
-        <span>Repaint keepalive</span>
-        <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'keepalive', value: !snap.keepalive })}>{snap.keepalive ? 'On' : 'Off'}</button>
+      <DeckMap mode={mode} onMode={selectMode} />
+      <div className="guide-foot">
+        <span>Hold the middle button for a screen of your own.</span>
+        <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'openModes' })}>Open folder</button>
       </div>
-      <div className="actions">
-        <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'testPattern' })}>Send test pattern</button>
-      </div>
-    </>
+      {snap.modes.some((item) => item.errors.length > 0) && snap.modes.map((item) => item.errors.map((error) => <div className="warn" key={item.file + error}>{item.name}: {error}</div>))}
+    </div>
   )
 }
 
-function Agents({ snap }: { snap: Snapshot }) {
+const GUIDE = {
+  agents: {
+    title: 'Agents',
+    blurb: 'The coding apps on this computer. Open one, move to one that is already running, and set what the next session will use.',
+    left: 'Set model',
+    main: 'Switch app',
+    right: 'Set effort',
+    keys: 'Open app'
+  },
+  sessions: {
+    title: 'Sessions',
+    blurb: 'The chats already going. See which Claude Code or Codex conversation needs you, and jump to it.',
+    left: 'Pick app',
+    main: 'More chats',
+    right: 'Pick status',
+    keys: 'Open chat'
+  },
+  models: {
+    title: 'Models & usage',
+    blurb: 'Pick the model the next session will use. The first key is the shared allowance. Press it to open the details.',
+    left: 'Pick app',
+    main: 'Set effort',
+    right: 'Ask first',
+    keys: 'Usage, models'
+  }
+} as const
+
+function selectMode(which: 'left' | 'middle' | 'right') {
+  void window.tokenDeck.invoke({ method: 'simulator', event: { type: 'metal', which, pressed: true } })
+  window.setTimeout(() => void window.tokenDeck.invoke({ method: 'simulator', event: { type: 'metal', which, pressed: false } }), 80)
+}
+
+const SCREENS = [
+  [14.7, 12.2], [33.5, 12.2], [52.3, 12.2],
+  [14.7, 30.7], [33.5, 30.7], [52.3, 30.7]
+] as const
+
+const FACE_BUTTONS = [
+  { which: 'left' as const, cx: 22.7, label: 'Agents', mode: 'agents' },
+  { which: 'middle' as const, cx: 41.5, label: 'Sessions', mode: 'sessions' },
+  { which: 'right' as const, cx: 60.3, label: 'Models', mode: 'models' }
+]
+
+function DeckMap({ mode, onMode }: { mode: keyof typeof GUIDE; onMode: (which: 'left' | 'middle' | 'right') => void }) {
+  const cap = GUIDE[mode]
+  return (
+    <svg className="guide-svg" viewBox="-62 -18 214 132" role="img" aria-label={`${cap.title}. Six keys ${cap.keys}. Large knob ${cap.main}. Left small knob ${cap.left}. Right small knob ${cap.right}.`}>
+      <rect x="0" y="0" width="129" height="78" rx="3.9" fill="#1a1c19" stroke="#3c3e3a" strokeWidth="0.4" />
+      {SCREENS.map(([x, y]) => (
+        <rect key={`${x}-${y}`} x={x} y={y} width="16" height="15.5" rx="1" fill="#131512" stroke="#3c3e3a" strokeWidth="0.35" />
+      ))}
+      <circle cx="96.1" cy="26.7" r="14.5" fill="#131512" stroke="#92e759" strokeWidth="0.45" />
+      <circle cx="96.1" cy="26.7" r="11" fill="none" stroke="#3c3e3a" strokeWidth="0.3" />
+      <circle cx="85" cy="59.1" r="7.5" fill="#131512" stroke="#92e759" strokeWidth="0.45" />
+      <circle cx="110.6" cy="59.1" r="7.5" fill="#131512" stroke="#92e759" strokeWidth="0.45" />
+      <FaceLead x1={-6} y1={24} x2={14.7} y2={20} text={cap.keys} anchor="end" />
+      <FaceLead x1={96.1} y1={-8} x2={96.1} y2={12.2} text={cap.main} anchor="middle" />
+      <FaceLead x1={85} y1={104} x2={85} y2={66.6} text={cap.left} anchor="middle" />
+      <FaceLead x1={110.6} y1={104} x2={110.6} y2={66.6} text={cap.right} anchor="middle" />
+      {FACE_BUTTONS.map((button) => {
+        const on = mode === button.mode
+        return (
+          <g key={button.which} className="hit" onClick={() => onMode(button.which)}>
+            <circle cx={button.cx} cy="62.9" r="6.3" fill={on ? '#92e759' : '#131512'} stroke={on ? '#92e759' : '#5b5d59'} strokeWidth="0.4" />
+            <text x={button.cx} y="88" textAnchor="middle" fill={on ? '#92e759' : '#ffffff'} fontSize="3.6">{button.label}</text>
+          </g>
+        )
+      })}
+    </svg>
+  )
+}
+
+function FaceLead({ x1, y1, x2, y2, text, anchor }: { x1: number; y1: number; x2: number; y2: number; text: string; anchor: 'start' | 'middle' | 'end' }) {
+  const labelX = anchor === 'middle' ? x1 : anchor === 'end' ? x1 - 2 : x1 + 2
+  const labelY = anchor === 'middle' ? (y1 < y2 ? y1 - 1.5 : y1 + 1.2) : y1 + 1
+  return (
+    <g>
+      <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#92e759" strokeWidth="0.4" />
+      <circle cx={x2} cy={y2} r="0.9" fill="#92e759" />
+      <text x={labelX} y={labelY} textAnchor={anchor} fill="#ffffff" fontSize="3.8">{text}</text>
+    </g>
+  )
+}
+
+function ThisMac({ snap }: { snap: Snapshot }) {
   return (
     <>
-      <p className="eyebrow">Agents</p>
-      <h1>Connect the agents on this computer</h1>
-      {snap.agents.map((agent, index) => (
+      <h1>This Mac</h1>
+      {snap.agents.map((agent) => (
         <div className="row" key={agent.id}>
           <div>
             <strong>{label(agent.id)}</strong>
-            <div>{agent.installed ? 'Installed' : 'Not installed'}{agent.signedIn ? ' · signed in' : ''}{agent.hooks ? ' · hooks installed' : ''}{agent.statusLine ? ' · status line chained' : ''}{agent.detail ? ` · ${agent.detail}` : ''}</div>
-            {agent.id === 'opencode' && !agent.reachable && <div>Run `opencode serve` to show sessions</div>}
-            {!snap.accessibility && agent.id === 'claude-code' && <div>Accessibility permission is missing. Window focus needs it.</div>}
+            <div>{macLine(agent)}</div>
           </div>
-          <div className="actions">
-            {index === 0 && <button className="btn accent" onClick={() => void window.tokenDeck.invoke({ method: 'connect', id: agent.id })}>Connect</button>}
-            {index !== 0 && <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'connect', id: agent.id })}>Connect</button>}
-            <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'disconnect', id: agent.id })}>Disconnect</button>
-            {(agent.id === 'claude-code' || agent.id === 'codex') && (
-              <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'restore', id: agent.id })}>Restore my settings</button>
-            )}
-          </div>
+          {agent.id === 'claude-code' && agent.installed && (
+            <div className="actions">
+              {agent.hooks
+                ? <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'restore', id: 'claude-code' })}>Stop watching</button>
+                : <button className="btn accent" onClick={() => void window.tokenDeck.invoke({ method: 'connect', id: 'claude-code' })}>Let Token Deck see Claude sessions</button>}
+            </div>
+          )}
         </div>
       ))}
-      <p>Token Deck adds a status line and hooks to Claude Code so the deck can see your sessions. Here is exactly what changes: a command hook shim and a chained status line. Nothing reads Claude credentials.</p>
+      {!snap.accessibility && (
+        <>
+          <p>To bring a window to the front, macOS needs Accessibility for Token Deck. It asks once.</p>
+          <div className="actions">
+            <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'wizardAsk' })}>Allow Accessibility</button>
+          </div>
+        </>
+      )}
     </>
   )
 }
 
+function macLine(agent: Snapshot['agents'][number]): string {
+  if (agent.id === 'devin') return 'Opens in the browser'
+  if (!agent.installed) return 'Not installed'
+  if (agent.id === 'claude-code') return agent.hooks ? 'Watching sessions' : 'Not watching sessions'
+  if (agent.id === 'codex') return agent.signedIn ? 'Signed in' : 'Sign in to Codex on this Mac'
+  if (agent.id === 'opencode') return agent.reachable ? 'Sessions showing' : 'Run opencode serve'
+  return 'Opens from its key'
+}
+
 function Models({ snap }: { snap: Snapshot }) {
-  const agents = ['claude-code', 'codex', 'opencode'] as const
+  const agents = (['claude-code', 'codex', 'opencode'] as const).filter((id) => snap.agents.find((agent) => agent.id === id)?.installed)
   return (
     <>
-      <p className="eyebrow">Models</p>
-      <h1>Favorites</h1>
+      <h1>Next session</h1>
+      {!agents.length && <p>Claude Code, Codex, and OpenCode are not installed.</p>}
       {agents.map((agent) => (
         <div key={agent} className="row">
           <div>
             <strong>{label(agent)}</strong>
-            <div>{snap.favorites[agent].join(', ') || 'None yet'}</div>
-            <div>Effort {snap.efforts[agent].join(' ') || 'Not available'}</div>
+            <div className="chips">
+              {snap.favorites[agent].map((name) => <span className="chip" key={name}>{name}</span>)}
+              {!snap.favorites[agent].length && <span>Waiting for models</span>}
+            </div>
           </div>
           <div className="actions">
             <button className="btn ghost" onClick={() => move(snap, agent, -1)}>Move up</button>
@@ -124,7 +214,6 @@ function Models({ snap }: { snap: Snapshot }) {
           </div>
         </div>
       ))}
-      <p>READ plan / read-only. ASK default / workspace-write. AUTO auto / never. FULL bypass / danger-full-access, only after you confirm on this computer.</p>
     </>
   )
 }
@@ -137,66 +226,33 @@ function move(snap: Snapshot, agent: 'claude-code' | 'codex' | 'opencode', dir: 
   void window.tokenDeck.invoke({ method: 'favorites', agent, models: ordered })
 }
 
-function Modes({ snap }: { snap: Snapshot }) {
-  return (
-    <>
-      <p className="eyebrow">Modes</p>
-      <h1>Program it yourself</h1>
-      {snap.modes.map((mode) => (
-        <div className="row" key={mode.file}>
-          <div>
-            <strong>{mode.name}</strong>
-            {mode.errors.map((error) => <div className="warn" key={error}>{error}</div>)}
-          </div>
-        </div>
-      ))}
-      {!snap.modes.length && <p>No files in ~/.tokendeck/modes yet.</p>}
-      <div className="actions">
-        <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'openModes' })}>Open folder</button>
-        <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'reloadModes' })}>Reload</button>
-      </div>
-      <pre>{snap.example}</pre>
-    </>
-  )
-}
-
-function Burn({ snap }: { snap: Snapshot }) {
-  return (
-    <>
-      <p className="eyebrow">Burn</p>
-      <h1>Welcome screen</h1>
-      <p>Token Deck writes its welcome screen into a deck's memory the first time the deck connects to this computer, unless the deck already has it (the giveaway decks come with it). The deck shows that screen whenever it has power and no app is driving it, on any computer. The button below writes it again.</p>
-      {snap.welcomePng && <img src={snap.welcomePng} alt="Welcome screen" width={320} height={240} />}
-      {snap.burnMessage && <p className="warn">{snap.burnMessage}</p>}
-      <div className="row">
-        <span>Write the welcome screen to new decks automatically</span>
-        <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'autoBurn', value: !snap.autoBurn })}>{snap.autoBurn ? 'On' : 'Off'}</button>
-      </div>
-      <div className="actions">
-        <button className="btn accent" disabled={snap.device.phase === 'burning' || snap.device.burnFailed} onClick={() => void window.tokenDeck.invoke({ method: 'burn' })}>Write welcome screen to deck</button>
-        <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'exportWelcome' })}>Export image</button>
-      </div>
-      <p>This deck is {snap.preburned ? 'listed' : 'not listed'} in the shipped giveaway record.</p>
-      {snap.burned.map((row) => <div className="row" key={row.serial + row.at}><span>{row.serial}</span><span>{row.at} · {row.imageHash.slice(0, 12)}</span></div>)}
-      <p>Batch: quit Token Deck and the vendor apps, then run the packaged binary with `burn --watch`. It waits 8 seconds, prints the deck identity, and says done only after the 10 second hold.</p>
-    </>
-  )
-}
-
 function About({ snap }: { snap: Snapshot }) {
   return (
     <>
-      <p className="eyebrow">About</p>
       <h1>Token Deck {snap.version}</h1>
+      <div className="row">
+        <label className="slider">Brightness {snap.brightness}
+          <input type="range" min={0} max={100} value={snap.brightness} onChange={(event) => void window.tokenDeck.invoke({ method: 'brightness', value: Number(event.target.value) })} />
+        </label>
+      </div>
       <div className="actions">
         <button className="btn primary" onClick={() => void window.tokenDeck.invoke({ method: 'checkUpdates' })}>Check for updates</button>
         {snap.updateVersion && <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'updateNow' })}>Update now</button>}
         <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'showLog' })}>Show log</button>
       </div>
       {snap.updateVersion && <p>Token Deck {snap.updateVersion} is available.</p>}
+      <h2>Welcome screen</h2>
+      <p>Shown when the deck has power and Token Deck is not running.</p>
+      {snap.welcomePng && <img src={snap.welcomePng} alt="Welcome screen" width={320} height={240} />}
+      {snap.burnMessage && <p className="warn">{snap.burnMessage}</p>}
+      <div className="row">
+        <span>Write the welcome screen on a new deck</span>
+        <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'autoBurn', value: !snap.autoBurn })}>{snap.autoBurn ? 'On' : 'Off'}</button>
+      </div>
+      <div className="actions">
+        <button className="btn accent" disabled={snap.device.phase === 'burning' || snap.device.burnFailed} onClick={() => void window.tokenDeck.invoke({ method: 'burn' })}>Write welcome screen again</button>
+      </div>
       <p><a href="https://usage.stigg.io">usage.stigg.io</a> · <a href="https://github.com/stiggio/token-deck">repository</a></p>
-      <p>MIT for the app. Geist is OFL. Agent marks belong to their owners and are used only to name the integrations. The HID protocol notes are from public vendor material.</p>
-      <pre>{snap.log}</pre>
     </>
   )
 }
@@ -238,30 +294,59 @@ function Simulator({ snap }: { snap: Snapshot }) {
   )
 }
 
+function UsagePopup({ snap }: { snap: Snapshot }) {
+  const row = snap.allowance
+  const close = () => void window.tokenDeck.invoke({ method: 'usageClose' })
+  return (
+    <div className="wizard">
+      <div className="card">
+        <h1>{row.agent}</h1>
+        <p>How much of the allowance is already used. Every model of this app shares it.</p>
+        <UsageLine name="5-hour window" pct={row.fiveHour} resets={row.fiveResets} />
+        <UsageLine name="7-day window" pct={row.sevenDay} resets={row.sevenResets} />
+        {!row.known && <p>No reading yet. Claude sends this after one of its sessions replies. Codex sends it from the app on this Mac.</p>}
+        <div className="actions">
+          <button className="btn primary" onClick={close}>Close</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function UsageLine({ name, pct, resets }: { name: string; pct: number | null; resets: number | null }) {
+  const width = pct === null ? 0 : Math.max(0, Math.min(100, pct))
+  const when = resets ? new Date(resets > 1e12 ? resets : resets * 1000).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : ''
+  return (
+    <div className="usage-line">
+      <div className="usage-top"><span>{name}</span><strong>{pct === null ? '--' : `${Math.round(pct)}%`}</strong></div>
+      <div className="usage-track"><div className="usage-fill" style={{ width: `${width}%` }} /></div>
+      {when && <div className="usage-reset">Resets {when}</div>}
+    </div>
+  )
+}
+
 function Wizard({ snap }: { snap: Snapshot }) {
   const step = snap.wizard?.step || 0
   const next = () => void window.tokenDeck.invoke({ method: 'wizard', step: step + 1 })
   const copy = [
-    'Plug in your Token Deck.',
-    'Turn the left knob clockwise.',
-    'Token Deck adds a status line and hooks to Claude Code so the deck can see your sessions. Here is exactly what changes:',
-    'Token Deck brings the window of the session you pick to the front. macOS asks you to allow that once for each app, and once in Privacy & Security → Accessibility.',
-    'Codex and OpenCode are optional.',
-    'Start Token Deck at login?'
-  ][Math.min(step, 5)]
+    'The deck is on Agents.',
+    'See Claude sessions',
+    'Bring the right window forward',
+    'Open Token Deck when you log in?'
+  ][Math.min(step, 3)]
   return (
     <div className="wizard">
       <div className="card">
-        <p className="eyebrow">Setup</p>
         <h1>{copy}</h1>
-        {step === 1 && <p>Now the right knob. Click the left knob.</p>}
-        {step === 0 && snap.device.phase === 'burning' && <p>Writing the welcome screen to this deck. Keep it plugged in.</p>}
-        {step === 0 && snap.device.message.startsWith('Deck connected') && <p>Done. The deck shows this screen whenever no app is driving it.</p>}
+        {step === 0 && <DeckMap mode="agents" onMode={() => undefined} />}
+        {step === 0 && snap.device.phase === 'burning' && <p>Writing the welcome screen. Keep the deck plugged in.</p>}
+        {step === 1 && <p>This edits ~/.claude/settings.json and keeps one backup beside it.</p>}
+        {step === 2 && <p>macOS asks once, under Privacy &amp; Security, Accessibility.</p>}
         <div className="actions">
-          {step === 2 && <button className="btn accent" onClick={() => void window.tokenDeck.invoke({ method: 'connect', id: 'claude-code' })}>Install</button>}
-          {step === 3 && <button className="btn accent" onClick={() => void window.tokenDeck.invoke({ method: 'wizardAsk' })}>Ask now</button>}
-          {step === 5 && <button className="btn primary" onClick={() => void window.tokenDeck.invoke({ method: 'login', value: true })}>Start at login</button>}
-          <button className="btn ghost" onClick={next}>{step >= 5 ? 'Done' : 'Continue'}</button>
+          {step === 1 && <button className="btn accent" onClick={() => void window.tokenDeck.invoke({ method: 'connect', id: 'claude-code' })}>Let Token Deck see Claude sessions</button>}
+          {step === 2 && <button className="btn accent" onClick={() => void window.tokenDeck.invoke({ method: 'wizardAsk' })}>Allow Accessibility</button>}
+          {step === 3 && <button className="btn primary" onClick={() => void window.tokenDeck.invoke({ method: 'login', value: true })}>Start at login</button>}
+          <button className="btn ghost" onClick={next}>{step >= 3 ? 'Done' : 'Continue'}</button>
           <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'wizard', step, skip: true })}>Skip</button>
         </div>
       </div>

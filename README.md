@@ -32,11 +32,13 @@ On Windows the binary is `Token Deck.exe`.
 
 Three metal buttons select Agents, Sessions, and Models & Usage. Hold the middle button to open a custom mode. The current mode is remembered.
 
-Agents launches or focuses Claude Code, Cursor, Codex, OpenCode, Amp and Devin. Cursor, Amp and Devin are launch-only: the tile says `LAUNCH` and nothing more is claimed. The main knob cycles coding-agent windows. The left knob changes the selected agent's default model. The right knob changes its default effort.
+The deck opens on Agents. The left metal button is Agents, the middle is Sessions, the right is Models & Usage.
 
-Sessions lists live sessions, newest activity first. Press a tile to focus that window. The main knob pages. The left knob filters by agent, the right knob by status.
+Agents shows Claude Code, Cursor, Codex, OpenCode, Amp, and Devin as the same kind of key. A dim key is not installed. Press a key to go to that app. If it is not already open, the key opens it. Claude opens the desktop app when it is installed, and Terminal otherwise. The large knob moves between apps that are already open. It does not open a new one. The left knob sets the model for the next session, and the right knob sets its effort. Those two knobs only list Claude Code, Codex, and OpenCode, and only when that app is installed. One installed app does not pretend to switch. None installed says so.
 
-Models & Usage shows up to six favourite models and the provider's real quota windows. Press a tile to set that model as the default for the next session. The deck cannot change a session that is already running. Every default change says `NEXT SESSION`. Full access is applied only after you confirm it in the Token Deck window.
+Sessions lists Claude Code and Codex sessions, newest activity first, and OpenCode while `opencode serve` is running. Press a key to bring that window forward. The large knob pages. The left knob filters by installed app. The right knob filters by status.
+
+Models & Usage shows up to six favourite models and the real 5-hour and weekly limits for Claude Code and Codex. The same limits are shared across that app's model keys. Press a key to set that model for the next session. A session that is already running keeps its model. Every default change says `NEXT SESSION`. Full access is saved only after you confirm it in the Token Deck window. There is no credit balance on the deck.
 
 None of this is done with simulated keystrokes. Claude Code, Codex and OpenCode defaults are written to their own config files.
 
@@ -48,7 +50,7 @@ Context and the 5H / 7D windows come from the status line, for Pro and Max accou
 
 `model` is `opus`, `sonnet`, `haiku` or `fable`. Effort is `modelSettings.<model>.effortLevel` on Claude Code 2.1.251 and later, and the top-level `effortLevel` on older versions. Permission maps READ → `plan`, ASK → `default`, AUTO → `auto`, FULL → `bypassPermissions`. Ultracode is the boolean in `~/.claude/settings.json`.
 
-The first edit copies `~/.claude/settings.json` to `settings.json.tokendeck-backup`. Restore my settings puts that file back byte for byte.
+The first edit copies `~/.claude/settings.json` to `settings.json.tokendeck-backup`. Stop watching puts that file back byte for byte. The button is on This Mac, and only for Claude Code.
 
 Focus uses AppleScript and needs Automation (once per terminal) and Accessibility. The wizard asks on purpose. On Windows, focus is best-effort and the status line is chained only when Git Bash is present.
 
@@ -64,11 +66,11 @@ Installed on this Mac with `npm i -g opencode-ai` when that check is run. Sessio
 
 ## Custom modes
 
-JSON files in `~/.tokendeck/modes/`, reloaded when they change. Hold the middle metal button for 800 ms. With no files, that hold selects Sessions. A tile is a label, an optional PNG or SVG icon, and an action: `shell`, `url`, `open`, `keys`, or `mode`. Shell actions run in your login shell with a 10 second timeout. The example is on the Modes page and on the download site.
+JSON files in `~/.tokendeck/modes/`, reloaded when they change. Hold the middle metal button for 800 ms. With no files, that hold selects Sessions. A key is a label, an optional PNG or SVG icon, and an action: `shell`, `url`, `open`, `keys`, or `mode`. Shell actions run in your login shell with a 10 second timeout. The example is on the Deck page and on the download site.
 
 ## The welcome screen
 
-The deck stores one image in ROM: the boot background. Tiles are RAM. Token Deck writes the welcome screen once per deck, the first time a deck connects whose serial is in neither this computer's record nor `resources/preburned.json`. The Burn page can write it again after a confirmation. Quit paints the same picture into the six tiles and closes. The app never sends the vendor disconnect or sleep frames.
+The deck stores one image in ROM: the boot background. Tiles are RAM. Token Deck writes the welcome screen once per deck, the first time a deck connects whose serial is in neither this computer's record nor `resources/preburned.json`. About can write it again after a confirmation. Quit paints the same picture into the six tiles and closes. The app never sends the vendor disconnect or sleep frames.
 
 The image is welcome screen v8 (18,887 bytes, sha256 `daea022363c85ef722c9c93bcd7f5379a995b726cb5240bc4ed92b12d15071fb`). Its power-on photo and replug check were still pending when this repository was built. Do not redraw it. The bytes in `resources/` are the bytes that were burned.
 

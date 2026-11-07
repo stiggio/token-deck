@@ -1,11 +1,11 @@
-import { execFile } from 'child_process'
+import { execFile, spawn } from 'child_process'
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
 import chokidar from 'chokidar'
 import type { SettingsStore } from '../settings/store'
 import { commandVersion, which } from '../system/which'
-import { focusSession, launchInTerminal } from '../system/focus'
+import { focusSession, launchInTerminal, openApp } from '../system/focus'
 import type { AgentId, PermissionMode, SessionStatus } from '../../shared/model'
 import type { HookBody } from '../hooks/server'
 
@@ -38,6 +38,8 @@ exit 0
 
 const STATUSLINE = `#!/bin/sh
 in=$(cat)
+mkdir -p "$HOME/.tokendeck"
+printf '%s' "$in" > "$HOME/.tokendeck/last-statusline.json"
 u=$(cat "$HOME/.tokendeck/url" 2>/dev/null || true)
 if [ -n "$u" ]; then
   printf '%s' "$in" | curl -s -m 1 -o /dev/null -X POST "$u/statusline" -H 'content-type: application/json' --data-binary @- >/dev/null 2>&1 &
@@ -57,10 +59,12 @@ const HOOK_PS = `try { $u = Get-Content "$env:USERPROFILE\\.tokendeck\\url" -Err
 type ClaudeAgent = {
   cwd?: string
   kind?: string
-  startedAt?: string
+  startedAt?: string | number
+  updatedAt?: number
   sessionId?: string
   name?: string
   pid?: number
+  entrypoint?: string
   status?: string
   waitingFor?: string
   state?: string
@@ -69,12 +73,17 @@ type ClaudeAgent = {
 export class ClaudeCode {
   id = 'claude-code' as const
   bin: string | null = null
+  desktop = false
   version = ''
   signedIn = false
   plan = ''
   hooksInstalled = false
   statusChained = false
   sessions = new Map<string, LiveSession>()
+  /** Model id of the Claude Code session that was active most recently. */
+  activeModelId: string | null = null
+  private sessionSig = ''
+  private statuslineMtime = 0
   private timer: NodeJS.Timeout | null = null
   private watcher: chokidar.FSWatcher | null = null
   onChange: () => void = () => {}
@@ -99,6 +108,8 @@ export class ClaudeCode {
   }
 
   async detect(): Promise<void> {
+    const desktopApps = ['/Applications/Claude.app', path.join(os.homedir(), 'Applications/Claude.app')]
+    this.desktop = desktopApps.some((folder) => fs.existsSync(folder))
     this.bin = await which('claude')
     if (!this.bin) return
     this.version = await commandVersion(this.bin)
@@ -110,10 +121,12 @@ export class ClaudeCode {
     this.hooksInstalled = blob.includes('.tokendeck/bin/hook') || blob.includes('.tokendeck\\bin\\hook')
     const command = settings.statusLine?.command
     this.statusChained = typeof command === 'string' && command.includes('.tokendeck/bin/statusline')
+    this.refreshModelFavorites()
   }
 
   start(): void {
     if (this.timer) return
+    writeStatusline()
     void this.poll()
     this.timer = setInterval(() => void this.poll(), 2000)
     this.watcher = chokidar.watch(this.settingsPath(), { ignoreInitial: true }).on('change', () => this.onChange())
@@ -140,45 +153,58 @@ export class ClaudeCode {
   }
 
   private async poll(): Promise<void> {
-    if (!this.bin) return
-    const raw = await new Promise<string>((resolve) => {
-      execFile(this.bin!, ['agents', '--json', '--all'], { timeout: 8000, encoding: 'utf8' }, (err, stdout) => {
-        resolve(err ? '' : String(stdout || ''))
-      })
-    })
-    if (!raw) return
-    let rows: ClaudeAgent[] = []
-    try {
-      const parsed = JSON.parse(raw) as ClaudeAgent[] | { agents?: ClaudeAgent[] }
-      rows = Array.isArray(parsed) ? parsed : parsed.agents || []
-    } catch {
-      return
+    await this.refreshActiveModel()
+    this.readSavedStatusline()
+    const rows = new Map<string, ClaudeAgent>()
+    for (const row of readSessionFiles()) rows.set(row.sessionId || '', row)
+    rows.delete('')
+    for (const row of recentSessionFiles()) {
+      if (row.sessionId && !rows.has(row.sessionId)) rows.set(row.sessionId, row)
     }
-    const seen = new Set<string>()
-    for (const row of rows) {
-      const id = row.sessionId || `${row.pid || row.cwd}`
-      if (!id) continue
-      seen.add(id)
+    if (this.bin) {
+      const raw = await new Promise<string>((resolve) => {
+        execFile(this.bin!, ['agents', '--json', '--all'], { timeout: 8000, encoding: 'utf8' }, (err, stdout) => {
+          resolve(err ? '' : String(stdout || ''))
+        })
+      })
+      const parsed = parseAgents(raw)
+      if (raw && !parsed) this.log('claude agents was not JSON')
+      for (const row of parsed || []) {
+        const id = row.sessionId || ''
+        if (!id) continue
+        rows.set(id, { ...rows.get(id), ...row, sessionId: id })
+      }
+    }
+    const next = new Map<string, LiveSession>()
+    const ordered = [...rows.values()].sort((a, b) => (b.updatedAt || startedAt(b.startedAt) || 0) - (a.updatedAt || startedAt(a.startedAt) || 0))
+    for (const row of ordered) {
+      const id = row.sessionId || ''
+      if (!id || next.has(id)) continue
       const prev = this.sessions.get(id)
-      const title = (row.name || prev?.title || path.basename(row.cwd || 'session')).toUpperCase()
-      this.sessions.set(id, {
+      const desktop = row.entrypoint === 'claude-desktop' || String(row.cwd || '').includes('Application Support/Claude')
+      next.set(id, {
         id,
         agent: 'claude-code',
-        title,
+        title: (row.name || prev?.title || 'SESSION').toUpperCase(),
         cwd: row.cwd,
         status: mapStatus(row),
         context: prev?.context ?? null,
-        updatedAt: Date.parse(row.startedAt || '') || prev?.updatedAt || Date.now(),
+        updatedAt: startedAt(row.startedAt) || prev?.updatedAt || Date.now(),
         pid: row.pid,
         tty: prev?.tty,
         termProgram: prev?.termProgram,
-        entrypoint: prev?.entrypoint,
+        entrypoint: row.entrypoint || (desktop ? 'claude-desktop' : prev?.entrypoint),
         model: prev?.model
       })
     }
-    for (const id of [...this.sessions.keys()]) {
-      if (!seen.has(id) && this.sessions.get(id)?.status !== 'completed') this.sessions.delete(id)
+    for (const [id, prev] of this.sessions) {
+      if (!next.has(id) && prev.tty && Date.now() - prev.updatedAt < 20000) next.set(id, prev)
     }
+    const sig = [...next.values()].map((row) => `${row.id}:${row.status}:${row.title}`).join('|')
+    this.sessions = next
+    if (sig === this.sessionSig) return
+    this.sessionSig = sig
+    this.log(`claude sessions ${next.size}`)
     this.onChange()
   }
 
@@ -227,10 +253,10 @@ export class ClaudeCode {
     const id = String(body.session_id || '')
     const model = body.model as { id?: string; display_name?: string } | undefined
     const context = body.context_window as { used_percentage?: number | null } | undefined
-    const limits = body.rate_limits as {
-      five_hour?: { used_percentage?: number; resets_at?: number }
-      seven_day?: { used_percentage?: number; resets_at?: number }
-    }
+    const limits = (body.rate_limits || body.rateLimits) as {
+      five_hour?: { used_percentage?: number; utilization?: number; resets_at?: number; resetsAt?: number }
+      seven_day?: { used_percentage?: number; utilization?: number; resets_at?: number; resetsAt?: number }
+    } | undefined
     if (limits) {
       const now = Date.now()
       const five = windowOf(limits.five_hour)
@@ -328,9 +354,71 @@ export class ClaudeCode {
     if (fs.existsSync(backup)) fs.copyFileSync(backup, file)
   }
 
-  async setModel(model: string): Promise<void> {
+  catalogModels(): Array<{ id: string; name: string }> {
+    return readClaudeCatalog()
+  }
+
+  displayModel(): string {
+    const current = this.activeModelId || String(this.readSettings().model || '')
+    if (!current) return ''
+    const models = this.catalogModels()
+    const exact = models.find((model) => model.id === current || model.name.toLowerCase() === current.toLowerCase())
+    if (exact) return exact.name
+    const family = models.find((model) => model.id.startsWith(`claude-${current.toLowerCase()}`))
+    return family?.name || ''
+  }
+
+  private async refreshActiveModel(): Promise<void> {
+    const running = await runningClaudeModels()
+    let best: { id: string; at: number } | null = null
+    for (const row of readSessionFiles()) {
+      const id = running.get(String(row.pid || ''))
+      const at = row.updatedAt || 0
+      if (id && (!best || at > best.at)) best = { id, at }
+    }
+    if (!best) {
+      for (const id of running.values()) {
+        best = { id, at: 0 }
+        break
+      }
+    }
+    if (best?.id === this.activeModelId) return
+    this.activeModelId = best?.id || null
     const settings = this.readSettings()
-    settings.model = model.toLowerCase()
+    if (this.activeModelId && settings.model && settings.model !== this.activeModelId && ![...running.values()].includes(String(settings.model))) {
+      delete settings.model
+      this.writeSettings(settings)
+      this.log('cleared a Claude model setting that no running session uses')
+    }
+    this.onChange()
+  }
+
+  private readSavedStatusline(): void {
+    try {
+      const file = path.join(os.homedir(), '.tokendeck', 'last-statusline.json')
+      const mtime = fs.statSync(file).mtimeMs
+      if (mtime === this.statuslineMtime) return
+      this.statuslineMtime = mtime
+      this.ingestStatus(JSON.parse(fs.readFileSync(file, 'utf8')) as Record<string, unknown>)
+    } catch {
+      /* no status line has reported yet */
+    }
+  }
+
+  private refreshModelFavorites(): void {
+    const names = this.catalogModels().map((model) => model.name)
+    if (names.length < 6) return
+    const favorites = this.store.get('favorites')
+    const saved = favorites['claude-code']
+    const same = saved.length === names.length && saved.every((name) => names.includes(name))
+    if (same) return
+    this.store.set('favorites', { ...favorites, 'claude-code': names })
+  }
+
+  async setModel(model: string): Promise<void> {
+    const row = this.catalogModels().find((item) => item.id === model || item.name.toLowerCase() === model.toLowerCase())
+    const settings = this.readSettings()
+    settings.model = row?.id || model
     this.writeSettings(settings)
   }
 
@@ -371,12 +459,27 @@ export class ClaudeCode {
   }
 
   async launch(): Promise<void> {
-    await launchInTerminal('claude')
+    if (this.bin && this.desktop) {
+      const where = await openClaude(this.bin, ['--desktop'])
+      if (where === 'already') await openApp('Claude')
+      return
+    }
+    if (this.bin) {
+      await launchInTerminal(this.bin)
+      return
+    }
+    if (this.desktop) await openApp('Claude')
   }
 
   async focus(session: LiveSession): Promise<void> {
+    const desktopSession = session.entrypoint === 'claude-desktop' || (!session.tty && !session.termProgram && this.desktop)
+    if (desktopSession && this.bin && session.id) {
+      const where = await openClaude(this.bin, ['--desktop', '--resume', session.id])
+      if (where === 'already') await openApp('Claude')
+      return
+    }
     await focusSession({
-      termProgram: session.entrypoint === 'claude-desktop' ? 'claude-desktop' : session.termProgram,
+      termProgram: session.termProgram,
       tty: session.tty,
       cwd: session.cwd,
       sessionId: session.id
@@ -402,6 +505,123 @@ export class ClaudeCode {
   }
 }
 
+function readSessionFiles(): ClaudeAgent[] {
+  const dir = path.join(os.homedir(), '.claude', 'sessions')
+  let names: string[] = []
+  try {
+    names = fs.readdirSync(dir)
+  } catch {
+    return []
+  }
+  const rows: ClaudeAgent[] = []
+  for (const name of names) {
+    if (!name.endsWith('.json')) continue
+    try {
+      const row = JSON.parse(fs.readFileSync(path.join(dir, name), 'utf8')) as ClaudeAgent
+      if (row.sessionId) rows.push(row)
+    } catch {
+      /* a live session file can be mid-write */
+    }
+  }
+  return rows
+}
+
+function recentSessionFiles(): ClaudeAgent[] {
+  const root = path.join(os.homedir(), '.claude', 'projects')
+  let projects: string[] = []
+  try {
+    projects = fs.readdirSync(root)
+  } catch {
+    return []
+  }
+  const found: Array<{ mtime: number; id: string; dir: string; project: string }> = []
+  for (const project of projects) {
+    const dir = path.join(root, project)
+    let names: string[] = []
+    try {
+      names = fs.readdirSync(dir)
+    } catch {
+      continue
+    }
+    for (const name of names) {
+      if (!name.endsWith('.jsonl')) continue
+      try {
+        const stat = fs.statSync(path.join(dir, name))
+        if (stat.size < 32) continue
+        found.push({ mtime: stat.mtimeMs, id: name.slice(0, -6), dir, project })
+      } catch {
+        /* gone */
+      }
+    }
+  }
+  found.sort((a, b) => b.mtime - a.mtime)
+  return found.slice(0, 12).map((row) => ({
+    sessionId: row.id,
+    name: customTitle(row.dir, row.id) || 'SESSION',
+    status: 'idle',
+    startedAt: row.mtime,
+    updatedAt: row.mtime
+  }))
+}
+
+function customTitle(dir: string, id: string): string {
+  try {
+    const parsed = JSON.parse(fs.readFileSync(path.join(dir, id, 'custom-title.json'), 'utf8')) as { customTitle?: string }
+    return parsed.customTitle || ''
+  } catch {
+    return ''
+  }
+}
+
+function parseAgents(raw: string): ClaudeAgent[] | null {
+  if (!raw.trim()) return []
+  try {
+    const parsed = JSON.parse(raw) as ClaudeAgent[] | { agents?: ClaudeAgent[] }
+    return Array.isArray(parsed) ? parsed : parsed.agents || []
+  } catch {
+    return null
+  }
+}
+
+function startedAt(value: ClaudeAgent['startedAt']): number {
+  if (typeof value === 'number') return value
+  const parsed = Date.parse(value || '')
+  return Number.isNaN(parsed) ? 0 : parsed
+}
+
+/**
+ * `claude --desktop` refuses a redirected stdout, so it runs under `script`, which gives it a tty.
+ * A session that is already open returns `already` and the caller brings Claude forward.
+ */
+function openClaude(bin: string, args: string[]): Promise<'opened' | 'already'> {
+  return new Promise((resolve, reject) => {
+    const child = spawn('/usr/bin/script', ['-q', '/dev/null', bin, ...args], { detached: true, stdio: ['ignore', 'pipe', 'pipe'] })
+    let text = ''
+    let settled = false
+    const done = (error?: Error, result: 'opened' | 'already' = 'opened') => {
+      if (settled) return
+      settled = true
+      clearTimeout(timer)
+      child.unref()
+      if (error) reject(error)
+      else resolve(result)
+    }
+    const take = (chunk: Buffer | string) => {
+      text += String(chunk)
+      if (/another terminal|already open|can't run non-interactively/i.test(text) && /another terminal|already open/i.test(text)) done(undefined, 'already')
+    }
+    const timer = setTimeout(() => done(), 1800)
+    child.stdout?.on('data', take)
+    child.stderr?.on('data', take)
+    child.on('error', (error) => done(error))
+    child.on('exit', (code) => {
+      if (/another terminal|already open/i.test(text)) done(undefined, 'already')
+      else if (code && code !== 0) done(new Error(text.trim() || `claude exited ${code}`))
+      else done()
+    })
+  })
+}
+
 function mapStatus(row: ClaudeAgent): SessionStatus {
   if (row.status === 'busy') return 'working'
   if (row.status === 'waiting' && String(row.waitingFor || '').includes('permission')) return 'needs-approval'
@@ -410,10 +630,37 @@ function mapStatus(row: ClaudeAgent): SessionStatus {
   return 'idle'
 }
 
-function windowOf(row?: { used_percentage?: number; resets_at?: number }): { pct: number; resetsAt?: number } | undefined {
-  if (!row || typeof row.used_percentage !== 'number') return undefined
-  if (row.resets_at && row.resets_at * 1000 < Date.now()) return undefined
-  return { pct: row.used_percentage, resetsAt: row.resets_at }
+function windowOf(row?: { used_percentage?: number; utilization?: number; resets_at?: number; resetsAt?: number }): { pct: number; resetsAt?: number } | undefined {
+  if (!row) return undefined
+  let pct = row.used_percentage
+  if (typeof pct !== 'number' && typeof row.utilization === 'number') pct = row.utilization <= 1 ? row.utilization * 100 : row.utilization
+  if (typeof pct !== 'number') return undefined
+  const resetsAt = row.resets_at || row.resetsAt
+  if (resetsAt && resetsAt * 1000 < Date.now()) return undefined
+  return { pct, resetsAt }
+}
+
+function writeStatusline(): void {
+  const file = path.join(os.homedir(), '.tokendeck', 'bin', 'statusline')
+  fs.mkdirSync(path.dirname(file), { recursive: true })
+  fs.writeFileSync(file, STATUSLINE, { mode: 0o755 })
+}
+
+function runningClaudeModels(): Promise<Map<string, string>> {
+  return new Promise((resolve) => {
+    execFile('ps', ['-ax', '-o', 'pid=,command='], { timeout: 4000, encoding: 'utf8', maxBuffer: 4_000_000 }, (err, stdout) => {
+      const found = new Map<string, string>()
+      if (err) return resolve(found)
+      for (const line of String(stdout).split('\n')) {
+        if (!line.includes('--model=')) continue
+        if (!line.includes('claude')) continue
+        const pid = line.trim().split(/\s+/)[0]
+        const model = line.split('--model=')[1]?.split(/\s+/)[0]
+        if (pid && model) found.set(pid, model)
+      }
+      resolve(found)
+    })
+  })
 }
 
 function versionAtLeast(version: string, min: string): boolean {
@@ -439,3 +686,27 @@ function canonicalModel(alias: string): string {
 
 export const CLAUDE_EFFORTS = ['low', 'medium', 'high', 'xhigh']
 export const CLAUDE_MODELS = ['opus', 'sonnet', 'haiku', 'fable']
+
+function readClaudeCatalog(): Array<{ id: string; name: string }> {
+  const dir = path.join(os.homedir(), '.claude', 'cache', 'model-catalog')
+  let files: string[] = []
+  try {
+    files = fs.readdirSync(dir).filter((name) => name.endsWith('.json')).map((name) => path.join(dir, name))
+  } catch {
+    return []
+  }
+  files.sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs)
+  for (const file of files) {
+    try {
+      const parsed = JSON.parse(fs.readFileSync(file, 'utf8')) as { catalog?: { config?: { models?: Array<{ id?: string; name?: string }> } } }
+      const rows = parsed.catalog?.config?.models || []
+      const models = rows
+        .map((row) => ({ id: String(row.id || ''), name: String(row.name || '') }))
+        .filter((row) => row.id && row.name)
+      if (models.length) return models.slice(0, 6)
+    } catch {
+      /* try the next catalog file */
+    }
+  }
+  return []
+}

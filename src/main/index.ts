@@ -98,6 +98,7 @@ async function start(): Promise<void> {
   let quitting = false
   let shutdownCap = 3000
   let wizardOpen = !store.get('wizardDone')
+  let usageOpen = false
   const transport = new DeckTransport()
   transport.brightness = store.get('brightness')
   transport.keepalive = store.get('repaintKeepalive')
@@ -145,7 +146,16 @@ async function start(): Promise<void> {
       return result.response === 1
     }
   )
-  controller.onConnect = () => openWindow()
+  controller.onConnect = () => {
+    if (!store.get('wizardDone')) wizardOpen = true
+    openWindow()
+    broadcast()
+  }
+  controller.onUsage = () => {
+    usageOpen = true
+    openWindow()
+    broadcast()
+  }
   transport.onInput = (event) => void controller.handle(event)
   transport.onState = () => {
     void controller.render(true)
@@ -170,6 +180,7 @@ async function start(): Promise<void> {
   function openWindow(): void {
     if (window && !window.isDestroyed()) {
       window.show()
+      window.focus()
       return
     }
     window = new BrowserWindow({
@@ -218,8 +229,8 @@ async function start(): Promise<void> {
       autoBurn: store.get('autoBurn'),
       startAtLogin: store.get('startAtLogin'),
       agents: [
-        row('claude-code', !!claude.bin, claude.signedIn, claude.hooksInstalled, claude.statusChained, true, claude.version),
-        row('codex', !!codex.bin, codex.signedIn, false, false, !!codex.bin, codex.signedIn ? 'app-server' : 'TUI visibility not checked this launch'),
+        row('claude-code', !!claude.bin || claude.desktop, claude.signedIn, claude.hooksInstalled, claude.statusChained, true, claude.bin ? 'Claude Code' : claude.desktop ? 'Desktop app' : ''),
+        row('codex', !!codex.bin, codex.signedIn, false, false, !!codex.bin, ''),
         row('opencode', !!opencode.bin, false, false, false, opencode.reachable, opencode.version),
         row('cursor', launch.cursor.installed, false, false, false, false, ''),
         row('amp', launch.amp.installed, false, false, false, false, ''),
@@ -239,7 +250,9 @@ async function start(): Promise<void> {
       accessibility: accessibilityTrusted(false),
       updateVersion,
       log: log.tail(),
-      modelNamesUpper: store.get('modelNamesUpper')
+      modelNamesUpper: store.get('modelNamesUpper'),
+      allowance: controller.allowance(),
+      usageOpen
     }
   }
 
@@ -323,10 +336,11 @@ async function start(): Promise<void> {
     } else if (call.method === 'checkUpdates') await checkUpdates(true)
     else if (call.method === 'updateNow') await installUpdate()
     else if (call.method === 'showLog') await shell.openPath(log.file)
+    else if (call.method === 'usageClose') usageOpen = false
     else if (call.method === 'wizard') {
-      if (call.skip) store.set('wizardStep', Math.min(6, call.step + 1))
+      if (call.skip) store.set('wizardStep', Math.min(4, call.step + 1))
       else store.set('wizardStep', call.step)
-      if (store.get('wizardStep') >= 6) {
+      if (store.get('wizardStep') >= 4) {
         store.set('wizardDone', true)
         wizardOpen = false
       }

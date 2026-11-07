@@ -46,7 +46,12 @@ export const OVERLAY_GROUPS = [
   'OPUS',
   'HAIKU',
   'FABLE',
-  'CONNECT'
+  'CONNECT',
+  'ONLY',
+  'NONE',
+  'INSTALLED',
+  'NOTHING',
+  'OPEN'
 ] as const
 
 export function splitGroups(message: string): string[] {

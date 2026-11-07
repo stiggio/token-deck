@@ -2,8 +2,9 @@ import type { DeckEvent } from '../deck/protocol'
 import type { SettingsStore } from '../settings/store'
 import { renderTile } from '../deck/render'
 import { demoAgents, demoModelTiles, demoSessions } from '../deck/demo'
+import type { UsageAllowance } from '../../shared/ipc'
 import type { AgentId, DeckMode, ModelPaint, PermissionMode, TileSpec } from '../../shared/model'
-import { AGENT_ORDER, LAUNCH_ONLY } from '../../shared/model'
+import { AGENT_ORDER } from '../../shared/model'
 import { effortLabel, fitOverlayGroup, splitGroups } from '../../shared/overlays'
 import type { ClaudeCode, LiveSession } from '../integrations/claude-code'
 import { CLAUDE_EFFORTS, CLAUDE_MODELS } from '../integrations/claude-code'
@@ -11,7 +12,7 @@ import type { CodexIntegration } from '../integrations/codex'
 import type { OpenCodeIntegration } from '../integrations/opencode'
 import type { LaunchOnly } from '../integrations/launch'
 import { loadModes, runAction, type CustomMode } from './custom'
-import { focusSession } from '../system/focus'
+import { raiseBundle, runningBundles } from '../system/focus'
 
 const PERMS: PermissionMode[] = ['READ', 'ASK', 'AUTO', 'FULL']
 
@@ -46,7 +47,13 @@ export class Controller {
     private readonly log: (line: string) => void,
     private readonly confirmFull: () => Promise<boolean>
   ) {
-    this.mode = anyConnected(claude, codex, opencode) ? store.get('mode') : 'idle'
+    const saved = store.get('mode')
+    this.mode = saved === 'sessions' || saved === 'models' ? saved : 'agents'
+    const installed = this.readableInstalled()
+    if (installed.length === 1) {
+      this.selectedAgent = installed[0]!
+      this.agentFilter = installed[0]!
+    } else if (installed.length && !installed.includes(this.selectedAgent)) this.selectedAgent = installed[0]!
   }
 
   modes(): CustomMode[] {
@@ -117,7 +124,9 @@ export class Controller {
 
   private async key(key: number): Promise<void> {
     if (this.mode === 'idle') {
-      if (key === 4) this.onConnect?.()
+      this.mode = 'agents'
+      this.onConnect?.()
+      await this.render(true)
       return
     }
     if (this.picker) {
@@ -138,16 +147,29 @@ export class Controller {
     }
     if (this.mode === 'agents') {
       const agent = AGENT_ORDER[key - 1]!
-      if (LAUNCH_ONLY.has(agent)) {
-        await this.launch[agent as 'cursor' | 'amp' | 'devin'].launch()
-        return
-      }
+      if (this.readableInstalled().includes(agent)) this.selectedAgent = agent
       const session = this.latest(agent)
       if (session) {
         this.selectedId = session.id
-        this.selectedAgent = agent
         await this.focus(session)
-      } else await this.launchAgent(agent)
+        return
+      }
+      if (agent !== 'claude-code' && (await this.appIsOpen(agent))) {
+        const bundle = bundleFor(agent)
+        if (bundle) {
+          try {
+            await raiseBundle(bundle)
+          } catch {
+            this.flash(['FAILED'])
+          }
+        }
+        return
+      }
+      if (!this.installed(agent)) {
+        this.flash(['NOT', 'INSTALLED'])
+        return
+      }
+      await this.launchAgent(agent)
       return
     }
     if (this.mode === 'sessions') {
@@ -159,13 +181,22 @@ export class Controller {
       return
     }
     if (this.mode === 'models') {
-      const model = this.modelTiles()[key - 1]
-      if (!model || model.kind !== 'model' || !model.model) return
-      await this.applyModel(model.model.name)
+      const tile = this.modelTiles()[key - 1]
+      if (tile?.kind === 'usage') {
+        const allowance = this.allowance()
+        const five = allowance.fiveHour === null ? '--' : `${Math.round(allowance.fiveHour)}%`
+        const seven = allowance.sevenDay === null ? '--' : `${Math.round(allowance.sevenDay)}%`
+        this.flash(allowance.known ? [`${allowance.fiveLabel} ${five}`, `${allowance.sevenLabel} ${seven}`] : ['NO', 'READING'])
+        this.onUsage?.()
+        return
+      }
+      if (!tile || tile.kind !== 'model' || !tile.model) return
+      await this.applyModel(tile.model.name)
     }
   }
 
   onConnect: (() => void) | null = null
+  onUsage: (() => void) | null = null
 
   private async knob(which: 'main' | 'left' | 'right', action: 'cw' | 'ccw' | 'click'): Promise<void> {
     if (this.mode === 'custom' && this.custom) {
@@ -183,59 +214,78 @@ export class Controller {
 
   private async agentKnob(which: 'main' | 'left' | 'right', action: 'cw' | 'ccw' | 'click'): Promise<void> {
     if (which === 'main') {
-      const bundles = ['com.apple.Terminal', 'com.googlecode.iterm2', 'com.todesktop.230313mzl4w4u92', 'com.microsoft.VSCode', 'com.openai.codex', 'com.anthropic.claudefordesktop']
-      if (action === 'click') this.windowIndex = Math.max(0, this.windowIndex - 1)
+      const open = await this.openTargets()
+      if (open.length === 0) {
+        this.flash(['NOTHING', 'OPEN'])
+        return
+      }
+      if (action === 'click') this.windowIndex -= 1
       else this.windowIndex += action === 'cw' ? 1 : -1
+      const index = wrap(this.windowIndex, open.length)
+      this.windowIndex = index
+      const target = open[index]!
       try {
-        await focusSession({ bundleId: bundles[Math.abs(this.windowIndex) % bundles.length] })
+        if (target.session) await this.focus(target.session)
+        else if (target.bundleId) await raiseBundle(target.bundleId)
       } catch {
         this.flash(['FAILED'])
       }
       return
     }
-    const session = this.selected()
-    if (!session && which !== 'left') {
-      this.flash(['NO SESSION'])
+    const agent = this.configAgent()
+    if (!agent) {
+      this.flash(['NONE', 'INSTALLED'])
       return
     }
-    const agent = session?.agent || this.selectedAgent
     if (which === 'left') {
-      if (!this.supports(agent).model) return this.flash(['NOT', 'AVAILABLE'])
       const models = this.modelsFor(agent)
+      if (!models.length) return this.flash(['NOT', 'AVAILABLE'])
       if (action === 'click') {
-        await this.claude.clearModel()
+        if (agent === 'claude-code') await this.claude.clearModel()
         this.flash(['NEXT', 'SESSION'])
         return
       }
       this.modelIndex = wrap(this.modelIndex + (action === 'cw' ? 1 : -1), models.length)
-      await this.applyModel(models[this.modelIndex] || models[0] || 'Sonnet')
+      this.selectedAgent = agent
+      await this.applyModel(models[this.modelIndex] || models[0]!)
       return
     }
-    if (!this.supports(agent).effort) return this.flash(['NOT', 'AVAILABLE'])
     const levels = this.effortsFor(agent)
-    this.effortIndex = wrap(this.effortIndex + (action === 'cw' ? 1 : -1), levels.length)
+    if (!levels.length) return this.flash(['NOT', 'AVAILABLE'])
+    this.effortIndex = wrap(this.effortIndex + (action === 'cw' ? 1 : action === 'ccw' ? -1 : 0), levels.length)
     if (action === 'click') this.effortIndex = 0
-    await this.applyEffort(levels[this.effortIndex] || 'high')
+    this.selectedAgent = agent
+    await this.applyEffort(levels[this.effortIndex] || levels[0]!)
   }
 
   private async sessionKnob(which: 'main' | 'left' | 'right', action: 'cw' | 'ccw' | 'click'): Promise<void> {
     const rows = this.sessions()
     if (which === 'main') {
+      const last = Math.max(0, Math.ceil(rows.length / 6) - 1)
       if (action === 'click') {
         const next = rows.find((row) => row.status === 'needs-approval' || row.status === 'needs-input')
         this.page = next ? Math.floor(rows.indexOf(next) / 6) : 0
-      } else this.page = Math.max(0, this.page + (action === 'cw' ? 1 : -1))
+      } else this.page = Math.min(last, Math.max(0, this.page + (action === 'cw' ? 1 : -1)))
       await this.render(true)
       return
     }
     if (action === 'click') {
-      if (which === 'left') this.agentFilter = 'all'
-      else this.statusFilter = 'ALL'
+      if (which === 'left') {
+        const installed = this.readableInstalled()
+        if (installed.length === 0) {
+          this.flash(['NONE', 'INSTALLED'])
+          return
+        }
+        if (installed.length === 1) {
+          this.agentFilter = installed[0]!
+          this.flash(['ONLY', shortAgent(installed[0]!)])
+          return
+        }
+        this.agentFilter = 'all'
+        this.flash(['ALL'])
+      } else this.statusFilter = 'ALL'
     } else if (which === 'left') {
-      const order: Array<AgentId | 'all'> = ['all', ...AGENT_ORDER]
-      const index = order.indexOf(this.agentFilter)
-      this.agentFilter = order[wrap(index + (action === 'cw' ? 1 : -1), order.length)]!
-      this.flash(this.agentFilter === 'all' ? ['ALL'] : splitGroups(agentGroup(this.agentFilter)))
+      if (!this.turnInstalledAgent(action)) return
     } else {
       const order = ['ALL', 'WORKING', 'NEEDS YOU', 'IDLE', 'DONE']
       const index = order.indexOf(this.statusFilter)
@@ -248,25 +298,23 @@ export class Controller {
 
   private async modelKnob(which: 'main' | 'left' | 'right', action: 'cw' | 'ccw' | 'click'): Promise<void> {
     if (which === 'left') {
-      const order: AgentId[] = ['claude-code', 'codex', 'opencode']
-      if (action === 'click') this.selectedAgent = this.selected()?.agent || 'claude-code'
-      else {
-        const index = order.indexOf(this.selectedAgent)
-        this.selectedAgent = order[wrap(index + (action === 'cw' ? 1 : -1), order.length)]!
-      }
+      if (action === 'click') {
+        const fromSession = this.selected()?.agent
+        if (fromSession && this.readableInstalled().includes(fromSession)) this.selectedAgent = fromSession
+      } else if (!this.turnInstalledAgent(action)) return
       this.flash(splitGroups(agentGroup(this.selectedAgent)))
       await this.render(true)
       return
     }
     if (which === 'main') {
       if (action === 'click') {
-        if (this.selectedAgent !== 'claude-code') return this.flash(['NOT', 'AVAILABLE'])
+        if (this.configAgent() !== 'claude-code') return this.flash(['NOT', 'AVAILABLE'])
         this.ultracodeOn = !this.ultracodeOn
         await this.claude.setUltracode(this.ultracodeOn)
         this.flash(['ULTRACODE', this.ultracodeOn ? 'ON' : 'OFF'])
         return
       }
-      const levels = this.effortsFor(this.selectedAgent)
+      const levels = this.effortsFor(this.configAgent() || this.selectedAgent)
       if (!levels.length) return this.flash(['NOT', 'AVAILABLE'])
       this.effortIndex = wrap(this.effortIndex + (action === 'cw' ? 1 : -1), levels.length)
       await this.applyEffort(levels[this.effortIndex]!)
@@ -289,7 +337,11 @@ export class Controller {
   }
 
   private async applyModel(name: string): Promise<void> {
-    const agent = this.mode === 'agents' ? this.selected()?.agent || this.selectedAgent : this.selectedAgent
+    const agent = this.configAgent()
+    if (!agent) {
+      this.flash(['NONE', 'INSTALLED'])
+      return
+    }
     try {
       if (agent === 'claude-code') await this.claude.setModel(name)
       else if (agent === 'codex') await this.codex.setModel(name)
@@ -302,9 +354,18 @@ export class Controller {
   }
 
   private async applyEffort(level: string): Promise<void> {
+    const agent = this.configAgent()
+    if (!agent) {
+      this.flash(['NONE', 'INSTALLED'])
+      return
+    }
     try {
-      if (this.selectedAgent === 'codex' || this.selected()?.agent === 'codex') await this.codex.setEffort(level)
-      else await this.claude.setEffort(level)
+      if (agent === 'codex') await this.codex.setEffort(level)
+      else if (agent === 'claude-code') await this.claude.setEffort(level)
+      else {
+        this.flash(['NOT', 'AVAILABLE'])
+        return
+      }
       this.flash([effortLabel(level), 'EFFORT'])
     } catch {
       this.flash(['NOT', 'AVAILABLE'])
@@ -388,11 +449,14 @@ export class Controller {
         kind: 'agents' as const,
         agent,
         active: this.count(agent),
-        installed: agent === 'devin' ? true : LAUNCH_ONLY.has(agent) ? this.launch[agent as 'cursor' | 'amp' | 'devin'].installed : this.installed(agent)
+        installed: this.installed(agent)
       }))
     }
     if (this.mode === 'sessions') {
-      const rows = this.sessions().slice(this.page * 6, this.page * 6 + 6)
+      const all = this.sessions()
+      const last = Math.max(0, Math.ceil(all.length / 6) - 1)
+      if (this.page > last) this.page = last
+      const rows = all.slice(this.page * 6, this.page * 6 + 6)
       return [0, 1, 2, 3, 4, 5].map((index) => {
         const row = rows[index]
         return row
@@ -403,42 +467,75 @@ export class Controller {
     return this.modelTiles()
   }
 
-  private modelTiles(): TileSpec[] {
-    const agent = this.selectedAgent
-    const names = this.store.get('favorites')[agent === 'claude-code' ? 'claude-code' : agent === 'codex' ? 'codex' : 'opencode'] || []
-    const usage = this.store.get('usage')[agent]
-    const stale = !usage || Date.now() - usage.at > 10 * 60 * 1000
+  allowance(): UsageAllowance {
+    const agent = this.configAgent()
+    const usage = agent ? this.store.get('usage')[agent] : undefined
     const expired = !usage || Date.now() - usage.at > 24 * 60 * 60 * 1000
+    return {
+      agent: agent === 'codex' ? 'Codex' : agent === 'opencode' ? 'OpenCode' : 'Claude Code',
+      fiveHour: !usage || expired ? null : usage.five?.pct ?? null,
+      sevenDay: !usage || expired ? null : usage.seven?.pct ?? null,
+      fiveLabel: usage?.labels?.five || '5H',
+      sevenLabel: usage?.labels?.seven || '7D',
+      fiveResets: usage?.five?.resetsAt ?? null,
+      sevenResets: usage?.seven?.resetsAt ?? null,
+      known: !!usage && !expired && (usage.five?.pct != null || usage.seven?.pct != null)
+    }
+  }
+
+  private modelTiles(): TileSpec[] {
+    const agent = this.configAgent()
+    const allowance = this.allowance()
+    const usage: TileSpec = {
+      kind: 'usage',
+      agent: allowance.agent === 'Claude Code' ? 'CLAUDE' : allowance.agent === 'OpenCode' ? 'OPENCODE' : 'CODEX',
+      fiveHour: agent === 'opencode' ? null : allowance.fiveHour,
+      sevenDay: agent === 'opencode' ? null : allowance.sevenDay,
+      fiveLabel: allowance.fiveLabel,
+      sevenLabel: allowance.sevenLabel
+    }
+    if (!agent) return [usage, ...[0, 1, 2, 3, 4].map(() => ({ kind: 'model' as const, model: null }))]
+    const names = this.modelNames(agent).slice(0, 5)
     const current = this.currentModelName(agent)
-    return [0, 1, 2, 3, 4, 5].map((index) => {
+    const models = [0, 1, 2, 3, 4].map((index) => {
       const name = names[index]
-      if (!name) return { kind: 'model', model: null }
-      if (agent === 'opencode') {
-        return { kind: 'model', model: { name, current: name === current, fiveHour: null, sevenDay: null, fiveLabel: '5H', sevenLabel: '7D', shared: false, noQuota: true, stale: false } }
-      }
+      if (!name) return { kind: 'model' as const, model: null }
       const model: ModelPaint = {
         name: this.store.get('modelNamesUpper') ? name.toUpperCase() : name,
         current: name.toLowerCase() === current.toLowerCase(),
-        fiveHour: expired ? null : usage?.five?.pct ?? null,
-        sevenDay: expired ? null : usage?.seven?.pct ?? null,
-        fiveLabel: usage?.labels?.five || '5H',
-        sevenLabel: usage?.labels?.seven || '7D',
-        shared: true,
-        noQuota: false,
-        stale: stale && !expired
+        fiveHour: null,
+        sevenDay: null,
+        fiveLabel: '5H',
+        sevenLabel: '7D',
+        shared: false,
+        noQuota: agent === 'opencode',
+        stale: false
       }
-      return { kind: 'model', model }
+      return { kind: 'model' as const, model }
     })
+    return [usage, ...models]
+  }
+
+  private modelNames(agent: AgentId): string[] {
+    const key = agent === 'claude-code' ? 'claude-code' : agent === 'codex' ? 'codex' : 'opencode'
+    const saved = this.store.get('favorites')[key] || []
+    if (saved.length) return saved.slice(0, 6)
+    if (agent === 'codex') return this.codex.models.slice(0, 6).map((model) => model.name)
+    if (agent === 'opencode') return this.opencode.models.slice(0, 6)
+    return []
   }
 
   private currentModelName(agent: AgentId): string {
-    if (agent === 'claude-code') return this.claude.readModel() || 'opus'
-    if (agent === 'codex') return this.codex.models.find((model) => model.isDefault)?.name || this.codex.models[0]?.name || ''
+    if (agent === 'claude-code') return this.claude.displayModel()
+    if (agent === 'codex') return this.codex.currentName()
     return this.opencode.models[0] || ''
   }
 
   private modelsFor(agent: AgentId): string[] {
-    if (agent === 'claude-code') return CLAUDE_MODELS.map((name) => name[0]!.toUpperCase() + name.slice(1))
+    if (agent === 'claude-code') {
+      const names = this.modelNames(agent)
+      return names.length ? names : CLAUDE_MODELS.map((name) => name[0]!.toUpperCase() + name.slice(1))
+    }
     if (agent === 'codex') return this.codex.models.map((model) => model.name)
     return this.opencode.models
   }
@@ -452,13 +549,6 @@ export class Controller {
     return CLAUDE_EFFORTS
   }
 
-  private supports(agent: AgentId) {
-    if (agent === 'claude-code') return this.claude.capabilities()
-    if (agent === 'codex') return this.codex.capabilities()
-    if (agent === 'opencode') return this.opencode.capabilities()
-    return this.launch.cursor.capabilities()
-  }
-
   private count(agent: AgentId): number {
     if (agent === 'claude-code') return [...this.claude.sessions.values()].filter((row) => row.status === 'working').length
     if (agent === 'codex') return [...this.codex.sessions.values()].filter((row) => row.status === 'working').length
@@ -467,10 +557,77 @@ export class Controller {
   }
 
   private installed(agent: AgentId): boolean {
-    if (agent === 'claude-code') return !!this.claude.bin
+    if (agent === 'claude-code') return !!this.claude.bin || this.claude.desktop
     if (agent === 'codex') return !!this.codex.bin
     if (agent === 'opencode') return !!this.opencode.bin
+    if (agent === 'devin') return true
+    return this.launch[agent as 'cursor' | 'amp'].installed
+  }
+
+  /** Agents whose sessions or model settings Token Deck can read. */
+  private readableInstalled(): AgentId[] {
+    return (['claude-code', 'codex', 'opencode'] as const).filter((agent) => this.installed(agent))
+  }
+
+  private configAgent(): AgentId | null {
+    const installed = this.readableInstalled()
+    if (installed.includes(this.selectedAgent)) return this.selectedAgent
+    return installed[0] || null
+  }
+
+  /** Left-knob agent list. One installed agent does not pretend to switch. */
+  private turnInstalledAgent(action: 'cw' | 'ccw' | 'click'): boolean {
+    const installed = this.readableInstalled()
+    if (installed.length === 0) {
+      this.flash(['NONE', 'INSTALLED'])
+      return false
+    }
+    if (installed.length === 1) {
+      this.selectedAgent = installed[0]!
+      this.agentFilter = installed[0]!
+      this.flash(['ONLY', shortAgent(installed[0]!)])
+      return false
+    }
+    const order: Array<AgentId | 'all'> = this.mode === 'sessions' ? ['all', ...installed] : installed
+    const current = this.mode === 'sessions' ? this.agentFilter : this.selectedAgent
+    const index = Math.max(0, order.indexOf(current as AgentId | 'all'))
+    const next = order[wrap(index + (action === 'cw' ? 1 : -1), order.length)]!
+    if (this.mode === 'sessions') this.agentFilter = next
+    else if (next !== 'all') this.selectedAgent = next
+    this.flash(next === 'all' ? ['ALL'] : splitGroups(agentGroup(next)))
     return true
+  }
+
+  private async appIsOpen(agent: AgentId): Promise<boolean> {
+    const bundle = bundleFor(agent)
+    if (!bundle) return false
+    const running = await runningBundles([bundle])
+    return running.includes(bundle)
+  }
+
+  private async openTargets(): Promise<Array<{ session?: LiveSession; bundleId?: string }>> {
+    const pairs: Array<[string, AgentId]> = [
+      ['com.anthropic.claudefordesktop', 'claude-code'],
+      ['com.todesktop.230313mzl4w4u92', 'cursor'],
+      ['com.openai.codex', 'codex']
+    ]
+    if (this.launch.amp.installed) pairs.push(['com.microsoft.VSCode', 'amp'])
+    const running = new Set(await runningBundles(pairs.map(([id]) => id)))
+    const targets: Array<{ session?: LiveSession; bundleId?: string }> = []
+    const seen = new Set<AgentId>()
+    for (const [id, agent] of pairs) {
+      if (!running.has(id)) continue
+      const session = this.latest(agent)
+      if (session) targets.push({ session })
+      else targets.push({ bundleId: id })
+      seen.add(agent)
+    }
+    for (const agent of ['claude-code', 'codex', 'opencode'] as const) {
+      if (seen.has(agent)) continue
+      const session = this.latest(agent)
+      if (session) targets.push({ session })
+    }
+    return targets
   }
 
   private latest(agent: AgentId): LiveSession | undefined {
@@ -490,7 +647,8 @@ export class Controller {
       else await this.opencode.focus(session)
     } catch (err) {
       this.log(`focus ${err}`)
-      this.flash(['FAILED'])
+      if (session.agent === 'claude-code') await this.claude.launch()
+      else this.flash(['FAILED'])
     }
   }
 
@@ -498,6 +656,7 @@ export class Controller {
     if (agent === 'claude-code') await this.claude.launch()
     else if (agent === 'codex') await this.codex.launch()
     else if (agent === 'opencode') await this.opencode.launch()
+    else await this.launch[agent].launch()
   }
 }
 
@@ -506,16 +665,26 @@ function wrap(index: number, length: number): number {
   return ((index % length) + length) % length
 }
 
-function anyConnected(claude: ClaudeCode, codex: CodexIntegration, opencode: OpenCodeIntegration): boolean {
-  return claude.hooksInstalled || codex.signedIn || opencode.reachable
-}
-
 function statusGroup(status: LiveSession['status']): string {
   if (status === 'working') return 'WORKING'
   if (status === 'needs-approval' || status === 'needs-input') return 'NEEDS YOU'
   if (status === 'completed') return 'DONE'
   if (status === 'idle') return 'IDLE'
   return 'ALL'
+}
+
+function shortAgent(agent: AgentId): string {
+  if (agent === 'claude-code') return 'CLAUDE'
+  if (agent === 'opencode') return 'OPENCODE'
+  return agent.toUpperCase()
+}
+
+function bundleFor(agent: AgentId): string | undefined {
+  if (agent === 'claude-code') return 'com.anthropic.claudefordesktop'
+  if (agent === 'cursor') return 'com.todesktop.230313mzl4w4u92'
+  if (agent === 'amp') return 'com.microsoft.VSCode'
+  if (agent === 'codex') return 'com.openai.codex'
+  return undefined
 }
 
 function agentGroup(agent: AgentId): string {

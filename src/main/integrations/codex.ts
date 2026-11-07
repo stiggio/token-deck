@@ -18,6 +18,7 @@ export class CodexIntegration {
   sessions = new Map<string, LiveSession>()
   models: Array<{ id: string; name: string; efforts: string[]; defaultEffort?: string; isDefault?: boolean }> = []
   private child: ChildProcessWithoutNullStreams | null = null
+  private limitsTimer: NodeJS.Timeout | null = null
   private nextId = 1
   private pending = new Map<number, (msg: Rpc) => void>()
   onChange: () => void = () => {}
@@ -30,6 +31,8 @@ export class CodexIntegration {
 
   async detect(): Promise<void> {
     this.bin = await which('codex')
+    if (!this.loadPicker()) this.loadCache()
+    this.seedFavorites()
   }
 
   async start(): Promise<void> {
@@ -57,11 +60,23 @@ export class CodexIntegration {
     await this.request('initialize', { clientInfo: { name: 'token-deck', version: '1.0.0' } })
     this.notify('initialized', {})
     await this.refresh()
+    if (!this.limitsTimer) this.limitsTimer = setInterval(() => void this.readLimitsOnly(), 60_000)
   }
 
   stop(): void {
+    if (this.limitsTimer) clearInterval(this.limitsTimer)
+    this.limitsTimer = null
     this.child?.kill()
     this.child = null
+  }
+
+  private async readLimitsOnly(): Promise<void> {
+    try {
+      this.readLimits(await this.request('account/rateLimits/read', {}))
+      this.onChange()
+    } catch (err) {
+      this.log(`codex limits ${err}`)
+    }
   }
 
   private request(method: string, params: unknown): Promise<unknown> {
@@ -75,7 +90,7 @@ export class CodexIntegration {
           this.pending.delete(id)
           reject(new Error(`codex ${method} timed out`))
         }
-      }, 8000)
+      }, 20000)
     })
   }
 
@@ -113,26 +128,107 @@ export class CodexIntegration {
           model: String(thread.model || '')
         })
       }
+    } catch (err) {
+      this.log(`codex threads ${err}`)
+    }
+    try {
       const models = (await this.request('model/list', {})) as { models?: Array<Record<string, unknown>>; data?: Array<Record<string, unknown>> }
       const rows = models.models || models.data || []
-      this.models = rows
+      const live = rows
         .filter((row) => !row.hidden)
         .slice(0, 12)
         .map((row) => ({
-          id: String(row.id),
-          name: String(row.displayName || row.id),
+          id: String(row.id || row.model || ''),
+          name: String(row.displayName || row.id || ''),
           efforts: ((row.supportedReasoningEfforts as Array<{ reasoningEffort?: string }>) || []).map((item) => item.reasoningEffort || '').filter(Boolean),
           defaultEffort: String(row.defaultReasoningEffort || ''),
           isDefault: !!row.isDefault
         }))
+        .filter((row) => row.id)
+      if (this.loadPicker()) {
+        this.models = this.models.map((model) => {
+          const hit = live.find((row) => row.id === model.id)
+          return hit && hit.efforts.length ? { ...model, efforts: hit.efforts } : model
+        })
+      } else if (live.length) this.models = live.slice(0, 6)
+      this.seedFavorites()
       const limits = await this.request('account/rateLimits/read', {})
       this.readLimits(limits)
       this.signedIn = true
       this.onChange()
     } catch (err) {
       this.log(`codex refresh ${err}`)
-      this.signedIn = false
+      if (!this.models.length) this.signedIn = false
+      else this.onChange()
     }
+  }
+
+  currentName(): string {
+    const id = readConfigValue('model')
+    const row = this.models.find((model) => model.id === id || model.name === id)
+    return row?.name || this.models.find((model) => model.isDefault)?.name || this.models[0]?.name || id
+  }
+
+  private loadCache(): void {
+    try {
+      const file = path.join(os.homedir(), '.codex', 'models_cache.json')
+      const parsed = JSON.parse(fs.readFileSync(file, 'utf8')) as { models?: Array<Record<string, unknown>> }
+      const rows = (parsed.models || [])
+        .filter((row) => row.visibility === 'list' || row.visibility === 'show')
+        .slice(0, 6)
+        .map((row) => ({
+          id: String(row.slug || row.id || ''),
+          name: String(row.display_name || row.displayName || row.slug || ''),
+          efforts: ((row.supported_reasoning_levels as Array<{ effort?: string }>) || []).map((item) => item.effort || '').filter(Boolean),
+          isDefault: String(row.slug || '') === readConfigValue('model')
+        }))
+        .filter((row) => row.id)
+      if (rows.length) this.models = rows
+      this.seedFavorites()
+    } catch {
+      /* the app-server list replaces this */
+    }
+  }
+
+  /** The models Codex itself offers in its picker. `model/list` currently returns only the previous generation. */
+  private loadPicker(): boolean {
+    try {
+      const file = path.join(os.homedir(), '.codex', '.codex-global-state.json')
+      const data = JSON.parse(fs.readFileSync(file, 'utf8')) as { 'electron-persisted-atom-state'?: Record<string, unknown> }
+      const atom = data['electron-persisted-atom-state'] || {}
+      const key = Object.keys(atom).find((name) => name.startsWith('chatgpt-work-models'))
+      const blob = key ? atom[key] as { response?: { eligible_codex_model_slugs?: string[]; models?: Array<Record<string, unknown>> } } : undefined
+      const response = blob?.response
+      const eligible = response?.eligible_codex_model_slugs || []
+      const titles = new Map<string, string>()
+      for (const row of response?.models || []) {
+        const slug = String(row.slug || '').replace(/-wm$/, '')
+        const title = String(row.title || '')
+        if (slug && title) titles.set(slug, title)
+      }
+      const configured = readConfigValue('model')
+      const models = eligible.slice(0, 6).map((slug) => ({
+        id: slug,
+        name: titles.get(slug) || slug,
+        efforts: ['low', 'medium', 'high', 'xhigh', 'max'],
+        isDefault: slug === configured
+      }))
+      if (!models.length) return false
+      this.models = models
+      return true
+    } catch {
+      return false
+    }
+  }
+
+  private seedFavorites(): void {
+    const names = this.models.slice(0, 6).map((model) => model.name).filter(Boolean)
+    if (names.length < 6) return
+    const favorites = this.store.get('favorites')
+    const saved = favorites.codex
+    const same = saved.length === names.length && saved.every((name) => names.includes(name))
+    if (same) return
+    this.store.set('favorites', { ...favorites, codex: names })
   }
 
   private readLimits(payload: unknown): void {
@@ -152,7 +248,8 @@ export class CodexIntegration {
   }
 
   async setModel(model: string): Promise<void> {
-    editConfig({ model })
+    const row = this.models.find((item) => item.name === model || item.id === model)
+    editConfig({ model: row?.id || model })
   }
 
   async setEffort(level: string): Promise<void> {

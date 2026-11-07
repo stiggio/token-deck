@@ -116,6 +116,29 @@ export async function focusSession(target: FocusTarget): Promise<void> {
   if (bundle) await osa(`tell application id "${bundle}" to activate`)
 }
 
+/** Bundle ids that are actually running. Does not launch anything. */
+export function runningBundles(ids: string[]): Promise<string[]> {
+  if (process.platform !== 'darwin' || ids.length === 0) return Promise.resolve([])
+  const list = ids.map((id) => `"${id}"`).join(', ')
+  const script = `tell application "System Events"
+    set hits to {}
+    repeat with p in processes
+      try
+        set bid to bundle identifier of p
+        if bid is in {${list}} then set end of hits to bid
+      end try
+    end repeat
+    return hits as text
+  end tell`
+  return new Promise((resolve) => {
+    execFile('osascript', ['-e', script], { timeout: 8000 }, (err, stdout) => {
+      if (err) return resolve([])
+      const text = String(stdout || '')
+      resolve(ids.filter((id) => text.includes(id)))
+    })
+  })
+}
+
 export async function raiseBundle(bundleId: string): Promise<void> {
   if (process.platform !== 'darwin') return
   await osa(

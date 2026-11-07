@@ -14,11 +14,36 @@ function exec(cmd: string, args: string[]): Promise<string> {
   })
 }
 
+/** `zsh -lic` prints startup noise, and `command -v` prints `alias name=/path` for an alias. */
+export function executableFromWhich(text: string): string {
+  for (const raw of text.split('\n')) {
+    const line = raw.replace(/\u001b\[[0-9;]*m/g, '').trim()
+    if (!line) continue
+    const alias = /^alias\s+[^=]+=\s*(.+)$/.exec(line)
+    if (alias) return alias[1].trim().replace(/^['"]|['"]$/g, '').replace(/^~/, os.homedir())
+    if (line.startsWith('/')) return line.split(/\s/)[0] || ''
+  }
+  return ''
+}
+
+function knownBins(name: string): string[] {
+  const home = os.homedir()
+  if (name === 'claude') return [path.join(home, '.claude/local/claude'), path.join(home, '.local/bin/claude')]
+  if (name === 'codex') return [path.join(home, '.local/bin/codex'), '/opt/homebrew/bin/codex', '/usr/local/bin/codex']
+  if (name === 'opencode') return [path.join(home, '.local/bin/opencode'), '/opt/homebrew/bin/opencode']
+  return []
+}
+
 export async function which(name: string): Promise<string | null> {
   if (cache.has(name)) return cache.get(name) || null
+  const direct = knownBins(name).find((file) => fs.existsSync(file))
+  if (direct) {
+    cache.set(name, direct)
+    return direct
+  }
   let found = ''
   if (process.platform === 'win32') found = (await exec('cmd', ['/c', 'where', name])).split(/\r?\n/)[0] || ''
-  else found = await exec('/bin/zsh', ['-lic', `command -v ${name}`])
+  else found = executableFromWhich(await exec('/bin/zsh', ['-lic', `command -v ${name}`]))
   if (!found && name === 'claude') {
     const root = path.join(os.homedir(), 'Library/Application Support/Claude/claude-code')
     if (fs.existsSync(root)) {

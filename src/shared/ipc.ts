@@ -26,6 +26,17 @@ export type ModeFile = { name: string; file: string; errors: string[] }
 
 export type BurnRow = { serial: string; imageHash: string; at: string }
 
+export type UsageAllowance = {
+  agent: string
+  fiveHour: number | null
+  sevenDay: number | null
+  fiveLabel: string
+  sevenLabel: string
+  fiveResets: number | null
+  sevenResets: number | null
+  known: boolean
+}
+
 export type Snapshot = {
   version: string
   device: DeviceSnapshot
@@ -50,6 +61,8 @@ export type Snapshot = {
   updateVersion: string | null
   log: string
   modelNamesUpper: boolean
+  allowance: UsageAllowance
+  usageOpen: boolean
 }
 
 export type IpcCall =
@@ -70,6 +83,7 @@ export type IpcCall =
   | { method: 'checkUpdates' }
   | { method: 'updateNow' }
   | { method: 'showLog' }
+  | { method: 'usageClose' }
   | { method: 'wizard'; step: number; skip?: boolean }
   | { method: 'wizardAsk' }
   | { method: 'wizardKnobs' }
