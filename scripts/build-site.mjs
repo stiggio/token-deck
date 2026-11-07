@@ -59,6 +59,7 @@ const html = `<!doctype html>
 html, body { margin: 0; background: var(--bg); color: var(--ink); }
 body { font-family: "Soehne Buch", Geist, sans-serif; font-weight: 400; font-synthesis: none; }
 h1, h2, h3, strong, b { font-weight: 400; }
+h2 { font-size: clamp(32px, 4vw, 44px); line-height: 1.15; letter-spacing: -0.03em; margin: 8px 0 16px; }
 a { color: inherit; }
 .wrap { width: min(960px, calc(100% - 48px)); margin: 0 auto; }
 .eyebrow { font-family: "Soehne Mono Buch", "Geist Mono", monospace; font-size: 12px; letter-spacing: .03em; text-transform: uppercase; color: var(--lime); }
@@ -93,8 +94,8 @@ footer { padding: 40px 0 64px; display: flex; justify-content: space-between; ga
 <main class="wrap">
   <header class="hero">
     <div class="lockup">${inline('brand-kit/design/token-deck-d-stacked-pixel-token.svg')}</div>
-    <p class="tag">The AI Usage Management Console</p>
-    <p class="lead">The program for the deck in the box. It runs the coding apps on your computer: open one, see the chats already going, and choose the model the next chat will use.</p>
+    <h2>A desk controller for the coding apps on your computer.</h2>
+    <p class="lead">Three buttons. The apps. The chats already open. The model the next chat will use.</p>
     <div class="installs">
       <div>
         <p class="eyebrow">Mac</p>
@@ -110,8 +111,6 @@ footer { padding: 40px 0 64px; display: flex; justify-content: space-between; ga
       </div>
     </div>
     <p class="plain">Other downloads: <a id="arm" href="https://github.com/stiggio/token-deck/releases/latest/download/TokenDeck-mac-arm64.dmg">Mac (Apple Silicon)</a> · <a id="intel" href="https://github.com/stiggio/token-deck/releases/latest/download/TokenDeck-mac-x64.dmg">Mac (Intel)</a> · <a href="https://github.com/stiggio/token-deck/releases">All releases</a></p>
-    <p class="plain">Not sure which Mac? Apple menu → About This Mac shows an Apple chip or an Intel processor.</p>
-    <p class="plain">macOS will refuse to open Token Deck because it is not notarized (on macOS 15 and later Control-click → Open no longer works, and an unsigned build may be reported as 'damaged'). In Terminal run: <span class="mono">xattr -d com.apple.quarantine "/Applications/Token Deck.app"</span> and open it again, or use the install command above. If System Settings → Privacy &amp; Security shows an Open Anyway button for Token Deck, that works too.</p>
     <p class="version">Version ${version}</p>
     <div class="device">
       ${inline('brand-kit/design/n3-line.svg')}
@@ -121,37 +120,32 @@ footer { padding: 40px 0 64px; display: flex; justify-content: space-between; ga
   <section class="block">
     <div>
       <p class="eyebrow">Agents</p>
-      <h2>Jump to any coding agent. Turn the dial to hop windows.</h2>
-      <p class="lead">The coding apps on this computer. Use it to open Claude Code, Codex, Cursor, OpenCode, Amp, or Devin, and to move to one that is already running.</p>
+      <h2>Open a coding app, or move to one that is already open.</h2>
+      <p class="lead">Claude Code, Cursor, Codex, OpenCode, Amp, and Devin. Press a key to open that app. The large knob moves between the ones already running. It does not launch a new one.</p>
     </div>
     ${inline('brand-kit/design/screens-v2/screens-mode1.svg')}
   </section>
   <section class="block">
     <div>
       <p class="eyebrow">Sessions</p>
-      <h2>Every session and its context. See which one needs you.</h2>
-      <p class="lead">The chats already going. Use it to see which Claude Code or Codex conversation needs you, and to jump to that one. OpenCode shows up while it is running on this computer. Cursor, Amp, and Devin stay on Agents.</p>
+      <h2>The chats that are already going.</h2>
+      <p class="lead">Claude Code and Codex, one chat per key. Press a key to bring that chat forward. OpenCode appears here while it is running on this computer. Cursor, Amp, and Devin do not have a chat list. They stay on Agents.</p>
     </div>
     ${inline('brand-kit/design/screens-v2/screens-mode2.svg')}
   </section>
   <section class="block">
     <div>
       <p class="eyebrow">Models &amp; usage</p>
-      <h2>Six models, live 5H and 7D limits.</h2>
-      <p class="lead">What the next chat will run on. Use it to pick a model, and to see how much of the 5-hour and weekly allowance is left. That allowance is one key, shared by every model of the same app. A chat that is already running keeps its model.</p>
-      <div class="legend">
-        <div>Turn: effort. Press: Ultracode.</div>
-        <div>Turn: agent. Press: last agent.</div>
-        <div>Turn: permission. Press: apply.</div>
-        <div>Select the mode, one per button.</div>
-      </div>
+      <h2>Choose the model the next chat will use.</h2>
+      <p class="lead">The other keys are models. The first key is the allowance: how much of the 5-hour window and the week is already used, for that app. Press it for the details. A chat that is already running keeps its model.</p>
     </div>
     ${inline('brand-kit/design/screens-v2/screens-mode3.svg')}
   </section>
   <section class="block">
     <div>
-      <p class="eyebrow">Program it yourself</p>
-      <h2>Write your own modes for any screen, button or knob.</h2>
+      <p class="eyebrow">Your own screen</p>
+      <h2>Hold the middle button for a screen you wrote.</h2>
+      <p class="lead">Token Deck reads a folder on this computer, ~/.tokendeck/modes, and shows those keys instead. A key can run a command, open an app, or open a page.</p>
       <pre>${example.replace(/</g, '&lt;')}</pre>
     </div>
     ${inline('brand-kit/design/program-window.svg')}
@@ -159,7 +153,9 @@ footer { padding: 40px 0 64px; display: flex; justify-content: space-between; ga
   <section class="block">
     <div>
       <p class="eyebrow">Setup</p>
-      <p class="plain">Quit the StreamDock or VSD Craft app before Token Deck opens the deck. macOS asks for Automation, once per app, and for Accessibility, so a tile press can bring that window to the front. The install command does not need the quarantine note above. On Windows, SmartScreen says "Windows protected your PC": choose More info, then Run anyway.</p>
+      <p class="lead">Quit the StreamDock or VSD Craft app first. Only one program can use the deck.</p>
+      <p class="plain">On a Mac, the install command above is the one to use. A downloaded disk image is not notarized, so macOS may say the app is damaged. The install command does not do that. If you did download the disk image, run <span class="mono">xattr -d com.apple.quarantine "/Applications/Token Deck.app"</span> and open it again.</p>
+      <p class="plain">The first time a key brings a window forward, macOS asks for Accessibility, once. On Windows, SmartScreen says “Windows protected your PC”. Choose More info, then Run anyway.</p>
     </div>
   </section>
   <footer>
