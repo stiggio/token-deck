@@ -56,6 +56,12 @@ exit 0
 const HOOK_PS = `try { $u = Get-Content "$env:USERPROFILE\\.tokendeck\\url" -ErrorAction Stop; $b = [Console]::In.ReadToEnd(); Invoke-RestMethod -Method Post -Uri "$u/hooks/claude" -ContentType 'application/json' -TimeoutSec 2 -Body $b | Out-Null } catch {}; exit 0
 `
 
+/** How a hook names Token Deck's shim: in `command` on macOS, in `args` (as hook.ps1) on Windows. */
+const HOOK_SHIMS = ['.tokendeck/bin/hook', '.tokendeck\\bin\\hook']
+const STATUSLINE_SHIM = '.tokendeck/bin/statusline'
+
+type HookEntry = { matcher?: string; hooks: unknown[] }
+
 type ClaudeAgent = {
   cwd?: string
   kind?: string
@@ -117,10 +123,9 @@ export class ClaudeCode {
     this.signedIn = !!(status && (status.loggedIn || status.authenticated || status.authMethod))
     this.plan = String(status?.subscriptionType || status?.plan || status?.account || '')
     const settings = this.readSettings()
-    const blob = JSON.stringify(settings.hooks || {})
-    this.hooksInstalled = blob.includes('.tokendeck/bin/hook') || blob.includes('.tokendeck\\bin\\hook')
+    this.hooksInstalled = hasTokenDeckHook(settings.hooks)
     const command = settings.statusLine?.command
-    this.statusChained = typeof command === 'string' && command.includes('.tokendeck/bin/statusline')
+    this.statusChained = typeof command === 'string' && command.includes(STATUSLINE_SHIM)
     this.refreshModelFavorites()
   }
 
@@ -320,21 +325,22 @@ export class ClaudeCode {
       }
       return { matcher, hooks: [{ type: 'command', command, ...extra }] }
     }
-    settings.hooks = settings.hooks || {}
-    const hooks = settings.hooks as Record<string, unknown[]>
     const asyncHook = hook({ async: true })
     const notify = hook({ async: true }, 'permission_prompt|idle_prompt|agent_needs_input|agent_completed')
     const syncHook = hook({ timeout: 2 })
-    hooks.UserPromptSubmit = [asyncHook]
-    hooks.Stop = [asyncHook]
-    hooks.Notification = [notify]
-    hooks.PermissionRequest = [asyncHook]
-    hooks.PostModelSwitch = [asyncHook]
-    hooks.SessionStart = [syncHook]
-    hooks.SessionEnd = [syncHook]
+    settings.hooks = withTokenDeckHooks(settings.hooks, {
+      UserPromptSubmit: asyncHook,
+      Stop: asyncHook,
+      Notification: notify,
+      PermissionRequest: asyncHook,
+      PostModelSwitch: asyncHook,
+      SessionStart: syncHook,
+      SessionEnd: syncHook
+    })
     if (process.platform !== 'win32') {
       const existing = settings.statusLine?.command
-      if (existing && !String(existing).includes('statusline')) {
+      // Save what the shim should run, unless it is the shim itself, which would then call itself.
+      if (existing && !String(existing).includes(STATUSLINE_SHIM)) {
         fs.writeFileSync(path.join(os.homedir(), '.tokendeck', 'statusline-original.json'), JSON.stringify(existing))
       }
       settings.statusLine = { type: 'command', command: 'sh ~/.tokendeck/bin/statusline' }
@@ -503,6 +509,46 @@ export class ClaudeCode {
     fs.mkdirSync(path.dirname(file), { recursive: true })
     fs.writeFileSync(file, JSON.stringify(settings, null, 2) + '\n')
   }
+}
+
+/** A hook whose command or args run Token Deck's hook shim. */
+export function isTokenDeckHook(hook: unknown): boolean {
+  if (!isRecord(hook)) return false
+  const words = [hook.command, ...(Array.isArray(hook.args) ? hook.args : [])]
+  return words.some((word) => typeof word === 'string' && HOOK_SHIMS.some((shim) => word.includes(shim)))
+}
+
+/** Whether any event in settings.json `hooks` runs Token Deck's hook. */
+export function hasTokenDeckHook(hooks: unknown): boolean {
+  if (!isRecord(hooks)) return false
+  const entries = Object.values(hooks).flatMap((list) => (Array.isArray(list) ? list : []))
+  return entries.some((entry) => isRecord(entry) && Array.isArray(entry.hooks) && entry.hooks.some(isTokenDeckHook))
+}
+
+/**
+ * Adds Token Deck's entry to each event, after the hooks already there. Token Deck's hooks from an
+ * earlier connect are taken out first, so connecting again leaves one Token Deck entry per event.
+ * Nothing else is removed. An entry written without its list is kept, in a list.
+ */
+export function withTokenDeckHooks(hooks: unknown, ours: Record<string, HookEntry>): Record<string, unknown> {
+  const next: Record<string, unknown> = isRecord(hooks) ? { ...hooks } : {}
+  for (const [event, entry] of Object.entries(ours)) {
+    const current = next[event]
+    const entries: unknown[] = Array.isArray(current) ? current : current == null ? [] : [current]
+    next[event] = [...entries.flatMap(withoutTokenDeckHook), entry]
+  }
+  return next
+}
+
+/** The entry without Token Deck's hooks, or nothing when they were all it had. */
+function withoutTokenDeckHook(entry: unknown): unknown[] {
+  if (!isRecord(entry) || !Array.isArray(entry.hooks) || !entry.hooks.some(isTokenDeckHook)) return [entry]
+  const rest = entry.hooks.filter((hook) => !isTokenDeckHook(hook))
+  return rest.length ? [{ ...entry, hooks: rest }] : []
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === 'object' && !Array.isArray(value)
 }
 
 function readSessionFiles(): ClaudeAgent[] {
