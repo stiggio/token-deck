@@ -1,125 +1,312 @@
+<p align="center">
+  <a href="https://usage.stigg.io"><img src="site/og.png" width="760" alt="Token Deck: your coding agents, on six keys and three knobs"></a>
+</p>
+
 # Token Deck
 
-The AI Usage Management Console. Token Deck is the menu-bar app for the Stream Dock N3 that ships with After Tokens: six LCD keys, three metal buttons, three knobs. Plug the deck in, install the app, and the keys become a control surface for Claude Code, Codex and OpenCode.
+Token Deck is the desktop app for the deck in the After Tokens box: a Stream Dock N3 with six screen keys, three metal buttons and three knobs. The app puts your Claude Code, Codex and OpenCode sessions on the keys, takes you to the one that needs you, sets the model, effort and permission your next session starts with, and shows how much of your 5-hour and weekly limits you've used.
 
-The download page is [usage.stigg.io](https://usage.stigg.io). The address printed on the box and burned onto the deck is `io.stigg.io/usage`.
+It runs on macOS and Windows, lives in the menu bar (the system tray on Windows) and talks to the deck over USB. There's no account and no telemetry.
+
+**Download:** [usage.stigg.io](https://usage.stigg.io), which the box and the deck print as `io.stigg.io/usage` · [All releases](https://github.com/stiggio/token-deck/releases)
+
+- [Install](#install)
+- [Using the deck](#using-the-deck)
+- [Your own modes](#your-own-modes)
+- [What Token Deck changes on your computer](#what-token-deck-changes-on-your-computer)
+- [Troubleshooting](#troubleshooting)
+- [The welcome screen](#the-welcome-screen)
+- [Development](#development)
+- [License](#license)
 
 ## Install
 
-macOS 12 or later, Apple Silicon or Intel:
+### macOS
 
-```sh
+macOS 12 or later, on Apple silicon or Intel. Paste this into Terminal:
+
+```bash
 /bin/bash -c "$(curl -fsSL https://usage.stigg.io/install.sh)"
 ```
 
-Paste that in Terminal. The script picks the build, checks its checksum, and puts Token Deck in Applications. Read it first at [usage.stigg.io/install.sh](https://usage.stigg.io/install.sh). There is no Apple Developer ID, so there is no built-in macOS updater. "Update now" runs the installer again. macOS may ask for Automation and Accessibility again after an update.
+The [script](site/install.sh) downloads the build for your Mac from the latest release, checks its SHA-256, quits Token Deck if it's running, installs it in `/Applications` (or `~/Applications` when `/Applications` isn't writable) and opens it. It doesn't use `sudo`.
 
-A browser download of the dmg is unsigned. macOS will refuse to open Token Deck because it is not notarized (on macOS 15 and later Control-click → Open no longer works, and an unsigned build may be reported as 'damaged'). In Terminal run `xattr -d com.apple.quarantine "/Applications/Token Deck.app"` and open it again, or use the install command above. If System Settings → Privacy & Security shows an Open Anyway button for Token Deck, that works too.
+Token Deck isn't notarized by Apple yet. The install command works anyway, because `curl` doesn't mark the download as quarantined. The disk images ([Apple silicon](https://github.com/stiggio/token-deck/releases/latest/download/TokenDeck-mac-arm64.dmg), [Intel](https://github.com/stiggio/token-deck/releases/latest/download/TokenDeck-mac-x64.dmg)) are quarantined, so macOS refuses to open the app or says it's damaged. After you drag it to Applications, run this and open it again:
 
-Windows: download `TokenDeck-win-x64.exe` from the [releases](https://github.com/stiggio/token-deck/releases). SmartScreen says "Windows protected your PC". Choose More info, then Run anyway.
-
-Quit the StreamDock or VSD Craft app before Token Deck. Only one program can open the deck on macOS.
-
-A shell alias for the commands below:
-
-```sh
-alias tokendeck='"/Applications/Token Deck.app/Contents/MacOS/Token Deck"'
+```bash
+xattr -d com.apple.quarantine "/Applications/Token Deck.app"
 ```
 
-On Windows the binary is `Token Deck.exe`.
+### Windows
 
-## What the deck does
+Windows 10 or 11, 64-bit. Download and run [TokenDeck-win-x64.exe](https://github.com/stiggio/token-deck/releases/latest/download/TokenDeck-win-x64.exe). The installer isn't code-signed yet, so SmartScreen says "Windows protected your PC": choose **More info**, then **Run anyway**.
 
-Three metal buttons select Agents, Sessions, and Models & Usage. Hold the middle button to open a custom mode. The current mode is remembered.
+### First run
 
-The deck opens on Agents. The left metal button is Agents, the middle is Sessions, the right is Models & Usage.
+Quit the StreamDock or VSD Craft app before you plug in the deck. Only one program can use it at a time.
 
-Agents shows Claude Code, Cursor, Codex, OpenCode, Amp, and Devin as the same kind of key. A dim key is not installed. Press a key to go to that app. If it is not already open, the key opens it. Claude opens the desktop app when it is installed, and Terminal otherwise. The large knob moves between apps that are already open. It does not open a new one. The left knob sets the model for the next session, and the right knob sets its effort. Those two knobs only list Claude Code, Codex, and OpenCode, and only when that app is installed. One installed app does not pretend to switch. None installed says so.
+The first time Token Deck starts, it walks you through three optional steps: connecting Claude Code (it edits `~/.claude/settings.json` and keeps a backup, see [below](#claude-code)), letting macOS bring windows to the front, and starting Token Deck at login. Skip any of them and come back later from the app's window, which opens from the menu bar icon.
 
-Sessions lists Claude Code and Codex sessions, newest activity first, and OpenCode while `opencode serve` is running. Press a key to bring that window forward. The large knob pages. The left knob filters by installed app. The right knob filters by status.
+## Using the deck
 
-Models & Usage shows up to six favourite models and the real 5-hour and weekly limits for Claude Code and Codex. The same limits are shared across that app's model keys. Press a key to set that model for the next session. A session that is already running keeps its model. Every default change says `NEXT SESSION`. Full access is saved only after you confirm it in the Token Deck window. There is no credit balance on the deck.
+The three metal buttons under the keys pick the mode, and the deck remembers the last one.
 
-None of this is done with simulated keystrokes. Claude Code, Codex and OpenCode defaults are written to their own config files.
+| Button | Mode | What the keys show |
+|---|---|---|
+| Left | [Agents](#agents) | Claude Code, Cursor, Codex, OpenCode, Amp and Devin |
+| Middle | [Sessions](#sessions) | Your live Claude Code, Codex and OpenCode sessions, newest first |
+| Right | [Models & Usage](#models--usage) | Your 5-hour and weekly usage, then up to five models |
 
-## Claude Code
+Hold the middle button to open [your own modes](#your-own-modes).
 
-Token Deck polls `claude agents --json --all` and, with your consent, installs a command hook (never an HTTP hook) plus a status line that chains whatever you already had. The shim is `~/.tokendeck/bin/hook`. It exits immediately when Token Deck is not running, so a quit or a crash does not print hook errors into your transcript.
+Turning a knob shows a short message across the top row of keys for five seconds, like `SONNET` `NEXT` `SESSION`. Key presses are ignored while a message is showing. `NOT AVAILABLE` means the agent can't do what you asked; `NONE INSTALLED` means none of Claude Code, Codex or OpenCode is installed.
 
-Context and the 5H / 7D windows come from the status line, for Pro and Max accounts, after the first response of a session. The last values are kept. After 10 minutes the tile says `STALE`. After 24 hours, or when a window's reset time has passed, the row shows `--`. Claude Code credentials are never read.
+### Agents
 
-`model` is `opus`, `sonnet`, `haiku` or `fable`. Effort is `modelSettings.<model>.effortLevel` on Claude Code 2.1.251 and later, and the top-level `effortLevel` on older versions. Permission maps READ → `plan`, ASK → `default`, AUTO → `auto`, FULL → `bypassPermissions`. Ultracode is the boolean in `~/.claude/settings.json`.
+Press a key to bring that agent's latest session or window to the front, or to open it if it isn't running. A dim key means the app isn't installed. Claude Code opens in the Claude desktop app when you have it, and in Terminal otherwise. Amp's key opens VS Code, and Devin's opens [app.devin.ai](https://app.devin.ai).
 
-The first edit copies `~/.claude/settings.json` to `settings.json.tokendeck-backup`. Stop watching puts that file back byte for byte. The button is on This Mac, and only for Claude Code.
+| Control | Turn | Press |
+|---|---|---|
+| Big knob | Hop between the open agent windows | Back to the previous window |
+| Left knob | The model your next session starts with | Back to Claude Code's default model |
+| Right knob | The effort your next session starts with | The lowest effort level |
 
-Focus uses AppleScript and needs Automation (once per terminal) and Accessibility. The wizard asks on purpose. On Windows, focus is best-effort and the status line is chained only when Git Bash is present.
+### Sessions
 
-## Codex
+Each key is one session. The dot shows what it's doing, and the ring shows how full its context window is. Only Claude Code reports context, so Codex and OpenCode sessions get a dashed ring.
 
-Token Deck talks to `codex app-server` for threads, models and `account/rateLimits/read`. It does not answer approval requests. If a running TUI's threads do not show as active, the README note from the day-one check applies and hooks plus rollout files are the fallback. `notify` in `~/.codex/config.toml` is never rewritten. Edits are line-wise, so comments survive. The first edit copies the file to `config.toml.tokendeck-backup`.
+| Dot | Status |
+|---|---|
+| Blue | Working |
+| Coral, with a frame around the key | Needs your approval |
+| White | Waiting for your reply |
+| Grey | Idle |
+| Lime | Done |
 
-Permission maps READ → `read-only` + `on-request`, ASK → `workspace-write` + `on-request`, AUTO → `workspace-write` + `never`, FULL → `danger-full-access` + `never`.
+Press a key to jump to that session's window. Models & Usage then shows that session's agent. Token Deck finds the exact tab in Terminal, iTerm2 and Ghostty, the right window in VS Code and Cursor, and the session in the Claude desktop app. For other terminals it brings the app forward. On Windows it brings Windows Terminal forward, without picking the tab.
 
-## OpenCode
+| Control | Turn | Press |
+|---|---|---|
+| Big knob | The next or previous six sessions | The next session that needs you |
+| Left knob | Filter by agent | All agents |
+| Right knob | Filter by status: all, working, needs you, idle, done | All statuses |
 
-Installed on this Mac with `npm i -g opencode-ai` when that check is run. Sessions appear while `opencode serve` is running (default `http://127.0.0.1:4096`). There is no quota API. The tile says `NO QUOTA DATA`. The model default is `model` in `~/.config/opencode/opencode.json`. v1 and v2 are both implemented. OpenCode is not signed into a Claude subscription.
+OpenCode sessions show up while `opencode serve` is running (Token Deck looks at `http://127.0.0.1:4096` and uses `OPENCODE_SERVER_PASSWORD` if you set one). OpenCode 2.x is found through its own service file.
 
-## Custom modes
+The deck never approves a tool call. A session that needs approval takes you to its window, and you decide there.
 
-JSON files in `~/.tokendeck/modes/`, reloaded when they change. Hold the middle metal button for 800 ms. With no files, that hold selects Sessions. A key is a label, an optional PNG or SVG icon, and an action: `shell`, `url`, `open`, `keys`, or `mode`. Shell actions run in your login shell with a 10 second timeout. The example is on the Deck page and on the download site.
+### Models & Usage
+
+The first key shows the selected agent's usage: how much of the 5-hour (`5H`) and 7-day (`7D`) limits you've used. Press it to see the exact numbers and reset times in the app's window. The other keys are up to five favorite models, with the current one in lime. Press a model and your next session starts on it.
+
+| Control | Turn | Press |
+|---|---|---|
+| Big knob | Effort | Ultracode on or off (Claude Code) |
+| Left knob | Agent | Back to the agent of the last session you pressed |
+| Right knob | Permission: `READ`, `ASK`, `AUTO`, `FULL` | Apply it |
+
+Model, effort and permission changes go into the agent's own settings file and apply from your next session, so the deck says `NEXT SESSION`. Sessions that are already running keep what they started with. `FULL` waits until you confirm it in a dialog on the computer.
+
+Where the usage numbers come from:
+
+- **Claude Code** reports them in its status line on Pro and Max plans, once a session has replied.
+- **Codex** reports them through `codex app-server` when you're signed in with ChatGPT. Token Deck asks once a minute.
+- **OpenCode** doesn't report limits, so the key shows `--`.
+
+The deck keeps the last reading for 24 hours, then shows `--`. A window disappears once it resets.
+
+Your favorite models come from each agent: Claude Code's model list (Opus, Sonnet, Haiku and Fable until it has one), and the models Codex offers you. Reorder them on the app's Models page.
+
+What each permission level writes:
+
+| Deck | Claude Code `permissions.defaultMode` | Codex `sandbox_mode`, `approval_policy` | OpenCode 1.x `permission` |
+|---|---|---|---|
+| `READ` | `plan` | `read-only`, `on-request` | edit `ask`, bash `ask` |
+| `ASK` | `default` | `workspace-write`, `on-request` | edit `allow`, bash `ask` |
+| `AUTO` | `auto` | `workspace-write`, `never` | edit `allow`, bash `allow` |
+| `FULL` | `bypassPermissions` | `danger-full-access`, `never` | edit `allow`, bash `allow` |
+
+Effort levels are Claude Code's `low`, `medium`, `high` and `xhigh` (written as `modelSettings.<model>.effortLevel` on Claude Code 2.1.251 and later, and as `effortLevel` before that), and for Codex whichever levels the selected model supports.
+
+### Without a deck
+
+The app's window has a simulator: the deck drawn at the bottom shows the same tiles and behaves like the real one. Click a key, or use the keyboard:
+
+| Key | Does |
+|---|---|
+| `1` to `6` | Press a screen key |
+| `Q` `W` `E` | Press the left, middle or right metal button (hold Shift to hold it) |
+| `←` `→` | Turn the big knob |
+| `↑` `↓` | Turn the left knob |
+| `,` `.` | Turn the right knob |
+| `Enter` | Press the big knob (Shift: the left knob, Option: the right knob) |
+
+## Your own modes
+
+A mode is a JSON file in `~/.tokendeck/modes/`. Hold the middle button and the keys list your modes; press one to open it. Any metal button takes you back. Token Deck reloads a file when you save it, and the app's Deck page lists any problems in your files.
+
+```json
+{
+  "name": "Deploy",
+  "tiles": [
+    { "label": "BUILD", "icon": "~/icons/hammer.svg",
+      "action": { "type": "shell", "command": "npm run build", "cwd": "~/dev/app" } },
+    { "label": "LOGS", "action": { "type": "url", "url": "https://grafana.example.com/d/abc" } },
+    { "label": "EDITOR", "action": { "type": "open", "app": "Cursor" } },
+    { "label": "PALETTE", "action": { "type": "keys", "keys": "cmd+shift+p" } },
+    { "label": "AGENTS", "action": { "type": "mode", "mode": "agents" } },
+    null
+  ],
+  "knobs": {
+    "main": {
+      "cw": { "type": "keys", "keys": "cmd+=" },
+      "ccw": { "type": "keys", "keys": "cmd+-" },
+      "click": { "type": "shell", "command": "say done" }
+    },
+    "left": null,
+    "right": null
+  }
+}
+```
+
+`tiles` holds up to six keys, left to right and top to bottom; `null` leaves a key empty. A label is shown in capitals, one word per line, two lines at most. `icon` is an optional PNG or SVG, drawn at 28 pixels. `knobs` maps `main`, `left` and `right` to an action for `cw` (clockwise), `ccw` and `click`.
+
+| Action | Fields | Does |
+|---|---|---|
+| `shell` | `command`, optional `cwd` | Runs the command in your login shell (`zsh -lic` on macOS, `cmd /c` on Windows), for up to 10 seconds. The deck shows `OK` or `FAILED`. |
+| `open` | `app` | Opens an app by name. |
+| `url` | `url` | Opens a link in your browser. |
+| `keys` | `keys` | Sends a shortcut to the app in front. On macOS write it like `cmd+shift+p` (`cmd`, `ctrl`, `opt`, `shift`). On Windows the string goes to `SendKeys` as is, so use its syntax: `^+p`. |
+| `mode` | `mode` | Switches to `agents`, `sessions` or `models`. |
+
+## What Token Deck changes on your computer
+
+### Claude Code
+
+Token Deck reads `claude agents --json --all` every two seconds, plus the session files under `~/.claude/sessions` and `~/.claude/projects`, to list your sessions. It never reads Claude Code's credentials; `claude auth status --json` tells it whether you're signed in.
+
+When you connect Claude Code (in the first-run setup, or on the app's This Mac page), Token Deck:
+
+1. Copies `~/.claude/settings.json` to `~/.claude/settings.json.tokendeck-backup`. This happens once; reconnecting keeps the first backup.
+2. Writes two small scripts, `~/.tokendeck/bin/hook` and `~/.tokendeck/bin/statusline` (`hook.ps1` on Windows).
+3. Sets its hook on seven events in `settings.json`: `UserPromptSubmit`, `Stop`, `Notification`, `PermissionRequest` and `PostModelSwitch` run in the background, and `SessionStart` and `SessionEnd` run with a two-second limit. Hooks you already had on those events are replaced; they're still in the backup. The hook is a `command` hook that exits at once when Token Deck isn't running, so a quit or crashed app never shows hook errors in your sessions.
+4. Points the status line at `~/.tokendeck/bin/statusline` (macOS only). Your previous status line command is saved in `~/.tokendeck/statusline-original.json`, and the script runs it with the same input, so your status line looks the same. The script also keeps the latest status line data in `~/.tokendeck/last-statusline.json`, which is where the context ring and usage numbers come from.
+
+**Stop watching** on the This Mac page copies the backup over `settings.json`, byte for byte.
+
+When you turn a knob, Token Deck writes `model`, the effort setting, `permissions.defaultMode` or `ultracode` in `settings.json`, keeping everything else in the file.
+
+### Codex
+
+Token Deck runs `codex app-server` in the background to read your threads, models and rate limits. It never answers an approval request; you approve in Codex.
+
+A knob writes the top-level `model`, `model_reasoning_effort`, `sandbox_mode` and `approval_policy` lines in `~/.codex/config.toml`. It edits those lines in place, so comments and the rest of the file stay as they are, and it never touches `notify`. Before the first edit it copies the file to `~/.codex/config.toml.tokendeck-backup`; to undo, copy that file back.
+
+### OpenCode
+
+Token Deck reads sessions from the OpenCode server and writes `model` and the permission settings in `~/.config/opencode/opencode.json`. It doesn't keep a backup of that file.
+
+### Cursor, Amp and Devin
+
+Their keys only open or focus the app. Token Deck doesn't read or change anything of theirs.
+
+### macOS permissions
+
+To bring a window to the front, macOS asks once for Automation for each app Token Deck controls (Terminal, iTerm2, System Events and so on), and once for Accessibility under System Settings → Privacy & Security. Custom-mode keystrokes use the same permissions. Updates on macOS may ask again, because Token Deck isn't signed.
+
+### Network and data
+
+- Hooks reach the app through a server on `127.0.0.1` only, on a random port, behind a random per-install token in the path. Its address is in `~/.tokendeck/url` while the app runs.
+- The only internet request Token Deck makes is the update check against this repository's GitHub releases.
+- There's no telemetry. The log stays on your computer, in `~/.tokendeck/log/tokendeck.log`, rotated at 5 MB.
+
+Everything Token Deck keeps is in `~/.tokendeck`: `settings.json` (the app's own settings), `log/`, `bin/`, `modes/`, `url` and the status line files above.
+
+## Troubleshooting
+
+**The deck only shows the welcome screen.** Check that Token Deck is running: look for its icon in the menu bar or the system tray. Then unplug the deck and plug it back in. The app's Deck page shows the connection state.
+
+**"Quit the StreamDock or VSD Craft app to use Token Deck."** Another program has the deck. Quit it and replug the deck.
+
+**"Deck not responding. Unplug it and plug it back in."** The deck stopped answering. Replugging resets it.
+
+**A key doesn't bring the window forward.** Give Token Deck Accessibility in System Settings → Privacy & Security, and allow the Automation prompts. The app's This Mac page says when Accessibility is missing.
+
+**The usage key shows `--`.** Claude Code only reports limits on Pro and Max plans, after a session has replied, and only through the status line, so connect Claude Code first. Codex needs a ChatGPT sign-in. OpenCode has no limits to show.
+
+**Codex keys say `NOT AVAILABLE`.** Token Deck couldn't reach `codex app-server`. Check that `codex` runs in your terminal and that you're signed in.
+
+**macOS says the app is damaged.** See the disk image note under [Install](#macos).
+
+**Logs.** About → Show log opens `~/.tokendeck/log/tokendeck.log`.
+
+**Uninstall.** Click Stop watching on the This Mac page to restore your Claude Code settings, then quit Token Deck from its menu and delete the app (on Windows, from Settings → Apps). Delete `~/.tokendeck` to remove its settings and log. If you changed Codex defaults from the deck, restore `~/.codex/config.toml.tokendeck-backup` by hand.
 
 ## The welcome screen
 
-The deck stores one image in ROM: the boot background. Tiles are RAM. Token Deck writes the welcome screen once per deck, the first time a deck connects whose serial is in neither this computer's record nor `resources/preburned.json`. About can write it again after a confirmation. Quit paints the same picture into the six tiles and closes. The app never sends the vendor disconnect or sleep frames.
+The deck keeps one picture in its own memory: the welcome screen with the Stigg logo, `io.stigg.io/usage` and the After Tokens token explosion. It shows whenever the deck has power and no app is driving it, on any computer. The decks in the After Tokens boxes came with it, and Token Deck writes it once to any deck it hasn't seen before. The About page can write it again, or turn the automatic write off.
 
-The image is welcome screen v8 (18,887 bytes, sha256 `daea022363c85ef722c9c93bcd7f5379a995b726cb5240bc4ed92b12d15071fb`). Its power-on photo and replug check were still pending when this repository was built. Do not redraw it. The bytes in `resources/` are the bytes that were burned.
+How the write works, the batch tool the Stigg team used to prepare the giveaway decks, and how to recover a deck that starts up black are in [docs/welcome-screen.md](docs/welcome-screen.md).
 
-Batch, on a Mac, with Token Deck and the vendor apps quit:
+## Development
 
-```sh
-"/Applications/Token Deck.app/Contents/MacOS/Token Deck" burn --watch
+You need Node 22 and npm. The app runs on macOS and Windows; the tests and the site build also run on Linux.
+
+```bash
+npm install
 ```
 
-It waits 8 seconds, prints the deck's identity, and prints `done` only after the 10 second hold. A deck already in the record prints `already burned, unplug`. After the run, commit `~/.tokendeck/preburned.json` as `resources/preburned.json` and tag the event release. `tokendeck calibrate` replaces the welcome screen with a ruler and is only for a deck whose firmware is not this one. It is not in the settings window.
-
-`tokendeck probe` prints whatever vendor interfaces are plugged in, without writing the boot image.
-
-## Tiles
-
-Tiles are 64×64 JPEGs at quality 100, 4:4:4, rotated 90° clockwise as a pixel copy before they go on the wire. 4:2:0 at q99 halves the saturation of a 1 px lime or coral feature. q100 was checked on this unit with a Pillow tile on 2 Nov 2026. The first Skia tile is the test pattern from the Device page (1 px lime text, a 2 px lime ring, a 1 px coral border, Sonnet in white, Opus in ink on a lime band).
-
-The firmware draws each tile at a fixed spot that is off-centre in the key window, so every layout is shifted per key from `resources/panel-geometry.json`. Unlit squares are `#2C2F2B`, one step darker than the box, because the panel lifts dark greys. Content stays 6 px inside the window. The keycap bevel still mirrors bright pixels near the edge. That is expected on a 64 px tile.
-
-If model names in mixed case do not read at arm's length on the lime band, set them to uppercase. The settings store key is `modelNamesUpper`. The default follows the provider's spelling.
-
-## Develop
-
-```sh
-npm install
-npm test
+```bash
 npm run dev
 ```
 
-`npm test` is vitest. It checks that no frame the protocol can build is the vendor disconnect or sleep frame, the decoder against `test/fixtures/events-2026-11-01.log`, the write queue, the burn rhythm, JPEG 4:4:4, and that every built-in tile is under 10,000 bytes.
+```bash
+npm test
+```
 
-`node scripts/lint-fonts` fails if a Söhne file is tracked or packaged. Söhne is not in this repository. The site loads it from the same Webflow CDN URLs stigg.io already serves. If marketing re-uploads those fonts, the four URLs in `scripts/build-site.mjs` have to change. Geist is the fallback and the app UI face.
+`npm run dev` starts the app with the settings window and the simulator. `npm test` runs the unit tests: the protocol (including that no frame Token Deck can send clears the deck or puts it to sleep), the input decoder against a real capture, the write queue, the welcome-screen write sequence, JPEG encoding and the tile renderer. With a deck plugged in and the app quit, `TOKENDECK_DEVICE=1 npm test` also runs the hardware test.
 
-Logs: `~/.tokendeck/log/tokendeck.log`, rotated at 5 MB. No telemetry.
+| Command | Does |
+|---|---|
+| `npm run build` | Compiles the app into `out/` and runs the font check |
+| `npm run dist:mac` | Builds the macOS disk images and zips (Apple silicon and Intel) |
+| `npm run dist:win` | Builds the Windows installer |
+| `npm run site` | Renders the site's tiles and writes `site/index.html` |
+| `npm run icons` | Rebuilds the tray icons |
 
-## Device observations
+**Releases.** Pushing a `v*` tag runs `.github/workflows/release.yml`: it builds both platforms, starts each build once with `--smoke` to check the native modules and resources, and publishes the release. The file names never change (`TokenDeck-mac-arm64.zip`, `TokenDeck-win-x64.exe` and so on), so the download links always point at the latest release. The macOS builds are unsigned; adding the `CSC_LINK`, `CSC_KEY_PASSWORD`, `APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD` and `APPLE_TEAM_ID` secrets turns on signing, notarization and the built-in updater.
 
-Gabriel's unit is USB `5548:1001`, firmware `V3.VSDN3_PXL.02.010`, serial `81D0DA782A24`. On 5 Nov 2026, from this Mac:
+**The site.** `site/` is the page at [usage.stigg.io](https://usage.stigg.io), published by GitHub Pages (`.github/workflows/pages.yml`) when `main` changes. `scripts/export-site-tiles.ts` renders the device tiles with the app's own renderer, and `scripts/build-site.mjs` writes `index.html` around `site/style.css` and `site/main.js`. The page loads Söhne from the same CDN files stigg.io uses; if marketing re-uploads those fonts in Webflow, update the four URLs at the top of `build-site.mjs`. Geist is the fallback.
 
-- Opening the vendor interface exclusively works. A second open from another process fails with IOKit `0xE00002C5`. Token Deck keeps the exclusive open.
-- `getFeatureReport` returned `V3.VSDN3_PXL.02.010`. Keys were still writable after that read.
-- The first Skia q100 tile was 6,620 bytes and was accepted by the device (the write did not error). A clear of key 1 used the three-zero layout and did not error. Nobody was at the deck to press keys during that listen, so the small-knob direction check is still the first-run wizard's job. The Nov 1 capture already contains all six small-knob codes.
-- The first burn through the app, on a fresh settings store, waited out the settle, wrote v8, and got the device's write report. The record is serial `81D0DA782A24` at `2026-11-05T10:11:26Z`, image hash `daea0223…`. The log line `burn ok 81D0DA782A24` is `2026-11-05T10:14:00Z`. A relaunch must not write again. The power-on photo and the replug check still need someone at the deck: this session could not see the panel. Codex `account/rateLimits/read` returned a 5H window at 84% and a 7D window at 15% over app-server. No Codex TUI was running, so TUI visibility is still unchecked. OpenCode was not installed in this session.
-- Brightness default is 70. The boot brightness versus the app's level still needs a photo of the welcome screen at power-on with nothing running, and another after the app connects.
-- The 15 minute keepalive, the sleep/wake reconnect, the quit and `kill -9` timings, and the five minute enumeration log are recorded below when they have been run. A second computer and a Windows VM were not available in this build session.
-- `BGPIC` was not probed. There is no spare deck, and this unit holds v8.
+**Fonts.** Söhne's license doesn't allow it in the app or in this repository, so the app uses Geist and the tiles use a bitmap font drawn in code. `node scripts/lint-fonts` fails if a Söhne file, or any font other than Geist, is committed or packaged.
 
-Small-knob map until the wizard says otherwise, from the vendor table and the Nov 1 capture: bottom-left click `0x33`, clockwise `0x91`, counter-clockwise `0x90`. Bottom-right click `0x34`, clockwise `0x61`, counter-clockwise `0x60`. Main knob click `0x35`, clockwise `0x51`, counter-clockwise `0x50`.
+**Command line.** The app binary also takes a command, run with the tray app quit:
 
-## Licence
+```bash
+alias tokendeck='"/Applications/Token Deck.app/Contents/MacOS/Token Deck"'
+```
 
-MIT, © Stigg. The Stigg logos, marks and app icon are excluded. See `BRAND-ASSETS.md`.
+| Command | Does |
+|---|---|
+| `tokendeck probe` | Lists the decks plugged in, with serial number and firmware |
+| `tokendeck burn --watch` | Writes the welcome screen to every deck you plug in, one after another ([docs](docs/welcome-screen.md#preparing-many-decks)) |
+| `tokendeck calibrate` | Not implemented yet; prints where the calibration image is |
+
+On Windows the binary is `Token Deck.exe` in the install folder.
+
+| Path | What's there |
+|---|---|
+| `src/main/deck/` | USB transport, protocol, write queue and the tile renderer |
+| `src/main/integrations/` | Claude Code, Codex, OpenCode, and the launch-only agents |
+| `src/main/modes/` | The mode controller and custom modes |
+| `src/main/burn/`, `src/main/cli.ts` | The welcome-screen write and the command line |
+| `src/renderer/` | The settings window and the simulator (React) |
+| `resources/` | The welcome screen, panel geometry, agent glyphs and tray icons |
+| `site/`, `scripts/` | The download page and the build scripts |
+| `brand-kit/`, `assets/` | The box design kit the app and site are drawn from |
+
+[PLAN.md](PLAN.md) is the original build plan with every decision behind the app. The shipped app differs from it in places (Models & Usage leads with the usage key, for example); the code and this README describe what ships. How Token Deck talks to the deck, and what was measured on real hardware, is in [docs/hardware.md](docs/hardware.md).
+
+## License
+
+The code is MIT licensed, © Stigg. The Stigg logos, marks and app icon are not covered by that license, and the agent logos belong to their owners; see [BRAND-ASSETS.md](BRAND-ASSETS.md).
