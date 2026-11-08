@@ -1,6 +1,7 @@
 import { app, BrowserWindow, Menu, Tray, dialog, ipcMain, nativeImage, powerMonitor, shell } from 'electron'
 import fs from 'fs'
 import path from 'path'
+import { pathToFileURL } from 'url'
 import crypto from 'crypto'
 import { autoUpdater } from 'electron-updater'
 import { createCanvas } from '@napi-rs/canvas'
@@ -177,6 +178,9 @@ async function start(): Promise<void> {
   app.setLoginItemSettings({ openAtLogin: store.get('startAtLogin') })
 
   const welcomePng = `data:image/png;base64,${fs.readFileSync(resource('welcome-320x240.png')).toString('base64')}`
+  // The one page the settings window may show and take calls from.
+  const rendererFile = path.join(__dirname, '../renderer/index.html')
+  const appUrl = process.env.ELECTRON_RENDERER_URL || pathToFileURL(rendererFile).href
 
   function openWindow(): void {
     if (window && !window.isDestroyed()) {
@@ -208,13 +212,12 @@ async function start(): Promise<void> {
       return { action: 'deny' }
     })
     window.webContents.on('will-navigate', (event, url) => {
-      if (isAppUrl(url, process.env.ELECTRON_RENDERER_URL)) return
+      if (isAppUrl(url, appUrl)) return
       event.preventDefault()
       if (isExternalLink(url)) void shell.openExternal(url)
     })
-    const devUrl = process.env.ELECTRON_RENDERER_URL
-    if (devUrl) void window.loadURL(devUrl)
-    else void window.loadFile(path.join(__dirname, '../renderer/index.html'))
+    if (process.env.ELECTRON_RENDERER_URL) void window.loadURL(process.env.ELECTRON_RENDERER_URL)
+    else void window.loadFile(rendererFile)
     window.once('ready-to-show', () => window?.show())
   }
 
@@ -292,7 +295,7 @@ async function start(): Promise<void> {
   tray.on('click', openWindow)
 
   ipcMain.handle('td', async (event, call: IpcCall) => {
-    if (!isAppUrl(event.senderFrame?.url || '', process.env.ELECTRON_RENDERER_URL)) {
+    if (!isAppUrl(event.senderFrame?.url || '', appUrl)) {
       log.write(`ignored a call from ${event.senderFrame?.url || 'an unknown frame'}`)
       throw new Error('not allowed')
     }
@@ -323,7 +326,7 @@ async function start(): Promise<void> {
         if (call.id === 'codex') restoreCodex()
       } catch (err) {
         log.write(`restore ${err}`)
-        await settingsProblem()
+        await settingsProblem(call.id === 'codex' ? '~/.codex/config.toml' : '~/.claude/settings.json', err)
       }
       await claude.detect()
     } else if (call.method === 'favorites') {
@@ -375,12 +378,16 @@ async function start(): Promise<void> {
     }
   }
 
-  /** Token Deck never overwrites a settings.json it can't parse; say so instead. */
-  async function settingsProblem(): Promise<void> {
+  /** Says that a change to an agent's settings didn't happen, and why. Token Deck never half-writes the file. */
+  async function settingsProblem(file: string, err: unknown): Promise<void> {
+    const reason = err instanceof Error ? err.message : String(err)
+    const invalid = /not valid JSON|not an object/.test(reason)
     await dialog.showMessageBox({
       type: 'warning',
-      message: 'Token Deck didn’t change ~/.claude/settings.json',
-      detail: 'The file isn’t valid JSON, so Token Deck left it as it is. Fix the file, then try again.',
+      message: `Token Deck didn’t change ${file}`,
+      detail: invalid
+        ? 'The file isn’t valid JSON, so Token Deck left it as it is. Fix the file, then try again.'
+        : `Token Deck got an error (${reason}) and left the file as it was. Try again; if it keeps happening, About › Show log has the details.`,
       buttons: ['OK']
     })
   }
@@ -392,7 +399,7 @@ async function start(): Promise<void> {
         log.write(notes.join(' '))
       } catch (err) {
         log.write(`connect claude ${err}`)
-        await settingsProblem()
+        await settingsProblem('~/.claude/settings.json', err)
       }
       if (controller.mode === 'idle') controller.mode = store.get('mode')
     } else if (id === 'codex') await codex.start()

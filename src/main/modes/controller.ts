@@ -12,7 +12,8 @@ import type { CodexIntegration } from '../integrations/codex'
 import type { OpenCodeIntegration } from '../integrations/opencode'
 import type { LaunchOnly } from '../integrations/launch'
 import { loadModes, runAction, type CustomMode } from './custom'
-import { raiseBundle, runningBundles } from '../system/focus'
+import { focusSession, raiseBundle, runningBundles } from '../system/focus'
+import { anyAgentTerminal } from '../system/terminal'
 
 const PERMS: PermissionMode[] = ['READ', 'ASK', 'AUTO', 'FULL']
 
@@ -27,7 +28,10 @@ export class Controller {
   custom: CustomMode | null = null
   picker = false
   permissionPreview = 0
-  /** True once the right knob has been turned in Models & Usage, so a press applies a level the user saw. */
+  /**
+   * True while the right knob's preview is on the deck in Models & Usage, so a press applies only a
+   * level the user can see. Any other overlay, its timeout or a mode change clears it.
+   */
   permissionPending = false
   effortIndex = 2
   modelIndex = 0
@@ -134,6 +138,7 @@ export class Controller {
     if (this.picker) {
       const mode = this.modes()[key - 1]
       if (!mode) return
+      if (mode.invalid) return this.flash(['MODE FILE', 'ERROR'])
       this.custom = mode
       this.picker = false
       this.mode = 'custom'
@@ -166,6 +171,19 @@ export class Controller {
           }
         }
         return
+      }
+      // Codex or OpenCode open in a terminal but not busy: bring that terminal forward, don't start another.
+      if (agent === 'codex' || agent === 'opencode') {
+        const terminal = await anyAgentTerminal([agent])
+        if (terminal) {
+          try {
+            await focusSession({ tty: terminal.tty, termProgram: terminal.termProgram, bundleId: terminal.bundleId })
+          } catch (err) {
+            this.log(`focus ${err}`)
+            this.flash(['FAILED'])
+          }
+          return
+        }
       }
       if (!this.installed(agent)) {
         this.flash(['NOT', 'INSTALLED'])
@@ -338,10 +356,10 @@ export class Controller {
       this.flash([mode, 'NEXT', 'SESSION'])
       return
     }
-    this.permissionPending = true
     this.permissionPreview = wrap(this.permissionPreview + (action === 'cw' ? 1 : -1), PERMS.length)
     const mode = PERMS[this.permissionPreview]!
     this.flash(mode === 'ASK' ? ['ASK', 'PRESS TO', 'APPLY'] : [mode, 'PRESS TO', 'APPLY'])
+    this.permissionPending = true
   }
 
   private async applyModel(name: string): Promise<void> {
@@ -400,11 +418,14 @@ export class Controller {
   }
 
   private flash(groups: string[], ms = 5000): void {
+    // A new overlay covers the permission preview, so a press no longer applies it.
+    this.permissionPending = false
     this.overlay = groups.map((group) => fitOverlayGroup(group))
     this.overlayUntil = Date.now() + ms
     if (this.overlayTimer) clearTimeout(this.overlayTimer)
     this.overlayTimer = setTimeout(() => {
       this.overlay = null
+      this.permissionPending = false
       void this.render(false)
     }, ms)
     void this.render(true)
@@ -659,12 +680,16 @@ export class Controller {
       .sort((a, b) => b.updatedAt - a.updatedAt)[0]
   }
 
-  /** The mode files changed: an open mode picks up its new keys, a deleted one closes. */
+  /**
+   * The mode files changed: an open mode picks up its new keys, a deleted one closes. A file saved
+   * with a mistake (or caught halfway through a save) keeps the keys that worked and says so.
+   */
   async modesChanged(): Promise<void> {
     if (this.mode === 'custom' && this.custom) {
       const fresh = this.modes().find((mode) => mode.file === this.custom!.file)
-      if (fresh) this.custom = fresh
-      else return this.enter(this.store.get('mode'))
+      if (!fresh) return this.enter(this.store.get('mode'))
+      if (fresh.invalid) return this.flash(['MODE FILE', 'ERROR'])
+      this.custom = fresh
     }
     await this.render(true)
   }
@@ -692,10 +717,14 @@ export class Controller {
   }
 }
 
-/** Live: a running process or a hook vouches for it, or it's doing something right now. */
-function isLive(row: LiveSession): boolean {
-  if (row.agent !== 'claude-code') return true
-  return row.live === true || row.status === 'working' || row.status === 'needs-approval' || row.status === 'needs-input'
+/**
+ * Live: doing something or waiting on you right now, or (Claude Code) a running process or a hook
+ * vouches for it. Codex and OpenCode list their whole history, so an idle thread there isn't live.
+ */
+export function isLive(row: Pick<LiveSession, 'agent' | 'status' | 'live'>): boolean {
+  const busy = row.status === 'working' || row.status === 'needs-approval' || row.status === 'needs-input'
+  if (row.agent !== 'claude-code') return busy
+  return row.live === true || busy
 }
 
 /** A usage window, unless its reset time has passed. */

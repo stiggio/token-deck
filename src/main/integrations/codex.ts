@@ -6,6 +6,7 @@ import readline from 'readline'
 import { which } from '../system/which'
 import { focusSession, launchInTerminal } from '../system/focus'
 import { findAgentTerminal } from '../system/terminal'
+import { readIfExists, writeFileAtomic } from '../system/files'
 import type { SettingsStore } from '../settings/store'
 import type { LiveSession } from './claude-code'
 import type { PermissionMode } from '../../shared/model'
@@ -284,12 +285,19 @@ export class CodexIntegration {
     await launchInTerminal('codex')
   }
 
-  /** The terminal running `codex` in the thread's folder; the Codex app when there isn't one. */
+  /**
+   * The terminal running `codex` in the thread's folder. The Codex app when there isn't one, or when
+   * that terminal can't be brought forward.
+   */
   async focus(session: LiveSession): Promise<void> {
     const terminal = await findAgentTerminal(['codex'], session.cwd)
     if (terminal) {
-      await focusSession({ tty: terminal.tty, termProgram: terminal.termProgram, cwd: session.cwd })
-      return
+      try {
+        await focusSession({ tty: terminal.tty, termProgram: terminal.termProgram, bundleId: terminal.bundleId, cwd: session.cwd })
+        return
+      } catch (err) {
+        this.log(`codex focus ${err}`)
+      }
     }
     await focusSession({ cwd: session.cwd, termProgram: 'codex', bundleId: 'com.openai.codex' })
   }
@@ -324,11 +332,10 @@ function configPath(): string {
   return path.join(os.homedir(), '.codex', 'config.toml')
 }
 
+/** A top-level value from config.toml; '' when it isn't set or the file can't be read. */
 function readConfigValue(key: string): string {
   try {
-    const text = fs.readFileSync(configPath(), 'utf8')
-    const line = text.split('\n').find((row) => row.startsWith(`${key} =`) && !row.trim().startsWith('#'))
-    return line ? line.split('=').slice(1).join('=').trim().replace(/^"|"$/g, '') : ''
+    return topLevelValue(readIfExists(configPath()) ?? '', key)
   } catch {
     return ''
   }
@@ -338,50 +345,159 @@ function backupConfig(file: string): void {
   if (!fs.existsSync(file + '.tokendeck-backup') && fs.existsSync(file)) fs.copyFileSync(file, file + '.tokendeck-backup')
 }
 
-/** Splits config.toml into the top-level lines (before the first [table]) and the rest. */
-function splitTopLevel(text: string): { head: string[]; tail: string[] } {
-  const lines = text.split('\n')
-  const header = lines.findIndex((line) => /^\s*\[/.test(line))
-  return { head: header === -1 ? lines : lines.slice(0, header), tail: header === -1 ? [] : lines.slice(header) }
+/**
+ * Reads config.toml line by line: `starts[i]` is true when line i begins a new statement, and
+ * `topLevelEnd` is the first [table] header. A line inside a multi-line array, inline table or
+ * string is never taken for a key or a header.
+ */
+export function scanToml(lines: string[]): { starts: boolean[]; topLevelEnd: number } {
+  const starts: boolean[] = []
+  let topLevelEnd = lines.length
+  let depth = 0
+  let multi = ''
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]!
+    const start = depth === 0 && !multi
+    starts.push(start)
+    if (start && topLevelEnd === lines.length && /^\s*\[/.test(line)) topLevelEnd = i
+    let j = 0
+    while (j < line.length) {
+      if (multi) {
+        if (multi === '"""' && line[j] === '\\') {
+          j += 2
+          continue
+        }
+        if (line.startsWith(multi, j)) {
+          // A closing delimiter may carry up to two more quotes that belong to the string.
+          let run = 0
+          while (line[j + run] === multi[0]) run++
+          j += run
+          multi = ''
+          continue
+        }
+        j++
+        continue
+      }
+      const ch = line[j]
+      if (ch === '#') break
+      if (line.startsWith('"""', j) || line.startsWith("'''", j)) {
+        multi = line.slice(j, j + 3)
+        j += 3
+        continue
+      }
+      if (ch === '"' || ch === "'") {
+        j++
+        while (j < line.length && line[j] !== ch) j += ch === '"' && line[j] === '\\' ? 2 : 1
+        j++
+        continue
+      }
+      if (ch === '[' || ch === '{') depth++
+      else if ((ch === ']' || ch === '}') && depth > 0) depth--
+      j++
+    }
+  }
+  return { starts, topLevelEnd }
 }
 
 function isKeyLine(line: string, key: string): boolean {
-  const trimmed = line.trim()
-  return trimmed.startsWith(`${key} =`) || trimmed.startsWith(`${key}=`)
+  const name = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return new RegExp(`^\\s*(?:${name}|"${name}"|'${name}')\\s*=`).test(line)
+}
+
+/** The lines of each top-level statement for `key`, as [first, end) ranges. */
+function keyRanges(lines: string[], key: string): Array<[number, number]> {
+  const { starts, topLevelEnd } = scanToml(lines)
+  const ranges: Array<[number, number]> = []
+  for (let i = 0; i < topLevelEnd; i++) {
+    if (!starts[i] || !isKeyLine(lines[i]!, key)) continue
+    let end = i + 1
+    while (end < lines.length && !starts[end]) end++
+    ranges.push([i, end])
+  }
+  return ranges
+}
+
+/** A top-level string value, unquoted. */
+export function topLevelValue(text: string, key: string): string {
+  const { lines } = toLines(text)
+  const range = keyRanges(lines, key)[0]
+  if (!range) return ''
+  const raw = lines[range[0]]!.match(/=\s*("(?:[^"\\]|\\.)*"|'[^']*'|[^#\s"']+)/)?.[1] || ''
+  if (raw.startsWith('"')) {
+    try {
+      return JSON.parse(raw) as string
+    } catch {
+      return raw.slice(1, -1)
+    }
+  }
+  return raw.startsWith("'") ? raw.slice(1, -1) : raw
 }
 
 /** A comment after the value on the same line, kept when the value is replaced. */
 export function trailingComment(line: string): string {
-  const match = line.match(/^\s*[\w.-]+\s*=\s*("(?:[^"\\]|\\.)*"|'[^']*'|[^#\s"']+)\s*(#.*)$/)
+  const match = line.replace(/\r$/, '').match(/^\s*[\w."'-]+\s*=\s*("(?:[^"\\]|\\.)*"|'[^']*'|[^#\s"']+)\s*(#.*)$/)
   return match?.[2] ? ` ${match[2]}` : ''
+}
+
+/** Splits the file into lines, remembering its line ending and byte-order mark so the edit keeps both. */
+function toLines(text: string): { lines: string[]; eol: string; bom: string } {
+  const bom = text.startsWith('\uFEFF') ? '\uFEFF' : ''
+  const body = text.slice(bom.length)
+  return { lines: body ? body.split(/\r?\n/) : [], eol: body.includes('\r\n') ? '\r\n' : '\n', bom }
+}
+
+function fromLines({ lines, eol, bom }: { lines: string[]; eol: string; bom: string }): string {
+  return bom + lines.join(eol).replace(/(\r?\n)+$/, '') + eol
 }
 
 /**
  * Sets top-level keys in place, line by line, so comments and everything else survive; keys that
  * aren't there yet go at the top. Never touches a key inside a [table], or `notify`.
  */
-export function editConfig(values: Record<string, string>): void {
-  const file = configPath()
-  fs.mkdirSync(path.dirname(file), { recursive: true })
-  backupConfig(file)
-  const text = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : ''
-  const { head, tail } = splitTopLevel(text)
+export function setTopLevel(text: string, values: Record<string, string>): string {
+  const file = toLines(text)
+  const { lines } = file
   for (const [key, value] of Object.entries(values)) {
-    const index = head.findIndex((line) => isKeyLine(line, key))
-    if (index >= 0) head[index] = `${key} = "${value}"${trailingComment(head[index]!)}`
-    else head.unshift(`${key} = "${value}"`)
+    const line = `${key} = ${JSON.stringify(value)}`
+    const range = keyRanges(lines, key)[0]
+    if (!range) {
+      lines.unshift(line)
+      continue
+    }
+    const [first, end] = range
+    lines.splice(first, end - first, line + (end - first === 1 ? trailingComment(lines[first]!) : ''))
   }
-  fs.writeFileSync(file, [...head, ...tail].join('\n').replace(/\n+$/, '\n'))
+  return fromLines(file)
 }
 
-/** Removes top-level keys, so Codex falls back to its own defaults. */
+/** Removes top-level keys, so Codex falls back to its own defaults. Returns the text unchanged when none is set. */
+export function withoutTopLevel(text: string, keys: string[]): string {
+  const file = toLines(text)
+  let removed = false
+  for (const key of keys) {
+    for (const [first, end] of keyRanges(file.lines, key).reverse()) {
+      file.lines.splice(first, end - first)
+      removed = true
+    }
+  }
+  return removed ? fromLines(file) : text
+}
+
+export function editConfig(values: Record<string, string>): void {
+  const file = configPath()
+  const text = readIfExists(file) ?? ''
+  backupConfig(file)
+  writeFileAtomic(file, setTopLevel(text, values))
+}
+
 export function removeConfigKeys(keys: string[]): void {
   const file = configPath()
-  if (!fs.existsSync(file)) return
+  const text = readIfExists(file)
+  if (text === null) return
+  const next = withoutTopLevel(text, keys)
+  if (next === text) return
   backupConfig(file)
-  const { head, tail } = splitTopLevel(fs.readFileSync(file, 'utf8'))
-  const kept = head.filter((line) => !keys.some((key) => isKeyLine(line, key)))
-  fs.writeFileSync(file, [...kept, ...tail].join('\n').replace(/\n+$/, '\n'))
+  writeFileAtomic(file, next)
 }
 
 export function restoreCodex(): void {

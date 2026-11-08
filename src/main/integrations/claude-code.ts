@@ -6,7 +6,8 @@ import chokidar from 'chokidar'
 import type { SettingsStore } from '../settings/store'
 import { commandVersion, which } from '../system/which'
 import { focusSession, launchInTerminal, openApp } from '../system/focus'
-import { terminalOf } from '../system/terminal'
+import { pidAlive, terminalOf } from '../system/terminal'
+import { readIfExists, writeFileAtomic } from '../system/files'
 import type { AgentId, PermissionMode, SessionStatus } from '../../shared/model'
 import type { HookBody } from '../hooks/server'
 
@@ -23,8 +24,10 @@ export type LiveSession = {
   termProgram?: string
   entrypoint?: string
   model?: string
-  /** A running process or a hook vouches for it; transcript-only sessions are false. */
+  /** A running process or a hook vouches for it; transcript-only and ended sessions are false. */
   live?: boolean
+  /** A SessionEnd hook arrived; the session stays listed as finished until it runs again. */
+  ended?: boolean
   /** The transcript file, for sessions found only on disk. */
   transcript?: string
 }
@@ -197,16 +200,17 @@ export class ClaudeCode {
         id,
         agent: 'claude-code',
         title: (row.name || prev?.title || 'SESSION').toUpperCase(),
-        cwd: row.cwd,
+        cwd: row.cwd || prev?.cwd,
         status: mapStatus(row),
         context: prev?.context ?? null,
         updatedAt: startedAt(row.startedAt) || prev?.updatedAt || Date.now(),
-        pid: row.pid,
+        pid: row.pid || prev?.pid,
         tty: prev?.tty,
         termProgram: prev?.termProgram,
         entrypoint: row.entrypoint || (desktop ? 'claude-desktop' : prev?.entrypoint),
         model: prev?.model,
-        live: !!row.pid || !!prev?.tty,
+        live: pidAlive(row.pid || prev?.pid) || (prev?.live === true && !prev.ended),
+        ended: prev?.ended,
         transcript: row.transcript || prev?.transcript
       })
     }
@@ -242,9 +246,12 @@ export class ClaudeCode {
       else if (note.includes('completed')) status = 'completed'
       else if (note.includes('idle')) status = 'idle'
     }
+    const ended = hook === 'SessionEnd'
+    if (ended) status = 'completed'
     const prompt = typeof body.prompt === 'string' ? body.prompt : ''
     const ttyHeader = event.headers['x-td-tty'] || ''
-    const tty = ttyHeader.trim() ? (ttyHeader.trim().startsWith('/dev/') ? ttyHeader.trim() : `/dev/${ttyHeader.trim()}`) : prev?.tty
+    // A finished session's tab may be closed, or its tty number handed to a new tab, so forget it.
+    const tty = ended ? undefined : ttyHeader.trim() ? (ttyHeader.trim().startsWith('/dev/') ? ttyHeader.trim() : `/dev/${ttyHeader.trim()}`) : prev?.tty
     this.sessions.set(id, {
       id,
       agent: 'claude-code',
@@ -258,7 +265,8 @@ export class ClaudeCode {
       termProgram: event.headers['x-td-term'] || prev?.termProgram,
       entrypoint: event.headers['x-td-entrypoint'] || prev?.entrypoint,
       model: prev?.model,
-      live: true,
+      live: !ended,
+      ended,
       transcript: prev?.transcript
     })
     this.onChange()
@@ -293,7 +301,9 @@ export class ClaudeCode {
       termProgram: prev?.termProgram,
       entrypoint: prev?.entrypoint,
       model: model?.display_name || model?.id || prev?.model,
-      live: true,
+      // A late status line from a session that just ended doesn't bring it back; its next hook does.
+      live: !prev?.ended,
+      ended: prev?.ended,
       transcript: prev?.transcript
     })
     this.onChange()
@@ -353,7 +363,9 @@ export class ClaudeCode {
       const existing = isRecord(settings.statusLine) ? settings.statusLine : null
       const existingCommand = typeof existing?.command === 'string' ? existing.command : ''
       // Save what the shim should run, unless it is the shim itself, which would then call itself.
+      // With no status line at all, forget an older one, so Stop watching doesn't bring it back.
       if (existing && !existingCommand.includes(STATUSLINE_SHIM)) saveOriginalStatusLine(existing)
+      else if (!existing) clearOriginalStatusLine()
       // Keep the user's other status line fields, like padding; only the command goes through the shim.
       settings.statusLine = { ...(existing || {}), type: 'command', command: STATUSLINE_COMMAND }
       notes.push('Chains the status line through ~/.tokendeck/bin/statusline.')
@@ -526,33 +538,42 @@ export class ClaudeCode {
   }
 
   async focus(session: LiveSession): Promise<void> {
-    let tty = session.tty
-    let termProgram = session.termProgram
-    // A session that hasn't sent a hook yet: find its terminal from the running process.
-    if (!tty && session.pid && session.entrypoint !== 'claude-desktop') {
-      const found = await terminalOf(session.pid)
-      if (found) {
-        tty = found.tty
-        termProgram = found.termProgram || termProgram
-      }
-    }
-    const desktopSession = session.entrypoint === 'claude-desktop' || (!tty && !termProgram && this.desktop)
-    if (desktopSession && this.bin && session.id) {
+    const alive = pidAlive(session.pid)
+    if (session.entrypoint === 'claude-desktop' && this.bin && session.id) {
       const where = await openClaude(this.bin, ['--desktop', '--resume', session.id])
       if (where === 'already') await openApp('Claude')
       return
     }
-    if (!tty && !termProgram) {
-      // A finished session found only on disk: reopen it in Terminal, in its own folder.
-      const cwd = session.cwd || (session.transcript ? transcriptCwd(session.transcript) : '')
-      if (this.bin && session.id && !session.live) {
-        await launchInTerminal(resumeCommand(this.bin, session.id, cwd))
+    // Running: its process is up, or hooks have come in since it last ended.
+    const running = alive || (session.live === true && !session.ended)
+    if (running) {
+      let tty = session.tty
+      let termProgram = session.termProgram
+      let bundleId: string | undefined
+      // A running session that hasn't sent a hook yet: find its terminal from the process.
+      if (!tty && alive && session.pid) {
+        const found = await terminalOf(session.pid)
+        if (found) {
+          tty = found.tty
+          termProgram = found.termProgram || termProgram
+          bundleId = found.bundleId
+        }
+      }
+      if (tty || termProgram || bundleId) {
+        await focusSession({ termProgram, tty, bundleId, cwd: session.cwd, sessionId: session.id })
         return
       }
-      // On Windows the best we can do is bring the terminal app forward, below.
-      if (process.platform === 'darwin') throw new Error('no terminal found for this session')
     }
-    await focusSession({ termProgram, tty, cwd: session.cwd, sessionId: session.id })
+    // A finished session that no process runs anymore: reopen it in Terminal, in its own folder.
+    // Never one that's still running, which would start a second copy of it.
+    if (process.platform === 'darwin' && !running && this.bin && session.id) {
+      const cwd = session.cwd || (session.transcript ? transcriptCwd(session.transcript) : '')
+      await launchInTerminal(resumeCommand(this.bin, session.id, cwd))
+      return
+    }
+    // macOS: nothing to bring forward, so the deck says FAILED. Windows: bring the terminal app forward.
+    if (process.platform === 'darwin') throw new Error('no terminal found for this session')
+    await focusSession({ cwd: session.cwd, sessionId: session.id })
   }
 
   readModel(): string {
@@ -570,13 +591,9 @@ export class ClaudeCode {
 
   /** settings.json before a change. Throws when the file exists but isn't valid JSON, so it's never overwritten. */
   private readSettingsForWrite(): Record<string, any> {
-    let text = ''
-    try {
-      text = fs.readFileSync(this.settingsPath(), 'utf8')
-    } catch {
-      return {}
-    }
-    if (!text.trim()) return {}
+    // Only a missing file counts as empty; a file we can't read right now is never replaced.
+    const text = readIfExists(this.settingsPath())
+    if (text === null || !text.trim()) return {}
     let parsed: unknown
     try {
       parsed = JSON.parse(text)
@@ -589,9 +606,7 @@ export class ClaudeCode {
   }
 
   private writeSettings(settings: Record<string, unknown>): void {
-    const file = this.settingsPath()
-    fs.mkdirSync(path.dirname(file), { recursive: true })
-    fs.writeFileSync(file, JSON.stringify(settings, null, 2) + '\n')
+    writeFileAtomic(this.settingsPath(), JSON.stringify(settings, null, 2) + '\n')
   }
 }
 
@@ -659,6 +674,11 @@ export function saveOriginalStatusLine(line: Record<string, unknown>): void {
   fs.writeFileSync(path.join(tokendeckDir(), 'statusline-original.json'), JSON.stringify(line))
   const command = typeof line.command === 'string' ? line.command : ''
   fs.writeFileSync(path.join(tokendeckDir(), 'statusline-original'), command)
+}
+
+function clearOriginalStatusLine(): void {
+  fs.rmSync(path.join(tokendeckDir(), 'statusline-original.json'), { force: true })
+  fs.rmSync(path.join(tokendeckDir(), 'statusline-original'), { force: true })
 }
 
 /** The saved status line, from this version's object or an older version's bare command string. */

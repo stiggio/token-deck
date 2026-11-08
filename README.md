@@ -90,7 +90,7 @@ Each key is one recent session, newest first. The dot shows what it's doing, and
 | Gray | Idle |
 | Lime | Done |
 
-Press a key to jump to that session's window, and Models & Usage then shows that session's agent. Token Deck finds the exact tab in Terminal, iTerm2 and Ghostty, the right window in VS Code and Cursor, or the session in the Claude desktop app; for other terminals it brings the app forward. For Codex and OpenCode it looks for the terminal running the agent in that session's folder, and a Codex session without one opens in the Codex app. A finished Claude Code session that isn't running anymore reopens with `claude --resume`. On Windows, Token Deck brings Windows Terminal forward, without picking the tab.
+Press a key to jump to that session's window, and Models & Usage then shows that session's agent. Token Deck finds the exact tab in Terminal, iTerm2 and Ghostty, the right window in VS Code and Cursor, or the session in the Claude desktop app; for other terminals it brings the app forward. For Codex and OpenCode it looks for the terminal running the agent in that session's folder, and a Codex session without one opens in the Codex app. A finished Claude Code session that isn't running anymore reopens in Terminal, in its own folder, with `claude --resume`. When there's no window to go to, the deck shows `FAILED`. On Windows, Token Deck brings Windows Terminal forward, without picking the tab.
 
 | Control | Turn | Press |
 |---|---|---|
@@ -150,7 +150,7 @@ The app's window has a simulator: the deck drawn at the bottom shows the same ke
 
 ## Your own modes
 
-A mode is a JSON file in `~/.tokendeck/modes/`. Hold the middle button and the keys list your modes, up to six; press one to open it. Any metal button takes you back. With no mode files, holding the middle button just opens Sessions. Token Deck reloads a file when you save it, even while that mode is open, and the app's Deck page lists any problems in your files.
+A mode is a JSON file in `~/.tokendeck/modes/`. Hold the middle button and the keys list your modes, up to six; press one to open it. Any metal button takes you back. With no mode files, holding the middle button just opens Sessions. Token Deck reloads a file when you save it, even while that mode is open, and the app's Deck page lists any problems in your files. If you save a mistake while the mode is open, the keys stay as they were and the deck shows `MODE FILE` `ERROR` until you fix it.
 
 ```json
 {
@@ -188,6 +188,8 @@ A mode is a JSON file in `~/.tokendeck/modes/`. Hold the middle button and the k
 
 ## What Token Deck changes on your computer
 
+Token Deck changes three files that belong to other apps: Claude Code's `~/.claude/settings.json`, Codex's `~/.codex/config.toml` and OpenCode's `~/.config/opencode/opencode.json`. It backs each one up before its first change, and every change replaces the whole file in one step, so the agent never reads half a file. A file that's a symlink, as in a dotfiles repository, stays a symlink. Token Deck leaves alone a file it can't read, and a JSON file it can't parse.
+
 ### Claude Code
 
 From launch, Token Deck reads `claude agents --json --all` every two seconds, plus the session files under `~/.claude/sessions` and `~/.claude/projects`, to list your sessions, and the list of running processes to see which model each session runs. It never reads Claude Code's credentials; `claude auth status --json` tells it whether you're signed in.
@@ -197,7 +199,7 @@ When you connect Claude Code (in the first-run setup, or on the app's This Mac p
 1. Copies `~/.claude/settings.json` to `~/.claude/settings.json.tokendeck-backup`. This happens once; reconnecting keeps the first backup.
 2. Writes two small scripts, `~/.tokendeck/bin/hook` and `~/.tokendeck/bin/statusline` (`hook.ps1` on Windows).
 3. Sets its hook on seven events in `settings.json`: `UserPromptSubmit`, `Stop`, `Notification`, `PermissionRequest` and `PostModelSwitch` run in the background, and `SessionStart` and `SessionEnd` run with a two-second limit. Token Deck adds its hook next to any hooks you already have on those events. The hook is a `command` hook that exits at once when Token Deck isn't running, so a quit or crashed app never shows hook errors in your sessions.
-4. Points the status line at `~/.tokendeck/bin/statusline` (macOS only). Your previous status line command is saved in `~/.tokendeck/statusline-original.json`, and the script runs it with the same input, so your status line looks the same. The script also keeps the latest status line data in `~/.tokendeck/last-statusline.json`, which is where the context ring and usage numbers come from.
+4. Points the status line at `~/.tokendeck/bin/statusline` (macOS only). Your previous status line is saved in `~/.tokendeck/statusline-original.json`, with its command in `~/.tokendeck/statusline-original`, and the script runs that command with the same input, so your status line looks the same. The script also keeps the latest status line data in `~/.tokendeck/last-statusline.json`, which is where the context ring and usage numbers come from.
 
 **Stop watching** on the This Mac page takes Token Deck's hooks out and puts your previous status line back, and leaves everything else in `settings.json` as it is now. The backup from your first connect stays next to it if you ever want to go further back.
 
@@ -213,7 +215,7 @@ A knob writes the top-level `model`, `model_reasoning_effort`, `sandbox_mode` an
 
 ### OpenCode
 
-Token Deck reads sessions and the available models from the OpenCode server. A knob writes `model` in `~/.config/opencode/opencode.json`, and on 1.x sets `edit` and the default `bash` rule in its `permission` map, keeping your per-command rules. Before the first change it copies the file to `opencode.json.tokendeck-backup`. If you set `OPENCODE_SERVER_PASSWORD` in your shell profile, Token Deck reads it from your login shell.
+Token Deck reads sessions and the available models from the OpenCode server. A knob writes `model` in `~/.config/opencode/opencode.json`, and on 1.x sets `edit` and the default `bash` rule in its `permission` map, keeping your per-command rules. Before the first change it copies the file to `opencode.json.tokendeck-backup`. If the file has comments, which Token Deck can't keep, the deck says `NOT AVAILABLE` and the file stays as it is. If you set `OPENCODE_SERVER_PASSWORD` in your shell profile, Token Deck reads it from your login shell.
 
 ### Cursor, Amp and Devin
 

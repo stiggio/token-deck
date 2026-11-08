@@ -19,6 +19,8 @@ export type CustomMode = {
   tiles: CustomTile[]
   knobs: { main?: KnobActions | null; left?: KnobActions | null; right?: KnobActions | null }
   errors: string[]
+  /** The file couldn't be read as a mode at all, so it has no keys. */
+  invalid?: boolean
 }
 
 type KnobActions = { cw?: Action | null; ccw?: Action | null; click?: Action | null }
@@ -36,23 +38,32 @@ export function loadModes(): CustomMode[] {
     .map((name) => loadMode(path.join(dir, name)))
 }
 
-function loadMode(file: string): CustomMode {
+export function loadMode(file: string): CustomMode {
   const errors: string[] = []
-  let json: Record<string, unknown> = {}
+  let json: Record<string, unknown>
   try {
-    json = JSON.parse(fs.readFileSync(file, 'utf8'))
+    const parsed = JSON.parse(fs.readFileSync(file, 'utf8')) as unknown
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('a mode file holds one JSON object')
+    json = parsed as Record<string, unknown>
   } catch (err) {
-    return { file, name: path.basename(file), tiles: [], knobs: {}, errors: [String(err)] }
+    // Six empty keys rather than none, so the deck still draws and says what's wrong.
+    return { file, name: path.basename(file, '.json'), tiles: [null, null, null, null, null, null], knobs: {}, errors: [String(err)], invalid: true }
   }
-  const tiles = Array.isArray(json.tiles) ? (json.tiles as CustomTile[]).slice(0, 6) : []
+  const tiles = (Array.isArray(json.tiles) ? json.tiles.slice(0, 6) : []).map((tile): CustomTile =>
+    tile && typeof tile === 'object' && !Array.isArray(tile) ? { ...(tile as Record<string, unknown>) } as CustomTile : null
+  )
   while (tiles.length < 6) tiles.push(null)
   tiles.forEach((tile, index) => {
-    if (!tile || !tile.label) return
+    if (!tile || tile.label == null) return
+    if (typeof tile.label !== 'string') {
+      errors.push(`Tile ${index + 1} label isn't text.`)
+      tile.label = String(tile.label)
+    }
     const lines = tile.label.split('\n').slice(0, 2)
     if (tile.label.length > 24) errors.push(`Tile ${index + 1} label was cut to 50px.`)
     tile.label = lines.join('\n')
   })
-  const knobs = (json.knobs || {}) as CustomMode['knobs']
+  const knobs = (json.knobs && typeof json.knobs === 'object' && !Array.isArray(json.knobs) ? json.knobs : {}) as CustomMode['knobs']
   return { file, name: String(json.name || path.basename(file, '.json')), tiles, knobs, errors }
 }
 

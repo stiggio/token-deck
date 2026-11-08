@@ -16,6 +16,8 @@ const BUNDLES: Record<string, string> = {
   ghostty: 'com.mitchellh.ghostty',
   WarpTerminal: 'dev.warp.Warp-Stable',
   kitty: 'net.kovidgoyal.kitty',
+  WezTerm: 'com.github.wez.wezterm',
+  zed: 'dev.zed.Zed',
   vscode: 'com.microsoft.VSCode',
   Cursor: 'com.todesktop.230313mzl4w4u92',
   claude: 'com.anthropic.claudefordesktop',
@@ -113,7 +115,9 @@ export async function focusSession(target: FocusTarget): Promise<void> {
     }
   }
   const bundle = target.bundleId || BUNDLES[term] || target.app
-  if (bundle) await osa(`tell application id "${bundle}" to activate`)
+  // Say so when nothing applies (a terminal Token Deck doesn't know, a session without one), so the deck shows FAILED.
+  if (!bundle) throw new Error(`no way to bring ${term || 'this session'} to the front`)
+  await osa(`tell application id "${bundle}" to activate`)
 }
 
 /** Bundle ids that are actually running. Does not launch anything. */

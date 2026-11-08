@@ -4,6 +4,7 @@ import path from 'path'
 import { commandVersion, loginShellVar, which } from '../system/which'
 import { focusSession, launchInTerminal } from '../system/focus'
 import { findAgentTerminal } from '../system/terminal'
+import { readIfExists, writeFileAtomic } from '../system/files'
 import type { SettingsStore } from '../settings/store'
 import type { LiveSession } from './claude-code'
 import type { PermissionMode } from '../../shared/model'
@@ -145,7 +146,7 @@ export class OpenCodeIntegration {
   async focus(session: LiveSession): Promise<void> {
     const terminal = await findAgentTerminal(['opencode'], session.cwd)
     if (terminal) {
-      await focusSession({ tty: terminal.tty, termProgram: terminal.termProgram, cwd: session.cwd })
+      await focusSession({ tty: terminal.tty, termProgram: terminal.termProgram, bundleId: terminal.bundleId, cwd: session.cwd })
       return
     }
     // macOS: no terminal runs OpenCode in that folder, so say so. Windows: bring the terminal app forward.
@@ -205,12 +206,21 @@ function configFile(): string {
   return path.join(os.homedir(), '.config/opencode/opencode.json')
 }
 
-/** opencode.json; for a change, throws rather than overwrite a file that isn't valid JSON. */
+/**
+ * opencode.json as an object. A missing file is an empty config. For a write, a file that can't be
+ * read or isn't a JSON object stops the change, so Token Deck never replaces what it couldn't parse.
+ */
 function readConfig(forWrite = false): Record<string, unknown> {
-  const file = configFile()
-  if (!fs.existsSync(file)) return {}
+  let text: string | null
   try {
-    const parsed = JSON.parse(fs.readFileSync(file, 'utf8')) as unknown
+    text = readIfExists(configFile())
+  } catch (err) {
+    if (forWrite) throw err
+    return {}
+  }
+  if (text === null) return {}
+  try {
+    const parsed = JSON.parse(text) as unknown
     if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed as Record<string, unknown>
   } catch {
     /* falls through */
@@ -219,12 +229,11 @@ function readConfig(forWrite = false): Record<string, unknown> {
   return {}
 }
 
-/** Writes opencode.json, copying the original to opencode.json.tokendeck-backup the first time. */
+/** Writes opencode.json in one step, after keeping a copy of the user's original once. */
 function writeConfig(json: Record<string, unknown>): void {
   const file = configFile()
-  fs.mkdirSync(path.dirname(file), { recursive: true })
   if (fs.existsSync(file) && !fs.existsSync(file + '.tokendeck-backup')) fs.copyFileSync(file, file + '.tokendeck-backup')
-  fs.writeFileSync(file, JSON.stringify(json, null, 2) + '\n')
+  writeFileAtomic(file, JSON.stringify(json, null, 2) + '\n')
 }
 
 async function getJson<T>(url: string, headers: Record<string, string>): Promise<T> {

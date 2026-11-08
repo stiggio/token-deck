@@ -54,7 +54,9 @@ export const OVERLAY_GROUPS = [
   'OPEN',
   'DEFAULT',
   'TURN',
-  'FIRST'
+  'FIRST',
+  'MODE FILE',
+  'ERROR'
 ] as const
 
 export function splitGroups(message: string): string[] {
