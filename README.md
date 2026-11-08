@@ -247,14 +247,14 @@ Token Deck's own files are in `~/.tokendeck`: `settings.json` (the app's own set
 
 **Logs.** About → Show log opens `~/.tokendeck/log/tokendeck.log`.
 
-**Uninstall.** Click Stop watching on the This Mac page to put back the `settings.json` you had when you connected Claude Code (on Windows, copy `settings.json.tokendeck-backup` back by hand). Quit Token Deck from its menu and delete the app (on Windows, from Settings → Apps). Delete `~/.tokendeck` and the Electron cache folder above to remove the rest. If you changed Codex defaults from the deck, restore `~/.codex/config.toml.tokendeck-backup` by hand.
+**Uninstall.** Click Stop watching on the This Mac page to put back the `settings.json` you had when you connected Claude Code. Quit Token Deck from its menu and delete the app (on Windows, from Settings → Apps). Delete `~/.tokendeck` and the Electron cache folder above to remove the rest. If you changed Codex defaults from the deck, restore `~/.codex/config.toml.tokendeck-backup` by hand.
 
 ## Known issues
 
-These are open in version 1.0.0:
+These are open in version 1.0.1:
 
 - Token Deck removes `model` from `~/.claude/settings.json` when a running Claude Code session was started with a different `--model` and no running session uses the one in the file. If `settings.json` isn't valid JSON, the next change Token Deck makes replaces the file with just that setting.
-- On Windows, Claude Code's status line isn't installed, so context and usage don't show, and Stop watching doesn't appear.
+- On Windows, Claude Code's status line isn't installed, so context and usage don't show.
 - A Claude Code session that hasn't sent a hook event since Token Deck started can't find its terminal: it opens in the Claude desktop app, or nothing happens without it. OpenCode keys can't focus a terminal yet.
 - OpenCode sessions always sort first, the deck can only choose the OpenCode model that's already set, and OpenCode 1.2 is detected as 2.x. `OPENCODE_SERVER_PASSWORD` is only seen when it's set in Token Deck's own environment, not just in your shell profile.
 - A `mode` action on a knob only shows `OK`, and the simulator can't hold a metal button, so it can't open your own modes.
