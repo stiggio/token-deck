@@ -36,6 +36,11 @@ curl -s --connect-timeout 1 --max-time 2 -o /dev/null -X POST "$u/hooks/claude" 
 exit 0
 `
 
+/**
+ * The status line shim. Claude Code runs it on every render, so it caches and posts the session first, then runs
+ * the status line the user had. In this template `\\` is one backslash in the script, while `\n` and `\t` are a
+ * real newline and tab.
+ */
 const STATUSLINE = `#!/bin/sh
 in=$(cat)
 mkdir -p "$HOME/.tokendeck"
@@ -44,9 +49,36 @@ u=$(cat "$HOME/.tokendeck/url" 2>/dev/null || true)
 if [ -n "$u" ]; then
   printf '%s' "$in" | curl -s -m 1 -o /dev/null -X POST "$u/statusline" -H 'content-type: application/json' --data-binary @- >/dev/null 2>&1 &
 fi
-orig=$(cat "$HOME/.tokendeck/statusline-original.json" 2>/dev/null || true)
-orig=\${orig#\\"}
-orig=\${orig%\\"}
+# statusline-original.json holds JSON.stringify(command). Undo its escapes here in sh, as jq, node
+# and python may not be installed: one pass, left to right, so the second backslash of an escaped
+# backslash never starts an escape of its own.
+s=$(cat "$HOME/.tokendeck/statusline-original.json" 2>/dev/null || true)
+orig=
+case $s in
+  \\"*\\") s=\${s#\\"}; s=\${s%\\"} ;;
+  *) orig=$s; s= ;;
+esac
+while [ -n "$s" ]; do
+  case $s in
+    *\\\\*) orig=$orig\${s%%\\\\*}; s=\${s#*\\\\} ;;
+    *) orig=$orig$s; break ;;
+  esac
+  # JSON.stringify writes \\" \\\\ \\n \\t \\r \\b \\f, and \\u00XX for the other control characters.
+  # Newline and tab are typed out below; printf makes the rest.
+  case $s in
+    \\"*) e=\\" ;;
+    \\\\*) e=\\\\ ;;
+    n*) e='\n' ;;
+    t*) e='\t' ;;
+    r*) e=$(printf '\\r') ;;
+    b*) e=$(printf '\\b') ;;
+    f*) e=$(printf '\\f') ;;
+    u*) c=\${s#u}; s=\${c#????}; c=\${c%"$s"}
+      orig=$orig$(printf "\\\\$(printf %o "0x$c")"); continue ;;
+    *) e=\${s%"\${s#?}"} ;;
+  esac
+  orig=$orig$e; s=\${s#?}
+done
 if [ -n "$orig" ] && [ "$orig" != "null" ]; then
   printf '%s' "$in" | sh -c "$orig"
 fi
@@ -686,7 +718,8 @@ function windowOf(row?: { used_percentage?: number; utilization?: number; resets
   return { pct, resetsAt }
 }
 
-function writeStatusline(): void {
+/** Writes the status line shim. start() calls it on every app start, so a new shim reaches existing installs. */
+export function writeStatusline(): void {
   const file = path.join(os.homedir(), '.tokendeck', 'bin', 'statusline')
   fs.mkdirSync(path.dirname(file), { recursive: true })
   fs.writeFileSync(file, STATUSLINE, { mode: 0o755 })
