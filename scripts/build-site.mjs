@@ -288,8 +288,8 @@ ${defs}
       ${legend([
         [1, 'Keys', '<b>Press:</b> bring that agent’s latest window to the front, or open it. A dim key means the agent isn’t installed.'],
         [2, 'Big knob', '<b>Turn:</b> hop between open agent windows. <b>Press:</b> back to the previous window.'],
-        [3, 'Left knob', '<b>Turn:</b> the model your next session starts with.'],
-        [4, 'Right knob', '<b>Turn:</b> the effort your next session starts with.']
+        [3, 'Left knob', '<b>Turn:</b> the model your next session starts with. <b>Press:</b> back to the default.'],
+        [4, 'Right knob', '<b>Turn:</b> the effort your next session starts with. <b>Press:</b> back to the default.']
       ])}
     </div>
   </article>
@@ -311,7 +311,7 @@ ${defs}
     <div class="mode-legend">
       ${legend([
         [1, 'Keys', '<b>Press:</b> jump to that session’s window.'],
-        [2, 'Big knob', '<b>Turn:</b> page through sessions, six at a time. <b>Press:</b> go to the page with the latest session that needs you.'],
+        [2, 'Big knob', '<b>Turn:</b> page through sessions, six at a time. <b>Press:</b> the next page with a session that needs you.'],
         [3, 'Left knob', '<b>Turn:</b> filter by agent. <b>Press:</b> all agents.'],
         [4, 'Right knob', '<b>Turn:</b> filter by status. <b>Press:</b> all statuses.']
       ])}
@@ -405,7 +405,7 @@ ${defs}
             <tbody>
               <tr><th scope="row">Claude Code</th><td>Sessions, context and usage limits (macOS), model, effort, permission, Ultracode</td></tr>
               <tr><th scope="row">Codex</th><td>Sessions, usage limits, model, effort, permission</td></tr>
-              <tr><th scope="row">OpenCode</th><td>Sessions while <span class="mono">opencode serve</span> runs, and its permission setting</td></tr>
+              <tr><th scope="row">OpenCode</th><td>Sessions while <span class="mono">opencode serve</span> runs, model, permission</td></tr>
               <tr><th scope="row">Cursor, Amp, Devin</th><td>A key that opens or focuses the app</td></tr>
             </tbody>
           </table>
@@ -445,8 +445,8 @@ ${defs}
       <details id="remove">
         <summary>How do I remove it?</summary>
         <div class="answer">
-          <p>Open Token Deck’s window from its menu bar or tray icon, go to This Mac and click Stop watching. That puts back the <code class="inline">settings.json</code> you had when you connected Claude Code. Then quit Token Deck and delete it: drag it out of Applications on a Mac, or use Settings → Apps on Windows.</p>
-          <p>To remove its settings and log, delete <code class="inline">~/.tokendeck</code>. If you changed Codex defaults from the deck, copy <code class="inline">~/.codex/config.toml.tokendeck-backup</code> back over <code class="inline">config.toml</code>.</p>
+          <p>Open Token Deck’s window from its menu bar or tray icon, go to This Mac and click Stop watching. That takes Token Deck’s hooks out of your Claude Code settings and puts your status line back. Then quit Token Deck and delete it: drag it out of Applications on a Mac, or use Settings → Apps on Windows.</p>
+          <p>To remove its settings and log, delete <code class="inline">~/.tokendeck</code>. If you changed Codex or OpenCode defaults from the deck, the original files are saved next to them with <code class="inline">.tokendeck-backup</code> at the end.</p>
         </div>
       </details>
       <details id="welcome">
