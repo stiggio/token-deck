@@ -55,6 +55,9 @@
     var row = install.querySelector('[data-os-row="' + os + '"]')
     if (row) row.setAttribute('data-current', '')
   }
+  // On a phone, a tablet or Linux, say where the app runs before the visitor scrolls to the downloads.
+  var away = document.querySelector('.away')
+  if (away && !os) away.hidden = false
   if (os === 'mac' && data && data.getHighEntropyValues) {
     data.getHighEntropyValues(['architecture']).then(function (values) {
       var id = values.architecture === 'arm' ? 'dmg-arm' : values.architecture === 'x86' ? 'dmg-intel' : ''

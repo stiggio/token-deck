@@ -15,6 +15,7 @@ It runs on macOS and Windows, lives in the menu bar (the system tray on Windows)
 - [Your own modes](#your-own-modes)
 - [What Token Deck changes on your computer](#what-token-deck-changes-on-your-computer)
 - [Troubleshooting](#troubleshooting)
+- [Known issues](#known-issues)
 - [The welcome screen](#the-welcome-screen)
 - [Development](#development)
 - [License](#license)
@@ -45,7 +46,7 @@ Windows 10 or 11, 64-bit. Download and run [TokenDeck-win-x64.exe](https://githu
 
 If the deck maker's StreamDock or VSD Craft app is running, quit it before you plug in the deck. Only one program can use the deck at a time.
 
-The first time Token Deck starts, it offers three steps. You can skip any of them and come back later from the app's window, which opens from the menu bar or tray icon.
+The first time Token Deck starts, it offers three steps. You can skip any of them: connecting Claude Code and the macOS permissions are also on the app's This Mac page later (the app's window opens from the menu bar or tray icon), but starting at login is only offered here.
 
 1. Connect Claude Code. Token Deck adds its hooks and status line to `~/.claude/settings.json`, replacing any hooks you have on the same events, and keeps a backup ([details](#claude-code)).
 2. On macOS, grant Accessibility and Automation, so the deck can bring windows to the front.
@@ -67,7 +68,9 @@ Turning a knob shows a short message across the top row of keys for 5 seconds, l
 
 ### Agents
 
-Press a key to bring that agent's latest session or window to the front, or to open it if it isn't running. A dim key means the app isn't installed. Claude Code opens in the Claude desktop app when you have it, and in Terminal otherwise. Amp's key opens VS Code, and Devin's opens [app.devin.ai](https://app.devin.ai).
+Press a key to go to that agent's latest session or window, or to open it if it isn't running. A dim key means the app isn't installed. Claude Code opens in the Claude desktop app when you have it, and in Terminal otherwise. Amp's key opens VS Code, and Devin's opens [app.devin.ai](https://app.devin.ai).
+
+The left and right knobs act on the last of Claude Code, Codex or OpenCode whose key or session you pressed, or the first one installed.
 
 | Control | Turn | Press |
 |---|---|---|
@@ -77,7 +80,7 @@ Press a key to bring that agent's latest session or window to the front, or to o
 
 ### Sessions
 
-Each key is one session. The dot shows what it's doing, and the ring shows how full its context window is. Only Claude Code reports context, so Codex and OpenCode sessions get a dashed ring.
+Each key is one recent session, newest first. The dot shows what it's doing, and the ring shows how full its context window is. Only Claude Code reports context, so Codex and OpenCode sessions get a dashed ring.
 
 | Dot | Status |
 |---|---|
@@ -87,11 +90,11 @@ Each key is one session. The dot shows what it's doing, and the ring shows how f
 | Gray | Idle |
 | Lime | Done |
 
-Press a key to jump to that session's window. Models & Usage then shows that session's agent. Token Deck finds the exact tab in Terminal, iTerm2 and Ghostty, the right window in VS Code and Cursor, and the session in the Claude desktop app. For other terminals it brings the app forward. On Windows it brings Windows Terminal forward, without picking the tab.
+Press a key to jump to that session's window, and Models & Usage then shows that session's agent. For a Claude Code session, Token Deck finds the exact tab in Terminal, iTerm2 and Ghostty, the right window in VS Code and Cursor, or the session in the Claude desktop app; for other terminals it brings the app forward. A Codex session brings the Codex desktop app forward. On Windows, Token Deck brings Windows Terminal forward, without picking the tab.
 
 | Control | Turn | Press |
 |---|---|---|
-| Big knob | The next or previous six sessions | The next session that needs you |
+| Big knob | The next or previous six sessions | The page with the latest session that needs you |
 | Left knob | Filter by agent | All agents |
 | Right knob | Filter by status: all, working, needs you, idle, done | All statuses |
 
@@ -109,7 +112,7 @@ Models & Usage shows one agent at a time; the left knob switches between Claude 
 | Left knob | Agent | Back to the agent of the last session you opened |
 | Right knob | Permission: `READ`, `ASK`, `AUTO`, `FULL` | Apply it |
 
-Model, effort and permission changes go into the agent's own settings file and apply from your next session, so the deck says `NEXT SESSION`. Sessions that are already running keep what they started with. `FULL` waits until you confirm it in a dialog on the computer.
+Turning the right knob only previews a permission level; nothing changes until you press it, and `FULL` waits until you confirm it in a dialog on the computer. Model, effort and permission changes go into the agent's own settings file and apply from your next session, and the deck confirms each one, like `SONNET` `NEXT` `SESSION` or `HIGH` `EFFORT`. Sessions that are already running keep what they started with.
 
 Where the usage numbers come from:
 
@@ -117,9 +120,9 @@ Where the usage numbers come from:
 - **Codex** reports them through `codex app-server` when you're signed in with ChatGPT. Token Deck asks once a minute.
 - **OpenCode** doesn't report limits, so the key shows `--`.
 
-The deck keeps the last reading for 24 hours, then shows `--`. Once a limit resets, its old reading is cleared.
+The deck shows the last reading it got for up to 24 hours, then `--`. On Windows, Claude Code's status line isn't installed yet, so its usage and context don't show there.
 
-The models come from each agent: Claude Code's model list (Opus, Sonnet, Haiku and Fable until it has one) and the models Codex offers you. Reorder them on the app's Models page.
+The models come from each agent: Claude Code's model list (Opus, Sonnet, Haiku and Fable until it has one), the models Codex offers you, and the model set in OpenCode's config. The app's Models page lists them.
 
 What each permission level writes:
 
@@ -139,7 +142,7 @@ The app's window has a simulator: the deck drawn at the bottom shows the same ke
 | Key | Does |
 |---|---|
 | `1` to `6` | Press a screen key |
-| `Q` `W` `E` | Press the left, middle or right metal button (hold Shift to hold it) |
+| `Q` `W` `E` | Press the left, middle or right metal button |
 | `←` `→` | Turn the big knob |
 | `↑` `↓` | Turn the left knob |
 | `,` `.` | Turn the right knob |
@@ -147,7 +150,7 @@ The app's window has a simulator: the deck drawn at the bottom shows the same ke
 
 ## Your own modes
 
-A mode is a JSON file in `~/.tokendeck/modes/`. Hold the middle button and the keys list your modes; press one to open it. Any metal button takes you back. Token Deck reloads a file when you save it, and the app's Deck page lists any problems in your files.
+A mode is a JSON file in `~/.tokendeck/modes/`. Hold the middle button and the keys list your modes, up to six; press one to open it. Any metal button takes you back. With no mode files, holding the middle button just opens Sessions. An edited file takes effect the next time you open the mode, and the app's Deck page lists any problems in your files.
 
 ```json
 {
@@ -173,7 +176,7 @@ A mode is a JSON file in `~/.tokendeck/modes/`. Hold the middle button and the k
 }
 ```
 
-`tiles` holds up to six keys, left to right and top to bottom; `null` leaves a key empty. A label is shown in capitals, one word per line, two lines at most. `icon` is an optional PNG or SVG, drawn at 28 pixels. `knobs` maps `main` (the big knob), `left` and `right` to an action for `cw` (clockwise), `ccw` (counter-clockwise) and `click`.
+`tiles` holds up to six keys, left to right and top to bottom; `null` leaves a key empty, and pressing an empty key or turning a knob with no action shows `FAILED`. A label is shown in capitals, one word per line, two lines at most. `icon` is an optional PNG or SVG, drawn at 28 pixels. `knobs` maps `main` (the big knob), `left` and `right` to an action for `cw` (clockwise), `ccw` (counter-clockwise) and `click`.
 
 | Action | Fields | Does |
 |---|---|---|
@@ -181,22 +184,22 @@ A mode is a JSON file in `~/.tokendeck/modes/`. Hold the middle button and the k
 | `open` | `app` | Opens an app by name. |
 | `url` | `url` | Opens a link in your browser. |
 | `keys` | `keys` | Sends a shortcut to the app in front. On macOS write it like `cmd+shift+p` (`cmd`, `ctrl`, `opt`, `shift`). On Windows the string goes to `SendKeys` as is, so use its syntax: `^+p`. |
-| `mode` | `mode` | Switches to `agents`, `sessions` or `models`. |
+| `mode` | `mode` | From a key, switches to `agents`, `sessions` or `models`. |
 
 ## What Token Deck changes on your computer
 
 ### Claude Code
 
-Token Deck reads `claude agents --json --all` every two seconds, plus the session files under `~/.claude/sessions` and `~/.claude/projects`, to list your sessions. It never reads Claude Code's credentials; `claude auth status --json` tells it whether you're signed in.
+From launch, Token Deck reads `claude agents --json --all` every two seconds, plus the session files under `~/.claude/sessions` and `~/.claude/projects`, to list your sessions, and the list of running processes to see which model each session runs. It never reads Claude Code's credentials; `claude auth status --json` tells it whether you're signed in.
 
 When you connect Claude Code (in the first-run setup, or on the app's This Mac page), Token Deck:
 
 1. Copies `~/.claude/settings.json` to `~/.claude/settings.json.tokendeck-backup`. This happens once; reconnecting keeps the first backup.
 2. Writes two small scripts, `~/.tokendeck/bin/hook` and `~/.tokendeck/bin/statusline` (`hook.ps1` on Windows).
 3. Sets its hook on seven events in `settings.json`: `UserPromptSubmit`, `Stop`, `Notification`, `PermissionRequest` and `PostModelSwitch` run in the background, and `SessionStart` and `SessionEnd` run with a two-second limit. Hooks you already had on those events are replaced; they're still in the backup. The hook is a `command` hook that exits at once when Token Deck isn't running, so a quit or crashed app never shows hook errors in your sessions.
-4. Points the status line at `~/.tokendeck/bin/statusline` (macOS only). Your previous status line command is saved in `~/.tokendeck/statusline-original.json`, and the script runs it with the same input, so your status line looks the same. The script also keeps the latest status line data in `~/.tokendeck/last-statusline.json`, which is where the context ring and usage numbers come from.
+4. Points the status line at `~/.tokendeck/bin/statusline` (macOS only). Your previous status line command is saved in `~/.tokendeck/statusline-original.json`, and the script runs it with the same input, so your status line looks the same (with one exception, under [Known issues](#known-issues)). The script also keeps the latest status line data in `~/.tokendeck/last-statusline.json`, which is where the context ring and usage numbers come from.
 
-**Stop watching** on the This Mac page copies the backup over `settings.json`, byte for byte.
+**Stop watching** on the This Mac page copies that backup over `settings.json`, byte for byte. That undoes every change made to the file since you first connected, not only Token Deck's. If `settings.json` didn't exist when you connected, there's no backup to restore.
 
 When you turn a knob, Token Deck writes `model`, the effort setting, `permissions.defaultMode` or `ultracode` in `settings.json`, keeping everything else in the file.
 
@@ -204,11 +207,11 @@ When you turn a knob, Token Deck writes `model`, the effort setting, `permission
 
 Token Deck runs `codex app-server` in the background to read your sessions, models and usage limits. It never answers an approval request; you approve in Codex.
 
-A knob writes the top-level `model`, `model_reasoning_effort`, `sandbox_mode` and `approval_policy` lines in `~/.codex/config.toml`. It edits those lines in place, so comments and the rest of the file stay as they are, and it never touches `notify`. Before the first edit it copies the file to `~/.codex/config.toml.tokendeck-backup`; to undo, copy that file back.
+A knob writes the top-level `model`, `model_reasoning_effort`, `sandbox_mode` and `approval_policy` lines in `~/.codex/config.toml`. It edits those lines in place and adds missing ones at the top, so other comments and settings stay as they are, and it never touches `notify`. Before the first edit it copies the file to `~/.codex/config.toml.tokendeck-backup`; to undo, copy that file back.
 
 ### OpenCode
 
-Token Deck reads sessions from the OpenCode server and writes `model` and the permission settings in `~/.config/opencode/opencode.json`. It doesn't keep a backup of that file.
+Token Deck reads sessions from the OpenCode server. A knob writes `model` in `~/.config/opencode/opencode.json` and replaces its `permission` map (1.x) or `permissions` list (2.x), so per-command rules there are lost. It doesn't keep a backup of that file.
 
 ### Cursor, Amp and Devin
 
@@ -221,10 +224,10 @@ To bring a window to the front, macOS asks once for Automation for each app Toke
 ### Network and data
 
 - Hooks reach the app through a server on `127.0.0.1` only, on a random port, behind a random per-install token in the path. Its address is in `~/.tokendeck/url` while the app runs.
-- The only internet request Token Deck makes is the update check against this repository's GitHub releases.
+- Token Deck only goes online for updates: it checks this repository's GitHub releases when it starts, Windows downloads a new version in the background, and Update now on a Mac runs the install script from `usage.stigg.io`.
 - There's no telemetry. The log stays on your computer, in `~/.tokendeck/log/tokendeck.log`, rotated at 5 MB.
 
-Everything Token Deck keeps is in `~/.tokendeck`: `settings.json` (the app's own settings), `log/`, `bin/`, `modes/`, `url` and the status line files above.
+Token Deck's own files are in `~/.tokendeck`: `settings.json` (the app's own settings), `log/`, `bin/`, `modes/`, `url` and the status line files above. The backups sit next to the files they back up, and Electron keeps a cache in `~/Library/Application Support/Token Deck` (`%APPDATA%\Token Deck` on Windows).
 
 ## Troubleshooting
 
@@ -244,7 +247,18 @@ Everything Token Deck keeps is in `~/.tokendeck`: `settings.json` (the app's own
 
 **Logs.** About → Show log opens `~/.tokendeck/log/tokendeck.log`.
 
-**Uninstall.** Click Stop watching on the This Mac page to restore your Claude Code settings, then quit Token Deck from its menu and delete the app (on Windows, from Settings → Apps). Delete `~/.tokendeck` to remove its settings and log. If you changed Codex defaults from the deck, restore `~/.codex/config.toml.tokendeck-backup` by hand.
+**Uninstall.** Click Stop watching on the This Mac page to put back the `settings.json` you had when you connected Claude Code (on Windows, copy `settings.json.tokendeck-backup` back by hand). Quit Token Deck from its menu and delete the app (on Windows, from Settings → Apps). Delete `~/.tokendeck` and the Electron cache folder above to remove the rest. If you changed Codex defaults from the deck, restore `~/.codex/config.toml.tokendeck-backup` by hand.
+
+## Known issues
+
+These are open in version 1.0.0:
+
+- Connecting Claude Code replaces any hooks you had on the same seven events. If your previous status line command contains the word `statusline` (like `~/.claude/statusline.sh`), it isn't kept, and your status line goes blank. Stop watching restores both.
+- Token Deck removes `model` from `~/.claude/settings.json` when a running Claude Code session was started with a different `--model` and no running session uses the one in the file. If `settings.json` isn't valid JSON, the next change Token Deck makes replaces the file with just that setting.
+- On Windows, Claude Code's status line isn't installed, so context and usage don't show, and Stop watching doesn't appear.
+- A Claude Code session that hasn't sent a hook event since Token Deck started can't find its terminal: it opens in the Claude desktop app, or nothing happens without it. OpenCode keys can't focus a terminal yet.
+- OpenCode sessions always sort first, the deck can only choose the OpenCode model that's already set, and OpenCode 1.2 is detected as 2.x. `OPENCODE_SERVER_PASSWORD` is only seen when it's set in Token Deck's own environment, not just in your shell profile.
+- A `mode` action on a knob only shows `OK`, and the simulator can't hold a metal button, so it can't open your own modes.
 
 ## The welcome screen
 

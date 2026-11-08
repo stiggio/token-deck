@@ -8,7 +8,7 @@ Token Deck's welcome screen has the Stigg logo on key 1, `io.stigg.io` / `/usage
 |---|---|
 | `resources/welcome-320x240.png` | The welcome screen, upright, 320 × 240 |
 | `resources/welcome-sent.jpg` | The exact bytes written to the deck: 18,887 bytes, rotated for the wire, sha256 `daea022363c85ef722c9c93bcd7f5379a995b726cb5240bc4ed92b12d15071fb` |
-| `resources/welcome-tiles/key1-6.jpg` | The same image cut into the six keys, painted before a write, when Token Deck quits and when it's idle |
+| `resources/welcome-tiles/key1-6.jpg` | The same image cut into the six keys, painted before a write and when Token Deck quits |
 
 The welcome screen was rendered from the private design kit with Söhne, which can't be in this repository. Don't redraw or re-encode these files: another renderer changes the hinted type and the hash. The design history is in [PLAN.md](../PLAN.md), section 9.
 
@@ -16,7 +16,7 @@ The welcome screen was rendered from the private design kit with Söhne, which c
 
 Flash wears out, so each deck gets written once:
 
-- **Automatically**, the first time Token Deck sees a deck whose serial number is in neither its own record nor `resources/preburned.json` (the list of decks prepared for the event). It waits 8 seconds after the deck appears, writes, and records the serial, the image hash and the time. Decks without a serial number are skipped. After two failed attempts on one deck it stops trying. The About page has a switch to turn the automatic write off.
+- **Automatically**, the first time Token Deck sees a deck whose serial number is in none of its records: its own settings, `resources/preburned.json` (the list of decks prepared for the event) and `~/.tokendeck/preburned.json` (the batch tool's list on this computer). It waits 8 seconds after the deck appears, writes, and records the serial, the image hash and the time. Decks without a serial number are skipped. After two failed attempts on one deck it stops trying. The About page has a switch to turn the automatic write off.
 - **By hand**, from About → Write welcome screen again, after a confirmation. Use it after another tool replaced the welcome screen.
 - **In bulk**, with `burn --watch` ([below](#preparing-many-decks)).
 
@@ -46,10 +46,10 @@ This is how the Stigg team wrote the welcome screen to the giveaway decks, on a 
    ```
 
 3. Plug in a deck. The tool waits 8 seconds, prints the deck's maker, serial number and firmware, writes the welcome screen, holds for 10 seconds and prints `done, unplug and plug the next`. A deck it already wrote prints `already burned, unplug`.
-4. If a write fails, it prints `FAILED: this deck may now start black. Unplug it and plug it back in to retry.` in red and won't take another deck until that one has been replugged and written. A deck whose last write failed must not ship.
+4. If a write fails, it prints `FAILED: this deck may now start black. Unplug it and plug it back in to retry.` in red. Replug that deck and let the tool write it again before you move on: a deck whose last write failed must not ship, and the tool doesn't stop you from plugging in the next one once the failed deck is unplugged.
 5. Press Ctrl-C to stop. It prints which serials were written and which failed.
 
-Expect about 25 seconds per deck. Every write is appended to `~/.tokendeck/preburned.json`. Commit that file as `resources/preburned.json` before tagging the release, so attendees' copies of Token Deck never write those decks again.
+Expect about 25 seconds per deck. Every successful write is appended to `~/.tokendeck/preburned.json`. Commit that file as `resources/preburned.json` before tagging the release, so attendees' copies of Token Deck never write those decks again. Until it's committed (the file in this repository is still `[]`), each attendee's app writes the welcome screen to their deck once more, 8 seconds after it first sees it.
 
 Before a large batch, write one deck, replug it with nothing running and check the screen, and confirm that a second deck reports a different serial number (the records can't tell two decks with the same serial apart).
 

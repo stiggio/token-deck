@@ -10,6 +10,7 @@
  * the app only lists sessions from those three agents, and Models & Usage starts with the usage key.
  */
 import fs from 'fs'
+import os from 'os'
 import path from 'path'
 import { createCanvas, loadImage, type Canvas, type Image } from '@napi-rs/canvas'
 import { AGENT_ORDER, type TileSpec } from '../src/shared/model'
@@ -23,6 +24,10 @@ const model = (name: string, current = false): TileSpec => ({
   kind: 'model',
   model: { name, current, fiveHour: null, sevenDay: null, fiveLabel: '5H', sevenLabel: '7D', shared: false, noQuota: false, stale: false }
 })
+
+// The example mode on the page gives BUILD "~/icons/hammer.svg"; draw it with Lucide's hammer (ISC).
+const hammer = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'td-site-')), 'hammer.svg')
+fs.writeFileSync(hammer, '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 12-8.373 8.373a1 1 0 1 1-3-3L12 9"/><path d="m18 15 4-4"/><path d="m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172V7l-2.26-2.26a6 6 0 0 0-4.202-1.756L9 2.96l.92.82A6.18 6.18 0 0 1 12 8.4V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5"/></svg>')
 
 const screens: Record<string, TileSpec[]> = {
   agents: AGENT_ORDER.map((agent) => ({ kind: 'agents', agent, active: 0, installed: true })),
@@ -43,7 +48,7 @@ const screens: Record<string, TileSpec[]> = {
     { kind: 'model', model: null }
   ],
   custom: [
-    { kind: 'custom', custom: { lines: ['BUILD'] } },
+    { kind: 'custom', custom: { lines: ['BUILD'], iconFile: hammer } },
     { kind: 'custom', custom: { lines: ['LOGS'] } },
     { kind: 'custom', custom: { lines: ['EDITOR'] } },
     { kind: 'custom', custom: { lines: ['PALETTE'] } },

@@ -60,9 +60,9 @@ Each tile is drawn upright on a 64 × 64 canvas with `@napi-rs/canvas`, turned 9
 
 ## Writing to the deck
 
-`src/main/deck/transport.ts` is the only code that writes. It sends one group of frames at a time, start to finish: a command, a key image with all its chunks, a whole repaint, or a whole welcome-screen write. The heartbeat and the keepalive wait their turn, so they never land in the middle of an image. Only the newest image per key is queued, so turning a knob fast never builds a backlog. By default the app also re-sends key 1 every second while idle (the `repaintKeepalive` setting), because this firmware family has been reported to stop repainting after a silence.
+`src/main/deck/transport.ts` is the only code that writes. It sends one group of frames at a time, start to finish: a command, a key image with all its chunks, a whole repaint, or a whole welcome-screen write. The heartbeat and the keepalive wait their turn, so they never land in the middle of an image. Only the newest image per key is queued, so turning a knob fast never builds a backlog. By default the app also re-sends key 1 every second while the deck is connected (the `repaintKeepalive` setting), because this firmware family has been reported to stop repainting after a silence.
 
-`node-hid` has no hot-plug events, so while no deck is open Token Deck lists devices every two seconds. A write error, a read error, or the computer waking from sleep closes the connection and opens it again with a fresh handshake and the current keys. A write that hangs for 5 seconds, or three failed opens in a row, shows "Deck not responding. Unplug it and plug it back in."
+`node-hid` has no hot-plug events, so while no deck is open Token Deck lists devices every two seconds. A write error, a read error, or the computer waking from sleep closes the connection and opens it again with a fresh handshake and the current keys. A write that hangs for 5 seconds drops the connection and opens a new one. Three failed opens in a row show "Deck not responding. Unplug it and plug it back in."
 
 When Token Deck quits, it paints the welcome tiles into the keys, stops the heartbeat and closes. About a minute later the firmware restarts and shows the welcome screen from flash, which looks the same.
 
