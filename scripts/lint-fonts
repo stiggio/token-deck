@@ -27,7 +27,7 @@ const fontExt = /\.(woff2?|otf|ttf)$/i
 for (const f of files) {
   if (/soehne|söhne/i.test(f)) bad(`tracked path matches a Söhne name: ${f}`)
   if (fontExt.test(f)) {
-    const geistBrand = f.startsWith('brand-kit/brand/geist/')
+    const geistBrand = f.startsWith('brand-kit/brand/geist/') || f.startsWith('assets/brand/geist/')
     const geistRes = f.startsWith('resources/') && /geist/i.test(f)
     if (!geistBrand && !geistRes) bad(`font file outside Geist paths: ${f}`)
   }
