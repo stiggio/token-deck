@@ -16,9 +16,9 @@
   --lime: #92e759;
   --blue: #7da2ff;
   --coral: #ff8e6d;
-  --sans: "Soehne Buch", Geist, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --light: "Soehne Leicht", "Geist Light", Geist, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --mono: "Soehne Mono Buch", "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: "Soehne Buch", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --light: "Soehne Leicht", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Soehne Mono Buch", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --ease: cubic-bezier(.2, .7, .2, 1);
   --max: 1200px;
   --gutter: clamp(20px, 4vw, 48px);

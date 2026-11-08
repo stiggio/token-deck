@@ -4,9 +4,9 @@
  * Static HTML, site/style.css and site/main.js; no framework and no network calls from the page.
  * Run `npx tsx scripts/export-site-tiles.ts` first: the device drawings use the tiles it renders.
  *
- * Fonts: Söhne is loaded from the URLs stigg.io's own stylesheet serves (they change if marketing
- * re-uploads the fonts in Webflow; Geist, served from this origin, keeps the page readable).
- * No Söhne file is ever committed or deployed (scripts/lint-fonts).
+ * Fonts: Stigg's Söhne only, loaded from the URLs stigg.io's own stylesheet serves. They change if
+ * marketing re-uploads the fonts in Webflow, so keep them in `fonts` below. No font file is ever
+ * committed or deployed with the site (Söhne's licence; scripts/lint-fonts).
  */
 import fs from 'fs'
 import path from 'path'
@@ -187,14 +187,12 @@ const html = `<!DOCTYPE html>
 <link rel="preconnect" href="https://cdn.prod.website-files.com" crossorigin>
 <link rel="preload" href="${fonts.buch}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="${fonts.leicht}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="${fonts.mono}" as="font" type="font/woff2" crossorigin>
 <style>
 @font-face { font-family: "Soehne Buch"; src: url("${fonts.buch}") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "Soehne Leicht"; src: url("${fonts.leicht}") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "Soehne Mono Buch"; src: url("${fonts.mono}") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "Soehne Mono Leicht"; src: url("${fonts.monoLight}") format("woff2"); font-weight: 400; font-display: swap; }
-@font-face { font-family: Geist; src: url("fonts/Geist-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
-@font-face { font-family: "Geist Light"; src: url("fonts/Geist-Light.woff2") format("woff2"); font-weight: 400; font-display: swap; }
-@font-face { font-family: "Geist Mono"; src: url("fonts/GeistMono-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 </style>
 <link rel="stylesheet" href="style.css?v=${version}">
 </head>
@@ -499,10 +497,7 @@ ${defs}
 </html>
 `
 
-fs.mkdirSync(path.join(root, 'site/fonts'), { recursive: true })
-for (const name of ['Geist-Regular.woff2', 'GeistMono-Regular.woff2', 'Geist-Light.woff2']) {
-  fs.copyFileSync(path.join(root, 'brand-kit/brand/geist', name), path.join(root, 'site/fonts', name))
-}
+fs.rmSync(path.join(root, 'site/fonts'), { recursive: true, force: true })
 fs.writeFileSync(path.join(root, 'site/favicon.svg'), svg('brand-kit/brand/stigg-app-icon.svg', 'width="512" height="512"') + '\n')
 fs.writeFileSync(path.join(root, 'site/index.html'), html)
 console.log(`site/index.html ${(html.length / 1024).toFixed(1)} KB`)
