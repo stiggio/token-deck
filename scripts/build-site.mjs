@@ -155,7 +155,7 @@ const icon = {
 
 // ---- The page -----------------------------------------------------------------------------------------
 
-const description = 'Token Deck is the app for the deck from your After Tokens box. It puts your Claude Code, Codex and OpenCode sessions on the keys, takes you to the one that needs you, and shows how much of your 5-hour and weekly limits you have used. For macOS and Windows.'
+const description = 'Token Deck is the free app for the deck in your After Tokens box. It puts your Claude Code, Codex and OpenCode sessions on the keys, takes you to the one that needs you, and shows how much of your 5-hour and weekly limits you have used. For macOS and Windows.'
 
 const legend = (rows) => `<dl class="legend">${rows.map(([n, term, text]) => `<div><dt><span class="num" aria-hidden="true">${n}</span>${term}</dt><dd>${text}</dd></div>`).join('')}</dl>`
 
@@ -208,7 +208,7 @@ ${defs}
   <nav class="nav" aria-label="Page">
     <a href="#modes">How it works</a>
     <a href="#program">Your own modes</a>
-    <a href="#help">Setup notes</a>
+    <a href="#help">Help</a>
     <a class="ext" href="${REPO}">GitHub</a>
     <a class="btn btn-sm" href="#install">Install</a>
   </nav>
@@ -221,7 +221,7 @@ ${defs}
     <h1 id="title" class="lockup"><span class="visually-hidden">Token Deck</span>${svg('brand-kit/design/token-deck-d-stacked-pixel-token.svg', 'aria-hidden="true" focusable="false"')}</h1>
     <div class="hero-copy">
       <p class="display">Your coding agents, on six keys and three knobs<span class="dot">.</span></p>
-      <p class="lead">Token Deck is the app for the deck from your After Tokens box. It puts your Claude Code, Codex and OpenCode sessions on the keys, takes you to the one that needs you, and shows how much of your 5-hour and weekly limits you’ve used.</p>
+      <p class="lead">Token Deck is the free app for the deck in your After Tokens box. It puts your Claude Code, Codex and OpenCode sessions on the keys, takes you to the one that needs you, and shows how much of your 5-hour and weekly limits you’ve used.</p>
     </div>
   </div>
   <div class="hero-main">
@@ -236,7 +236,7 @@ ${defs}
           <code id="install-cmd">${esc(INSTALL).replace('usage.stigg.io/', 'usage.stigg.io/<wbr>')}</code>
           <button class="copy" type="button" data-copy="install-cmd" aria-label="Copy the install command">${icon.copy}${icon.check}<span class="idle">Copy</span><span class="done">Copied</span></button>
         </div>
-        <p class="small">Paste it into Terminal. It downloads the build for your Mac, checks it against its checksum and puts Token Deck in Applications. <a class="link" href="${SITE}/install.sh">Read the script</a> before you run it.</p>
+        <p class="small">Paste it into Terminal. It downloads the build for your Mac, verifies its SHA-256 checksum and puts Token Deck in Applications. <a class="link" href="${SITE}/install.sh">Read the script</a> before you run it.</p>
       </div>
       <div class="install-row" data-os-row="windows">
         <div class="install-head">
@@ -249,7 +249,7 @@ ${defs}
         </div>
         <p class="small">If Windows says it protected your PC, choose More info, then Run anyway. The installer isn’t code-signed yet.</p>
       </div>
-      <p class="install-more"><span>Mac disk images: <a id="dmg-arm" href="${DOWNLOAD}/TokenDeck-mac-arm64.dmg">Apple silicon<span class="badge-rec">Your Mac</span></a><span class="sep">·</span><a id="dmg-intel" href="${DOWNLOAD}/TokenDeck-mac-x64.dmg">Intel<span class="badge-rec">Your Mac</span></a></span><a href="#damaged">How to open one</a><a href="${REPO}/releases">All releases</a></p>
+      <p class="install-more"><span>Mac disk images: <a id="dmg-arm" href="${DOWNLOAD}/TokenDeck-mac-arm64.dmg">Apple silicon<span class="badge-rec">Your Mac</span></a><span class="sep">·</span><a id="dmg-intel" href="${DOWNLOAD}/TokenDeck-mac-x64.dmg">Intel<span class="badge-rec">Your Mac</span></a></span><a href="#damaged">If macOS won’t open the app</a><a href="${REPO}/releases">All releases</a></p>
     </div>
     <figure class="hero-device" data-screen="sessions">
       <div class="deck-fig">${heroDeck}</div>
@@ -259,7 +259,7 @@ ${defs}
         <button type="button" data-show="sessions" aria-pressed="true">Sessions</button>
         <button type="button" data-show="models" aria-pressed="false">Models &amp; Usage</button>
       </div>
-      <figcaption class="fig-note">The app’s own tiles. Press a button to switch modes.</figcaption>
+      <figcaption class="fig-note">The app’s real key images. Pick a mode to switch.</figcaption>
     </figure>
   </div>
 </section>
@@ -267,20 +267,20 @@ ${defs}
 <section class="section wrap rule" id="modes" aria-labelledby="modes-title">
   <div class="section-head">
     <p class="eyebrow">How it works</p>
-    <h2 class="h2" id="modes-title">Three metal buttons, three modes. <span class="dim">Each one changes what the keys show and what the knobs do.</span></h2>
+    <h2 class="h2" id="modes-title">The metal buttons pick the mode. <span class="dim">The mode sets what the keys show and what the knobs do.</span></h2>
   </div>
 
   <article class="mode" aria-labelledby="agents-title">
     <div class="mode-head">
       <p class="eyebrow">01 Agents <span class="sub">· Left button</span></p>
       <h3 class="h3" id="agents-title">Jump to any coding agent. <span class="dim">Turn the dial to hop windows.</span></h3>
-      <p class="body">Each key is an agent: Claude Code, Cursor and Codex on top, OpenCode, Amp and Devin below. Press one to bring its latest window to the front. If it isn’t running, the key opens it.</p>
+      <p class="body">Each key is an agent: Claude Code, Cursor and Codex on top; OpenCode, Amp and Devin below. The knobs set the model and effort your next session starts with.</p>
     </div>
     <figure class="mode-fig">${deck('agents', 'agents', heroLabels.agents, [[1, 'keys'], [2, 'main'], [3, 'left'], [4, 'right']])}</figure>
     <div class="mode-legend">
       ${legend([
-        [1, 'Keys', '<b>Press:</b> go to that agent, or open it. A dim key isn’t installed.'],
-        [2, 'Big knob', '<b>Turn:</b> hop between open agent windows. <b>Press:</b> back to the last one.'],
+        [1, 'Keys', '<b>Press:</b> bring that agent’s latest window to the front, or open it. A dim key means the agent isn’t installed.'],
+        [2, 'Big knob', '<b>Turn:</b> hop between open agent windows. <b>Press:</b> back to the previous window.'],
         [3, 'Left knob', '<b>Turn:</b> the model your next session starts with.'],
         [4, 'Right knob', '<b>Turn:</b> the effort your next session starts with.']
       ])}
@@ -291,7 +291,7 @@ ${defs}
     <div class="mode-head">
       <p class="eyebrow">02 Sessions <span class="sub">· Middle button</span></p>
       <h3 class="h3" id="sessions-title">Every session and its context. <span class="dim">See which one needs you.</span></h3>
-      <p class="body">Each key is one live session from Claude Code, Codex or OpenCode, newest first. The dot says what it’s doing and the ring shows how full its context window is. Press a key to jump to that session’s window.</p>
+      <p class="body">Each key is one live session from Claude Code, Codex or OpenCode, newest first. The dot says what it’s doing, and the ring shows how full its context window is.</p>
       <ul class="states">
         <li><i style="background:var(--blue)"></i>Working</li>
         <li><i class="framed" style="background:var(--coral)"></i>Needs your approval</li>
@@ -304,7 +304,7 @@ ${defs}
     <div class="mode-legend">
       ${legend([
         [1, 'Keys', '<b>Press:</b> jump to that session’s window.'],
-        [2, 'Big knob', '<b>Turn:</b> the next six sessions. <b>Press:</b> the next session that needs you.'],
+        [2, 'Big knob', '<b>Turn:</b> page through sessions, six at a time. <b>Press:</b> jump to the next one that needs you.'],
         [3, 'Left knob', '<b>Turn:</b> filter by agent. <b>Press:</b> all agents.'],
         [4, 'Right knob', '<b>Turn:</b> filter by status. <b>Press:</b> all statuses.']
       ])}
@@ -317,19 +317,19 @@ ${defs}
     <div class="mode-head">
       <p class="eyebrow">03 Models &amp; Usage <span class="sub">· Right button</span></p>
       <h3 class="h3" id="models-title">Pick the next model. <span class="dim">Live 5H and 7D limits.</span></h3>
-      <p class="body">The first key shows how much of your 5-hour and weekly limits you’ve used. The others are your favorite models: press one, and your next session starts on it.</p>
+      <p class="body">This mode shows one agent at a time: Claude Code, Codex or OpenCode. The first key shows how much of that agent’s 5-hour and weekly limits you’ve used, and the other keys are its models, with the current one in lime.</p>
     </div>
     <figure class="mode-fig">${deck('models', 'models', heroLabels.models, [[1, 'keys'], [2, 'main'], [3, 'left'], [4, 'right'], [5, 'buttons']])}</figure>
     <div class="mode-legend">
       ${legend([
-        [1, 'Keys', '<b>Press</b> a model to start your next session on it. <b>Press</b> the usage key for exact numbers and reset times.'],
+        [1, 'Keys', '<b>Press</b> a model and your next session starts on it. <b>Press</b> the usage key for exact numbers and reset times.'],
         [2, 'Big knob', '<b>Turn:</b> effort. <b>Press:</b> Ultracode.'],
-        [3, 'Left knob', '<b>Turn:</b> agent. <b>Press:</b> last agent.'],
+        [3, 'Left knob', '<b>Turn:</b> agent. <b>Press:</b> last agent, the one whose session you opened last.'],
         [4, 'Right knob', '<b>Turn:</b> permission. <b>Press:</b> apply.'],
         [5, 'Metal buttons', 'Select the mode, one per button.']
       ])}
-      <p class="note">Every change applies from your next session, and the deck says <span class="mono">NEXT SESSION</span>. Sessions that are already running keep their settings. Full access waits until you confirm it on the computer.</p>
-      <p class="note">Claude Code reports limits on Pro and Max plans once a session has replied. Codex reports them when you sign in with ChatGPT. OpenCode doesn’t report limits.</p>
+      <p class="note">Turning the right knob only previews <span class="mono">READ</span>, <span class="mono">ASK</span>, <span class="mono">AUTO</span> or <span class="mono">FULL</span>; nothing changes until you press it, and <span class="mono">FULL</span> also asks you to confirm on the computer. Every change applies from your next session, and the deck says <span class="mono">NEXT SESSION</span>. Sessions that are already running keep their settings.</p>
+      <p class="note">Claude Code reports limits on Pro and Max plans, after a session’s first reply. Codex reports them when you sign in with ChatGPT. OpenCode doesn’t report limits.</p>
     </div>
   </article>
 </section>
@@ -338,7 +338,7 @@ ${defs}
   <div class="section-head">
       <p class="eyebrow">Program it yourself</p>
       <h2 class="h2" id="program-title">Write your own modes for any screen, button or knob<span class="dot">.</span></h2>
-      <p class="body">A mode is a JSON file in <code class="inline">~/.tokendeck/modes</code>: up to six keys and three knobs, each tied to an action. Hold the middle button and the keys list your modes; press one to open it. Save a file and the deck picks up the change.</p>
+      <p class="body">A mode is a JSON file in <code class="inline">~/.tokendeck/modes</code>: up to six keys and three knobs, each tied to an action. Hold the middle button and the keys list your modes; press one to open it. The metal buttons still switch modes, and the deck picks up a file as soon as you save it.</p>
     </div>
   <div class="program-grid">
     <div class="program-code">
@@ -372,10 +372,10 @@ ${defs}
     <h2 class="h2" id="privacy-title">No account, no telemetry. <span class="dim">Here’s what Token Deck reads and changes.</span></h2>
   </div>
   <div class="facts">
-    <div class="fact"><h3>Claude Code</h3><p>With your OK, Token Deck writes its hooks and status line into <code class="inline">~/.claude/settings.json</code>, so the deck sees a session change the moment it does. It backs the file up first, and Stop watching puts the backup back.</p></div>
-    <div class="fact"><h3>Your status line</h3><p>Keeps working. Token Deck’s status line passes everything through to the one you already had.</p></div>
+    <div class="fact"><h3>Claude Code</h3><p>With your OK, Token Deck writes its hooks and status line into <code class="inline">~/.claude/settings.json</code>, so the deck sees a session change the moment it does. Its hooks replace any you have on the same seven events. It backs up the file first, and Stop watching, on the app’s This Mac page, restores it.</p></div>
+    <div class="fact"><h3>Your status line</h3><p>Your existing status line keeps working: Token Deck’s passes everything through to it and shows its output.</p></div>
     <div class="fact"><h3>Defaults</h3><p>Turning a knob writes your default model, effort or permission to the agent’s own config file. Nothing is typed into a running session.</p></div>
-    <div class="fact"><h3>Credentials</h3><p>Never read. The limits come from what Claude Code and Codex already report.</p></div>
+    <div class="fact"><h3>Credentials</h3><p>Token Deck never reads them. The limits come from what Claude Code and Codex already report.</p></div>
     <div class="fact"><h3>Network</h3><p>Hooks reach the app on 127.0.0.1 only. Token Deck goes online for one thing: checking GitHub for a new version.</p></div>
     <div class="fact"><h3>Open source</h3><p>MIT licensed. <a class="link" href="${REPO}">Read the code</a> and <a class="link" href="${SITE}/install.sh">the install script</a>.</p></div>
   </div>
@@ -385,7 +385,7 @@ ${defs}
   <div class="help-grid">
     <div class="section-head">
       <p class="eyebrow">Help</p>
-      <h2 class="h2" id="help-title">Setup notes<span class="dot">.</span></h2>
+      <h2 class="h2" id="help-title">Questions and fixes<span class="dot">.</span></h2>
       <p class="body">Something else? <a class="link" href="${REPO}/issues">Open an issue on GitHub</a>.</p>
     </div>
     <div class="faq">
@@ -407,7 +407,7 @@ ${defs}
       <details id="no-change">
         <summary>The deck still shows the welcome screen.</summary>
         <div class="answer">
-          <p>Check that Token Deck is running: it lives in the menu bar on a Mac and in the system tray on Windows. If the StreamDock or VSD Craft app is open, quit it, because only one program can use the deck at a time. Then unplug the deck and plug it back in.</p>
+          <p>Check that Token Deck is running: it lives in the menu bar on a Mac and in the system tray on Windows. If the deck maker’s StreamDock or VSD Craft app is running, quit it, because only one program can use the deck at a time. Then unplug the deck and plug it back in.</p>
         </div>
       </details>
       <details id="damaged">
@@ -424,7 +424,7 @@ ${defs}
       </details>
       <details id="permissions">
         <summary>Why does macOS ask for Automation and Accessibility?</summary>
-        <div class="answer"><p>So a key can bring the right window to the front. macOS asks once for each app Token Deck switches to, like Terminal, iTerm or Cursor, and once for Accessibility under System Settings → Privacy &amp; Security.</p></div>
+        <div class="answer"><p>So a key can bring the right window to the front. macOS asks once for each app Token Deck switches to, like Terminal, iTerm2 or Cursor, and once for Accessibility under System Settings → Privacy &amp; Security.</p></div>
       </details>
       <details id="update">
         <summary>How do I update?</summary>
@@ -432,18 +432,18 @@ ${defs}
       </details>
       <details id="simulator">
         <summary>Can I try it without the deck?</summary>
-        <div class="answer"><p>Yes. Open Token Deck’s window: the deck drawn at the bottom is a simulator that shows the same tiles. Click a key, or press 1 to 6 for the keys, Q, W and E for the metal buttons and the arrow keys for the knobs.</p></div>
+        <div class="answer"><p>Yes. Open Token Deck’s window from its menu bar or tray icon: the deck drawn at the bottom is a simulator that shows the same key images. Click the drawing, or use your keyboard: 1 to 6 for the screen keys, Q, W and E for the metal buttons, the arrow keys for the big and left knobs, and comma and period for the right knob.</p></div>
       </details>
       <details id="remove">
         <summary>How do I remove it?</summary>
         <div class="answer">
-          <p>Open Token Deck’s window, go to This Mac and click Stop watching to put your Claude Code settings back. Then quit Token Deck and delete it: drag it out of Applications on a Mac, or use Settings → Apps on Windows.</p>
-          <p>Token Deck keeps its settings and log in <code class="inline">~/.tokendeck</code>. If you changed Codex defaults from the deck, your original config is saved next to it as <code class="inline">~/.codex/config.toml.tokendeck-backup</code>.</p>
+          <p>Open Token Deck’s window from its menu bar or tray icon, go to This Mac and click Stop watching to restore your Claude Code settings. Then quit Token Deck and delete it: drag it out of Applications on a Mac, or use Settings → Apps on Windows.</p>
+          <p>To remove its settings and log, delete <code class="inline">~/.tokendeck</code>. If you changed Codex defaults from the deck, copy <code class="inline">~/.codex/config.toml.tokendeck-backup</code> back over <code class="inline">config.toml</code>.</p>
         </div>
       </details>
       <details id="welcome">
         <summary>What does the deck show when the app isn’t running?</summary>
-        <div class="answer"><p>The welcome screen. It’s stored on the deck itself, so it shows on any computer, with or without Token Deck. The decks in the After Tokens boxes came with it, and the app writes it once to any deck that doesn’t have it.</p></div>
+        <div class="answer"><p>The welcome screen, with the Stigg logo and io.stigg.io/usage. The deck stores it in its own memory, so it shows on any computer, with or without the app. Decks from the After Tokens box already have it, and Token Deck writes it once to any other deck.</p></div>
       </details>
     </div>
   </div>

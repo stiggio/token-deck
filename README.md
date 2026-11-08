@@ -4,11 +4,11 @@
 
 # Token Deck
 
-Token Deck is the desktop app for the deck in the After Tokens box: a Stream Dock N3 with six screen keys, three metal buttons and three knobs. The app puts your Claude Code, Codex and OpenCode sessions on the keys, takes you to the one that needs you, sets the model, effort and permission your next session starts with, and shows how much of your 5-hour and weekly limits you've used.
+Token Deck is the free desktop app for the deck in the After Tokens box: a Stream Dock N3 with six screen keys, three metal buttons and three knobs. It puts your Claude Code, Codex and OpenCode sessions on the keys and takes you to the one that needs you. It also sets the model, effort and permission your next session starts with, and shows how much of your 5-hour and weekly limits you've used.
 
 It runs on macOS and Windows, lives in the menu bar (the system tray on Windows) and talks to the deck over USB. There's no account and no telemetry.
 
-**Download:** [usage.stigg.io](https://usage.stigg.io), which the box and the deck print as `io.stigg.io/usage` · [All releases](https://github.com/stiggio/token-deck/releases)
+**Download:** [usage.stigg.io](https://usage.stigg.io) (`io.stigg.io/usage`, the address printed on the box and the deck, leads there) · [All releases](https://github.com/stiggio/token-deck/releases)
 
 - [Install](#install)
 - [Using the deck](#using-the-deck)
@@ -43,9 +43,13 @@ Windows 10 or 11, 64-bit. Download and run [TokenDeck-win-x64.exe](https://githu
 
 ### First run
 
-Quit the StreamDock or VSD Craft app before you plug in the deck. Only one program can use it at a time.
+If the deck maker's StreamDock or VSD Craft app is running, quit it before you plug in the deck. Only one program can use the deck at a time.
 
-The first time Token Deck starts, it walks you through three optional steps: connecting Claude Code (it edits `~/.claude/settings.json` and keeps a backup, see [below](#claude-code)), letting macOS bring windows to the front, and starting Token Deck at login. Skip any of them and come back later from the app's window, which opens from the menu bar icon.
+The first time Token Deck starts, it offers three steps. You can skip any of them and come back later from the app's window, which opens from the menu bar or tray icon.
+
+1. Connect Claude Code. Token Deck adds its hooks and status line to `~/.claude/settings.json`, replacing any hooks you have on the same events, and keeps a backup ([details](#claude-code)).
+2. On macOS, grant Accessibility and Automation, so the deck can bring windows to the front.
+3. Start Token Deck at login.
 
 ## Using the deck
 
@@ -59,7 +63,7 @@ The three metal buttons under the keys pick the mode, and the deck remembers the
 
 Hold the middle button to open [your own modes](#your-own-modes).
 
-Turning a knob shows a short message across the top row of keys for five seconds, like `SONNET` `NEXT` `SESSION`. Key presses are ignored while a message is showing. `NOT AVAILABLE` means the agent can't do what you asked; `NONE INSTALLED` means none of Claude Code, Codex or OpenCode is installed.
+Turning a knob shows a short message across the top row of keys for 5 seconds, like `SONNET` `NEXT` `SESSION`. Key presses are ignored while a message is showing. `NOT AVAILABLE` means the agent can't do what you asked; `NONE INSTALLED` means none of Claude Code, Codex or OpenCode is installed.
 
 ### Agents
 
@@ -80,7 +84,7 @@ Each key is one session. The dot shows what it's doing, and the ring shows how f
 | Blue | Working |
 | Coral, with a frame around the key | Needs your approval |
 | White | Waiting for your reply |
-| Grey | Idle |
+| Gray | Idle |
 | Lime | Done |
 
 Press a key to jump to that session's window. Models & Usage then shows that session's agent. Token Deck finds the exact tab in Terminal, iTerm2 and Ghostty, the right window in VS Code and Cursor, and the session in the Claude desktop app. For other terminals it brings the app forward. On Windows it brings Windows Terminal forward, without picking the tab.
@@ -93,29 +97,29 @@ Press a key to jump to that session's window. Models & Usage then shows that ses
 
 OpenCode sessions show up while `opencode serve` is running (Token Deck looks at `http://127.0.0.1:4096` and uses `OPENCODE_SERVER_PASSWORD` if you set one). OpenCode 2.x is found through its own service file.
 
-The deck never approves a tool call. A session that needs approval takes you to its window, and you decide there.
+The deck never approves a tool call. Pressing a session that needs approval takes you to its window, and you decide there.
 
 ### Models & Usage
 
-The first key shows the selected agent's usage: how much of the 5-hour (`5H`) and 7-day (`7D`) limits you've used. Press it to see the exact numbers and reset times in the app's window. The other keys are up to five favorite models, with the current one in lime. Press a model and your next session starts on it.
+Models & Usage shows one agent at a time; the left knob switches between Claude Code, Codex and OpenCode. The first key shows how much of that agent's 5-hour (`5H`) and weekly (`7D`) limits you've used. Press it to see the exact numbers and reset times in the app's window. The other keys are up to five of its models, with the current one in lime. Press a model and your next session starts on it.
 
 | Control | Turn | Press |
 |---|---|---|
 | Big knob | Effort | Ultracode on or off (Claude Code) |
-| Left knob | Agent | Back to the agent of the last session you pressed |
+| Left knob | Agent | Back to the agent of the last session you opened |
 | Right knob | Permission: `READ`, `ASK`, `AUTO`, `FULL` | Apply it |
 
 Model, effort and permission changes go into the agent's own settings file and apply from your next session, so the deck says `NEXT SESSION`. Sessions that are already running keep what they started with. `FULL` waits until you confirm it in a dialog on the computer.
 
 Where the usage numbers come from:
 
-- **Claude Code** reports them in its status line on Pro and Max plans, once a session has replied.
+- **Claude Code** reports them in its status line on Pro and Max plans, after a session's first reply.
 - **Codex** reports them through `codex app-server` when you're signed in with ChatGPT. Token Deck asks once a minute.
 - **OpenCode** doesn't report limits, so the key shows `--`.
 
-The deck keeps the last reading for 24 hours, then shows `--`. A window disappears once it resets.
+The deck keeps the last reading for 24 hours, then shows `--`. Once a limit resets, its old reading is cleared.
 
-Your favorite models come from each agent: Claude Code's model list (Opus, Sonnet, Haiku and Fable until it has one), and the models Codex offers you. Reorder them on the app's Models page.
+The models come from each agent: Claude Code's model list (Opus, Sonnet, Haiku and Fable until it has one) and the models Codex offers you. Reorder them on the app's Models page.
 
 What each permission level writes:
 
@@ -126,11 +130,11 @@ What each permission level writes:
 | `AUTO` | `auto` | `workspace-write`, `never` | edit `allow`, bash `allow` |
 | `FULL` | `bypassPermissions` | `danger-full-access`, `never` | edit `allow`, bash `allow` |
 
-Effort levels are Claude Code's `low`, `medium`, `high` and `xhigh` (written as `modelSettings.<model>.effortLevel` on Claude Code 2.1.251 and later, and as `effortLevel` before that), and for Codex whichever levels the selected model supports.
+Claude Code's effort levels are `low`, `medium`, `high` and `xhigh`. Codex offers whichever levels the selected model supports. Token Deck writes Claude Code's as `modelSettings.<model>.effortLevel`, or as `effortLevel` before Claude Code 2.1.251.
 
 ### Without a deck
 
-The app's window has a simulator: the deck drawn at the bottom shows the same tiles and behaves like the real one. Click a key, or use the keyboard:
+The app's window has a simulator: the deck drawn at the bottom shows the same key images and behaves like the real one. Click a key, or use the keyboard:
 
 | Key | Does |
 |---|---|
@@ -169,7 +173,7 @@ A mode is a JSON file in `~/.tokendeck/modes/`. Hold the middle button and the k
 }
 ```
 
-`tiles` holds up to six keys, left to right and top to bottom; `null` leaves a key empty. A label is shown in capitals, one word per line, two lines at most. `icon` is an optional PNG or SVG, drawn at 28 pixels. `knobs` maps `main`, `left` and `right` to an action for `cw` (clockwise), `ccw` and `click`.
+`tiles` holds up to six keys, left to right and top to bottom; `null` leaves a key empty. A label is shown in capitals, one word per line, two lines at most. `icon` is an optional PNG or SVG, drawn at 28 pixels. `knobs` maps `main` (the big knob), `left` and `right` to an action for `cw` (clockwise), `ccw` (counter-clockwise) and `click`.
 
 | Action | Fields | Does |
 |---|---|---|
@@ -198,7 +202,7 @@ When you turn a knob, Token Deck writes `model`, the effort setting, `permission
 
 ### Codex
 
-Token Deck runs `codex app-server` in the background to read your threads, models and rate limits. It never answers an approval request; you approve in Codex.
+Token Deck runs `codex app-server` in the background to read your sessions, models and usage limits. It never answers an approval request; you approve in Codex.
 
 A knob writes the top-level `model`, `model_reasoning_effort`, `sandbox_mode` and `approval_policy` lines in `~/.codex/config.toml`. It edits those lines in place, so comments and the rest of the file stay as they are, and it never touches `notify`. Before the first edit it copies the file to `~/.codex/config.toml.tokendeck-backup`; to undo, copy that file back.
 
@@ -232,7 +236,7 @@ Everything Token Deck keeps is in `~/.tokendeck`: `settings.json` (the app's own
 
 **A key doesn't bring the window forward.** Give Token Deck Accessibility in System Settings → Privacy & Security, and allow the Automation prompts. The app's This Mac page says when Accessibility is missing.
 
-**The usage key shows `--`.** Claude Code only reports limits on Pro and Max plans, after a session has replied, and only through the status line, so connect Claude Code first. Codex needs a ChatGPT sign-in. OpenCode has no limits to show.
+**The usage key shows `--`.** Claude Code only reports limits on Pro and Max plans, after a session's first reply, and only through the status line, so connect Claude Code first. Codex needs a ChatGPT sign-in. OpenCode has no limits to show.
 
 **Codex keys say `NOT AVAILABLE`.** Token Deck couldn't reach `codex app-server`. Check that `codex` runs in your terminal and that you're signed in.
 

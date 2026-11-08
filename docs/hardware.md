@@ -53,10 +53,10 @@ A knob sends one report per detent. Keys, the left and right buttons and knob pr
 
 Each tile is drawn upright on a 64 × 64 canvas with `@napi-rs/canvas`, turned 90° clockwise as a pixel copy (the firmware expects it sideways) and encoded as a baseline JPEG at quality 100.
 
-- **Quality 100 on purpose.** At 100 the encoder keeps full colour resolution (4:4:4). At 99 and below it halves it (4:2:0), and a 1-pixel lime or coral line loses half its saturation. A test checks the sampling factors, so a dependency update can't switch it silently.
-- **No anti-aliased text.** Tile text uses a 5 × 7 bitmap font drawn in code as filled rectangles (`src/main/deck/pixelfont.ts`). The agent logos are their owners' one-colour marks from `brand-kit/design/agent-glyphs/`.
+- **Quality 100 on purpose.** At 100 the encoder keeps full color resolution (4:4:4). At 99 and below it halves it (4:2:0), and a 1-pixel lime or coral line loses half its saturation. A test checks the sampling factors, so a dependency update can't switch it silently.
+- **No anti-aliased text.** Tile text uses a 5 × 7 bitmap font drawn in code as filled rectangles (`src/main/deck/pixelfont.ts`). The agent logos are their owners' one-color marks from `brand-kit/design/agent-glyphs/`.
 - **Size.** Every built-in tile is under 10,000 bytes; a test checks that too.
-- **Position.** The firmware draws each tile at a fixed spot that sits off-centre in its key's window, and the window shows a few pixels of the welcome screen around it. `resources/panel-geometry.json` holds the measured positions, and each layout is shifted per key so it's centred in the window.
+- **Position.** The firmware draws each tile at a fixed spot that sits off-center in its key's window, and the window shows a few pixels of the welcome screen around it. `resources/panel-geometry.json` holds the measured positions, and each layout is shifted per key so it's centered in the window.
 
 ## Writing to the deck
 
