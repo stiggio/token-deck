@@ -157,9 +157,9 @@ const icon = {
 
 const description = 'Token Deck is the app for the deck from your After Tokens box. It puts your Claude Code, Codex and OpenCode sessions on the keys, takes you to the one that needs you, and shows how much of your 5-hour and weekly limits you have used. For macOS and Windows.'
 
-const legend = (rows) => `<dl class="legend">${rows.map(([n, term, text]) => `<div><span class="num" aria-hidden="true">${n}</span><dt>${term}</dt><dd>${text}</dd></div>`).join('')}</dl>`
+const legend = (rows) => `<dl class="legend">${rows.map(([n, term, text]) => `<div><dt><span class="num" aria-hidden="true">${n}</span>${term}</dt><dd>${text}</dd></div>`).join('')}</dl>`
 
-const html = `<!doctype html>
+const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -233,7 +233,7 @@ ${defs}
           <p class="req">macOS 12 or later · Apple silicon and Intel</p>
         </div>
         <div class="cmd">
-          <code id="install-cmd">${esc(INSTALL)}</code>
+          <code id="install-cmd">${esc(INSTALL).replace('usage.stigg.io/', 'usage.stigg.io/<wbr>')}</code>
           <button class="copy" type="button" data-copy="install-cmd" aria-label="Copy the install command">${icon.copy}${icon.check}<span class="idle">Copy</span><span class="done">Copied</span></button>
         </div>
         <p class="small">Paste it into Terminal. It downloads the build for your Mac, checks it against its checksum and puts Token Deck in Applications. <a class="link" href="${SITE}/install.sh">Read the script</a> before you run it.</p>
@@ -292,7 +292,7 @@ ${defs}
       <p class="eyebrow">02 Sessions <span class="sub">· Middle button</span></p>
       <h3 class="h3" id="sessions-title">Every session and its context. <span class="dim">See which one needs you.</span></h3>
       <p class="body">Each key is one live session from Claude Code, Codex or OpenCode, newest first. The dot says what it’s doing and the ring shows how full its context window is. Press a key to jump to that session’s window.</p>
-      <ul class="states" aria-label="Status dots">
+      <ul class="states">
         <li><i style="background:var(--blue)"></i>Working</li>
         <li><i class="framed" style="background:var(--coral)"></i>Needs your approval</li>
         <li><i style="background:var(--ink)"></i>Waiting for your reply</li>
@@ -344,7 +344,7 @@ ${defs}
     <div class="program-code">
       <div class="code">
         <div class="code-bar"><span>~/.tokendeck/modes/deploy.json</span><span>JSON</span></div>
-        <pre><code>${highlight(example)}</code></pre>
+        <pre tabindex="0" aria-label="Example mode file, deploy.json"><code>${highlight(example)}</code></pre>
       </div>
     </div>
     <div class="program-side">
@@ -352,11 +352,13 @@ ${defs}
       <div class="program-actions">
       <table class="actions">
         <caption class="visually-hidden">Actions a key or knob can run</caption>
+        <tbody>
         <tr><th scope="row">shell</th><td>Runs a command in your login shell (cmd on Windows) for up to 10 seconds. The deck shows OK or FAILED.</td></tr>
         <tr><th scope="row">open</th><td>Opens an app, like Cursor.</td></tr>
         <tr><th scope="row">url</th><td>Opens a link in your browser.</td></tr>
         <tr><th scope="row">keys</th><td>Sends a shortcut, like <span class="mono">cmd+shift+p</span>, to the app in front.</td></tr>
         <tr><th scope="row">mode</th><td>Switches the deck to <span class="mono">agents</span>, <span class="mono">sessions</span> or <span class="mono">models</span>.</td></tr>
+        </tbody>
       </table>
       <p class="note">A key can also show an icon: a PNG or SVG file, drawn at 28 pixels.</p>
     </div>

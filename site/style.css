@@ -56,12 +56,12 @@ code, pre, kbd { font-family: var(--mono); }
 /* ---------- Frame: the registration lines Stigg's pages and one-pagers share ---------- */
 
 .frame { position: relative; max-width: calc(var(--max) + 2 * var(--gutter)); margin: 0 auto; }
-@media (min-width: 1100px) {
+@media (min-width: 1320px) {
   .frame { border-left: 1px solid var(--n800); border-right: 1px solid var(--n800); }
 }
 .wrap { padding-left: var(--gutter); padding-right: var(--gutter); }
 .rule { position: relative; border-top: 1px solid var(--n800); }
-@media (min-width: 1100px) {
+@media (min-width: 1320px) {
   /* a small cross where each section line meets the frame */
   .rule::before, .rule::after {
     content: ""; position: absolute; top: -6px; width: 11px; height: 11px;
@@ -149,13 +149,17 @@ code.inline { font-size: .86em; color: var(--ink); background: var(--surface); b
 .lockup { width: min(100%, 380px); }
 .lockup svg { width: 100%; height: auto; overflow: visible; }
 .hero-main {
-  display: grid; gap: 48px clamp(40px, 6vw, 96px); margin-top: clamp(48px, 6vw, 80px);
+  display: grid; gap: 48px clamp(32px, 5vw, 96px); margin-top: clamp(48px, 6vw, 80px);
   grid-template-columns: minmax(0, 1fr); grid-template-areas: "device" "install";
 }
-@media (min-width: 1080px) {
-  .hero-main { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "install device"; align-items: start; }
+.hero-device { grid-area: device; width: 100%; max-width: 640px; justify-self: center; }
+@media (min-width: 900px) {
+  .hero-main { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "install device"; align-items: start; }
+  .hero-device { max-width: none; }
 }
-.hero-device { grid-area: device; }
+@media (min-width: 1180px) {
+  .hero-main { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+}
 .install { grid-area: install; }
 
 /* ---------- Install card ---------- */
@@ -178,9 +182,11 @@ code.inline { font-size: .86em; color: var(--ink); background: var(--surface); b
 }
 .copy:hover { background: var(--lime); }
 .copy svg { width: 15px; height: 15px; }
-@media (max-width: 520px) {
+/* stack the button under the command whenever the box is narrow, at any viewport */
+.install-row, .faq .answer { container-type: inline-size; }
+@container (max-width: 400px) {
   .cmd { flex-direction: column; }
-  .cmd code { font-size: 13px; }
+  .cmd code { font-size: 13px; padding-left: 12px; padding-right: 12px; }
   .copy { justify-content: center; height: 44px; border-left: 0; border-top: 1px solid var(--n700); }
 }
 .copy .done, .copy svg + svg { display: none; }
@@ -235,7 +241,7 @@ code.inline { font-size: .86em; color: var(--ink); background: var(--surface); b
 .modes-switch button:hover { color: var(--ink); }
 .modes-switch button[aria-pressed="true"] { color: var(--lime); border-color: var(--n700); }
 .modes-switch button[aria-pressed="true"]::before { background: var(--lime); }
-.fig-note { margin-top: 12px; text-align: center; font: 400 12px/1.5 var(--mono); letter-spacing: .03em; color: var(--n600); text-transform: uppercase; }
+.fig-note { margin-top: 12px; text-align: center; font: 400 12px/1.5 var(--mono); letter-spacing: .03em; color: var(--n500); text-transform: uppercase; }
 
 /* numbered callouts, as on the bottom of the box */
 .callout {
@@ -275,11 +281,10 @@ code.inline { font-size: .86em; color: var(--ink); background: var(--surface); b
 .mode-legend { grid-area: legend; }
 
 .legend { border-top: 1px solid var(--n800); }
-.legend > div { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 4px 16px; padding: 14px 0; border-bottom: 1px solid var(--n800); }
-.legend dt { grid-column: 2; font: 400 12px/1.5 var(--mono); letter-spacing: .03em; text-transform: uppercase; color: var(--n300); }
-.legend dt .num { grid-column: 1; }
-.legend .num { grid-row: 1 / span 2; margin-top: -1px; }
-.legend dd { grid-column: 2; font-size: 16px; line-height: 1.5; color: var(--n400); }
+.legend > div { padding: 14px 0 14px 38px; border-bottom: 1px solid var(--n800); }
+.legend dt { position: relative; font: 400 12px/1.5 var(--mono); letter-spacing: .03em; text-transform: uppercase; color: var(--n300); }
+.legend dt .num { position: absolute; left: -38px; top: -2px; }
+.legend dd { margin-top: 4px; font-size: 16px; line-height: 1.5; color: var(--n400); }
 .legend dd b { color: var(--ink); font-family: var(--sans); }
 .note { margin-top: 20px; font-size: 15px; line-height: 1.55; color: var(--n500); text-wrap: pretty; }
 .note + .note { margin-top: 10px; }
@@ -372,7 +377,7 @@ code.inline { font-size: .86em; color: var(--ink); background: var(--surface); b
 .links ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font: 400 15px/1.4 var(--sans); }
 .links a { color: var(--n300); transition: color .2s var(--ease); }
 .links a:hover { color: var(--ink); }
-.legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 32px; padding-top: 22px; padding-bottom: 32px; font: 400 12.5px/1.5 var(--mono); letter-spacing: .02em; color: var(--n600); }
+.legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 32px; padding-top: 22px; padding-bottom: 32px; font: 400 12.5px/1.5 var(--mono); letter-spacing: .02em; color: var(--n500); }
 .legal .url { color: var(--n400); }
 
 @media (prefers-reduced-motion: reduce) {
