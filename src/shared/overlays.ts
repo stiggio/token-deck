@@ -51,7 +51,10 @@ export const OVERLAY_GROUPS = [
   'NONE',
   'INSTALLED',
   'NOTHING',
-  'OPEN'
+  'OPEN',
+  'DEFAULT',
+  'TURN',
+  'FIRST'
 ] as const
 
 export function splitGroups(message: string): string[] {

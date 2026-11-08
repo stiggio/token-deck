@@ -83,3 +83,14 @@ function findFile(dir: string, name: string, depth = 0): string | null {
 export function commandVersion(bin: string): Promise<string> {
   return exec(bin, ['--version'])
 }
+
+/**
+ * A variable from the user's login shell. A GUI app started from Finder or at login doesn't get
+ * what ~/.zshrc exports, so read it the way a terminal would. Sentinels skip startup noise.
+ */
+export async function loginShellVar(name: string): Promise<string> {
+  if (process.env[name]) return process.env[name]!
+  if (process.platform === 'win32' || !/^[A-Z_][A-Z0-9_]*$/.test(name)) return ''
+  const out = await exec('/bin/zsh', ['-lic', `printf '__TD__%s__TD__' "$${name}"`])
+  return out.match(/__TD__([\s\S]*?)__TD__/)?.[1] || ''
+}

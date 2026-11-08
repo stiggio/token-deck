@@ -5,6 +5,7 @@ import path from 'path'
 import readline from 'readline'
 import { which } from '../system/which'
 import { focusSession, launchInTerminal } from '../system/focus'
+import { findAgentTerminal } from '../system/terminal'
 import type { SettingsStore } from '../settings/store'
 import type { LiveSession } from './claude-code'
 import type { PermissionMode } from '../../shared/model'
@@ -252,6 +253,16 @@ export class CodexIntegration {
     editConfig({ model: row?.id || model })
   }
 
+  /** Back to Codex's own default model. */
+  async clearModel(): Promise<void> {
+    removeConfigKeys(['model'])
+  }
+
+  /** Back to the model's default reasoning effort. */
+  async clearEffort(): Promise<void> {
+    removeConfigKeys(['model_reasoning_effort'])
+  }
+
   async setEffort(level: string): Promise<void> {
     const current = this.models.find((model) => model.id === readConfigValue('model')) || this.models.find((model) => model.isDefault)
     if (current && current.efforts.length && !current.efforts.includes(level)) throw new Error('NOT AVAILABLE')
@@ -273,7 +284,13 @@ export class CodexIntegration {
     await launchInTerminal('codex')
   }
 
+  /** The terminal running `codex` in the thread's folder; the Codex app when there isn't one. */
   async focus(session: LiveSession): Promise<void> {
+    const terminal = await findAgentTerminal(['codex'], session.cwd)
+    if (terminal) {
+      await focusSession({ tty: terminal.tty, termProgram: terminal.termProgram, cwd: session.cwd })
+      return
+    }
     await focusSession({ cwd: session.cwd, termProgram: 'codex', bundleId: 'com.openai.codex' })
   }
 }
@@ -317,22 +334,54 @@ function readConfigValue(key: string): string {
   }
 }
 
+function backupConfig(file: string): void {
+  if (!fs.existsSync(file + '.tokendeck-backup') && fs.existsSync(file)) fs.copyFileSync(file, file + '.tokendeck-backup')
+}
+
+/** Splits config.toml into the top-level lines (before the first [table]) and the rest. */
+function splitTopLevel(text: string): { head: string[]; tail: string[] } {
+  const lines = text.split('\n')
+  const header = lines.findIndex((line) => /^\s*\[/.test(line))
+  return { head: header === -1 ? lines : lines.slice(0, header), tail: header === -1 ? [] : lines.slice(header) }
+}
+
+function isKeyLine(line: string, key: string): boolean {
+  const trimmed = line.trim()
+  return trimmed.startsWith(`${key} =`) || trimmed.startsWith(`${key}=`)
+}
+
+/** A comment after the value on the same line, kept when the value is replaced. */
+export function trailingComment(line: string): string {
+  const match = line.match(/^\s*[\w.-]+\s*=\s*("(?:[^"\\]|\\.)*"|'[^']*'|[^#\s"']+)\s*(#.*)$/)
+  return match?.[2] ? ` ${match[2]}` : ''
+}
+
+/**
+ * Sets top-level keys in place, line by line, so comments and everything else survive; keys that
+ * aren't there yet go at the top. Never touches a key inside a [table], or `notify`.
+ */
 export function editConfig(values: Record<string, string>): void {
   const file = configPath()
   fs.mkdirSync(path.dirname(file), { recursive: true })
-  if (!fs.existsSync(file + '.tokendeck-backup') && fs.existsSync(file)) fs.copyFileSync(file, file + '.tokendeck-backup')
+  backupConfig(file)
   const text = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : ''
-  const lines = text.split('\n')
-  const header = lines.findIndex((line) => /^\s*\[/.test(line))
-  const head = header === -1 ? lines : lines.slice(0, header)
-  const tail = header === -1 ? [] : lines.slice(header)
+  const { head, tail } = splitTopLevel(text)
   for (const [key, value] of Object.entries(values)) {
-    const rendered = `${key} = "${value}"`
-    const index = head.findIndex((line) => line.trim().startsWith(`${key} =`) || line.trim().startsWith(`${key}=`))
-    if (index >= 0) head[index] = rendered
-    else head.unshift(rendered)
+    const index = head.findIndex((line) => isKeyLine(line, key))
+    if (index >= 0) head[index] = `${key} = "${value}"${trailingComment(head[index]!)}`
+    else head.unshift(`${key} = "${value}"`)
   }
   fs.writeFileSync(file, [...head, ...tail].join('\n').replace(/\n+$/, '\n'))
+}
+
+/** Removes top-level keys, so Codex falls back to its own defaults. */
+export function removeConfigKeys(keys: string[]): void {
+  const file = configPath()
+  if (!fs.existsSync(file)) return
+  backupConfig(file)
+  const { head, tail } = splitTopLevel(fs.readFileSync(file, 'utf8'))
+  const kept = head.filter((line) => !keys.some((key) => isKeyLine(line, key)))
+  fs.writeFileSync(file, [...kept, ...tail].join('\n').replace(/\n+$/, '\n'))
 }
 
 export function restoreCodex(): void {

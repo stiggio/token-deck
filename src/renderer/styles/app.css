@@ -80,3 +80,6 @@ pre { background: var(--sg-bg-surface); border: 1px solid var(--sg-border-defaul
 .wizard { position: fixed; inset: 0; background: #131512ee; display: grid; place-items: center; }
 .card { width: min(560px, calc(100% - 48px)); border: 1px solid var(--sg-border-default); border-radius: var(--sg-radius-md); padding: 24px; background: var(--sg-bg-page); }
 .warn { color: #ff8e6d; }
+.models-block { padding: 14px 0; border-top: 1px solid var(--sg-border-subtle); color: #fff; }
+.model-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+.model-list li { display: flex; align-items: center; justify-content: space-between; gap: 16px; }

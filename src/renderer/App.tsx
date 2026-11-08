@@ -200,30 +200,33 @@ function Models({ snap }: { snap: Snapshot }) {
       <h1>Next session</h1>
       {!agents.length && <p>Claude Code, Codex, and OpenCode are not installed.</p>}
       {agents.map((agent) => (
-        <div key={agent} className="row">
-          <div>
-            <strong>{label(agent)}</strong>
-            <div className="chips">
-              {snap.favorites[agent].map((name) => <span className="chip" key={name}>{name}</span>)}
-              {!snap.favorites[agent].length && <span>Waiting for models</span>}
-            </div>
-          </div>
-          <div className="actions">
-            <button className="btn ghost" onClick={() => move(snap, agent, -1)}>Move up</button>
-            <button className="btn ghost" onClick={() => move(snap, agent, 1)}>Move down</button>
-          </div>
+        <div key={agent} className="models-block">
+          <strong>{label(agent)}</strong>
+          {!snap.favorites[agent].length && <p>Waiting for models</p>}
+          <ol className="model-list">
+            {snap.favorites[agent].map((name, index, list) => (
+              <li key={name}>
+                <span className="chip">{name}</span>
+                <span className="actions">
+                  <button className="btn ghost" disabled={index === 0} onClick={() => move(snap, agent, index, -1)}>Move up</button>
+                  <button className="btn ghost" disabled={index === list.length - 1} onClick={() => move(snap, agent, index, 1)}>Move down</button>
+                </span>
+              </li>
+            ))}
+          </ol>
         </div>
       ))}
     </>
   )
 }
 
-function move(snap: Snapshot, agent: 'claude-code' | 'codex' | 'opencode', dir: number) {
+/** Moves one model up or down the list; the deck shows the first five after the usage key. */
+function move(snap: Snapshot, agent: 'claude-code' | 'codex' | 'opencode', index: number, dir: -1 | 1) {
   const models = [...snap.favorites[agent]]
-  if (models.length < 2) return
-  const next = models.slice(1).concat(models[0]!)
-  const ordered = dir < 0 ? models.slice(-1).concat(models.slice(0, -1)) : next
-  void window.tokenDeck.invoke({ method: 'favorites', agent, models: ordered })
+  const target = index + dir
+  if (target < 0 || target >= models.length) return
+  ;[models[index], models[target]] = [models[target]!, models[index]!]
+  void window.tokenDeck.invoke({ method: 'favorites', agent, models })
 }
 
 function About({ snap }: { snap: Snapshot }) {
@@ -246,13 +249,17 @@ function About({ snap }: { snap: Snapshot }) {
       {snap.welcomePng && <img src={snap.welcomePng} alt="Welcome screen" width={320} height={240} />}
       {snap.burnMessage && <p className="warn">{snap.burnMessage}</p>}
       <div className="row">
+        <span>Open Token Deck when you log in</span>
+        <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'login', value: !snap.startAtLogin })}>{snap.startAtLogin ? 'On' : 'Off'}</button>
+      </div>
+      <div className="row">
         <span>Write the welcome screen on a new deck</span>
         <button className="btn ghost" onClick={() => void window.tokenDeck.invoke({ method: 'autoBurn', value: !snap.autoBurn })}>{snap.autoBurn ? 'On' : 'Off'}</button>
       </div>
       <div className="actions">
         <button className="btn accent" disabled={snap.device.phase === 'burning' || snap.device.burnFailed} onClick={() => void window.tokenDeck.invoke({ method: 'burn' })}>Write welcome screen again</button>
       </div>
-      <p><a href="https://usage.stigg.io">usage.stigg.io</a> · <a href="https://github.com/stiggio/token-deck">repository</a></p>
+      <p><a href="https://usage.stigg.io" target="_blank" rel="noreferrer">usage.stigg.io</a> · <a href="https://github.com/stiggio/token-deck" target="_blank" rel="noreferrer">repository</a></p>
     </>
   )
 }
@@ -264,10 +271,12 @@ function Simulator({ snap }: { snap: Snapshot }) {
       if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return
       const key = Number(event.key)
       if (key >= 1 && key <= 6) void window.tokenDeck.invoke({ method: 'simulator', event: { type: 'key', key } })
+      // Shift makes the key upper case, so match it lower case; Shift + W holds the middle button.
       const metal: Record<string, 'left' | 'middle' | 'right'> = { q: 'left', w: 'middle', e: 'right' }
-      if (metal[event.key]) {
-        void window.tokenDeck.invoke({ method: 'simulator', event: { type: 'metal', which: metal[event.key], pressed: true } })
-        window.setTimeout(() => void window.tokenDeck.invoke({ method: 'simulator', event: { type: 'metal', which: metal[event.key], pressed: false } }), event.shiftKey ? 900 : 100)
+      const which = metal[event.key.toLowerCase()]
+      if (which && !event.metaKey && !event.ctrlKey && !event.altKey) {
+        void window.tokenDeck.invoke({ method: 'simulator', event: { type: 'metal', which, pressed: true } })
+        window.setTimeout(() => void window.tokenDeck.invoke({ method: 'simulator', event: { type: 'metal', which, pressed: false } }), event.shiftKey ? 900 : 100)
       }
       if (event.key === 'ArrowRight') void window.tokenDeck.invoke({ method: 'simulator', event: { type: 'knob', which: 'main', action: 'cw' } })
       if (event.key === 'ArrowLeft') void window.tokenDeck.invoke({ method: 'simulator', event: { type: 'knob', which: 'main', action: 'ccw' } })
@@ -289,7 +298,7 @@ function Simulator({ snap }: { snap: Snapshot }) {
           </button>
         ))}
       </div>
-      <p className="hint">Keys 1–6 · Q W E metal · arrows main and left knobs · comma period right knob · enter click</p>
+      <p className="hint">Keys 1–6 · Q W E metal (Shift holds) · arrows main and left knobs · comma period right knob · enter click</p>
     </div>
   )
 }

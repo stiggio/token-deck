@@ -6,6 +6,7 @@ import chokidar from 'chokidar'
 import type { SettingsStore } from '../settings/store'
 import { commandVersion, which } from '../system/which'
 import { focusSession, launchInTerminal, openApp } from '../system/focus'
+import { terminalOf } from '../system/terminal'
 import type { AgentId, PermissionMode, SessionStatus } from '../../shared/model'
 import type { HookBody } from '../hooks/server'
 
@@ -22,6 +23,10 @@ export type LiveSession = {
   termProgram?: string
   entrypoint?: string
   model?: string
+  /** A running process or a hook vouches for it; transcript-only sessions are false. */
+  live?: boolean
+  /** The transcript file, for sessions found only on disk. */
+  transcript?: string
 }
 
 const HOOK = `#!/bin/sh
@@ -44,10 +49,8 @@ u=$(cat "$HOME/.tokendeck/url" 2>/dev/null || true)
 if [ -n "$u" ]; then
   printf '%s' "$in" | curl -s -m 1 -o /dev/null -X POST "$u/statusline" -H 'content-type: application/json' --data-binary @- >/dev/null 2>&1 &
 fi
-orig=$(cat "$HOME/.tokendeck/statusline-original.json" 2>/dev/null || true)
-orig=\${orig#\\"}
-orig=\${orig%\\"}
-if [ -n "$orig" ] && [ "$orig" != "null" ]; then
+orig=$(cat "$HOME/.tokendeck/statusline-original" 2>/dev/null || true)
+if [ -n "$orig" ]; then
   printf '%s' "$in" | sh -c "$orig"
 fi
 exit 0
@@ -55,6 +58,8 @@ exit 0
 
 const HOOK_PS = `try { $u = Get-Content "$env:USERPROFILE\\.tokendeck\\url" -ErrorAction Stop; $b = [Console]::In.ReadToEnd(); Invoke-RestMethod -Method Post -Uri "$u/hooks/claude" -ContentType 'application/json' -TimeoutSec 2 -Body $b | Out-Null } catch {}; exit 0
 `
+
+const STATUSLINE_COMMAND = 'sh ~/.tokendeck/bin/statusline'
 
 /** How a hook names Token Deck's shim: in `command` on macOS, in `args` (as hook.ps1) on Windows. */
 const HOOK_SHIMS = ['.tokendeck/bin/hook', '.tokendeck\\bin\\hook']
@@ -74,6 +79,7 @@ type ClaudeAgent = {
   status?: string
   waitingFor?: string
   state?: string
+  transcript?: string
 }
 
 export class ClaudeCode {
@@ -199,7 +205,9 @@ export class ClaudeCode {
         tty: prev?.tty,
         termProgram: prev?.termProgram,
         entrypoint: row.entrypoint || (desktop ? 'claude-desktop' : prev?.entrypoint),
-        model: prev?.model
+        model: prev?.model,
+        live: !!row.pid || !!prev?.tty,
+        transcript: row.transcript || prev?.transcript
       })
     }
     for (const [id, prev] of this.sessions) {
@@ -249,7 +257,9 @@ export class ClaudeCode {
       tty,
       termProgram: event.headers['x-td-term'] || prev?.termProgram,
       entrypoint: event.headers['x-td-entrypoint'] || prev?.entrypoint,
-      model: prev?.model
+      model: prev?.model,
+      live: true,
+      transcript: prev?.transcript
     })
     this.onChange()
   }
@@ -282,7 +292,9 @@ export class ClaudeCode {
       tty: prev?.tty,
       termProgram: prev?.termProgram,
       entrypoint: prev?.entrypoint,
-      model: model?.display_name || model?.id || prev?.model
+      model: model?.display_name || model?.id || prev?.model,
+      live: true,
+      transcript: prev?.transcript
     })
     this.onChange()
   }
@@ -307,7 +319,7 @@ export class ClaudeCode {
       fs.copyFileSync(file, file + '.tokendeck-backup')
       notes.push('Backs up ~/.claude/settings.json to settings.json.tokendeck-backup once.')
     }
-    const settings = this.readSettings()
+    const settings = this.readSettingsForWrite()
     const command = process.platform === 'win32'
       ? undefined
       : 'sh ~/.tokendeck/bin/hook 2>/dev/null || true'
@@ -338,12 +350,12 @@ export class ClaudeCode {
       SessionEnd: syncHook
     })
     if (process.platform !== 'win32') {
-      const existing = settings.statusLine?.command
+      const existing = isRecord(settings.statusLine) ? settings.statusLine : null
+      const existingCommand = typeof existing?.command === 'string' ? existing.command : ''
       // Save what the shim should run, unless it is the shim itself, which would then call itself.
-      if (existing && !String(existing).includes(STATUSLINE_SHIM)) {
-        fs.writeFileSync(path.join(os.homedir(), '.tokendeck', 'statusline-original.json'), JSON.stringify(existing))
-      }
-      settings.statusLine = { type: 'command', command: 'sh ~/.tokendeck/bin/statusline' }
+      if (existing && !existingCommand.includes(STATUSLINE_SHIM)) saveOriginalStatusLine(existing)
+      // Keep the user's other status line fields, like padding; only the command goes through the shim.
+      settings.statusLine = { ...(existing || {}), type: 'command', command: STATUSLINE_COMMAND }
       notes.push('Chains the status line through ~/.tokendeck/bin/statusline.')
     } else {
       notes.push('Windows status line is skipped unless Git Bash is present; sessions come from the poll.')
@@ -354,10 +366,31 @@ export class ClaudeCode {
     return notes
   }
 
+  /** Puts the backup from the first connect back, byte for byte. */
   restore(): void {
     const file = this.settingsPath()
     const backup = file + '.tokendeck-backup'
     if (fs.existsSync(backup)) fs.copyFileSync(backup, file)
+  }
+
+  /**
+   * Stop watching: takes out Token Deck's hooks and puts the user's own status line back, and
+   * leaves everything else in settings.json as it is now.
+   */
+  uninstall(): void {
+    const settings = this.readSettingsForWrite()
+    const hooks = withoutTokenDeckHooks(settings.hooks)
+    if (hooks === undefined) delete settings.hooks
+    else settings.hooks = hooks
+    const line = settings.statusLine
+    if (isRecord(line) && typeof line.command === 'string' && line.command.includes(STATUSLINE_SHIM)) {
+      const original = readOriginalStatusLine()
+      if (original) settings.statusLine = original
+      else delete settings.statusLine
+    }
+    this.writeSettings(settings)
+    this.hooksInstalled = hasTokenDeckHook(settings.hooks)
+    this.statusChained = false
   }
 
   catalogModels(): Array<{ id: string; name: string }> {
@@ -390,12 +423,6 @@ export class ClaudeCode {
     }
     if (best?.id === this.activeModelId) return
     this.activeModelId = best?.id || null
-    const settings = this.readSettings()
-    if (this.activeModelId && settings.model && settings.model !== this.activeModelId && ![...running.values()].includes(String(settings.model))) {
-      delete settings.model
-      this.writeSettings(settings)
-      this.log('cleared a Claude model setting that no running session uses')
-    }
     this.onChange()
   }
 
@@ -423,19 +450,36 @@ export class ClaudeCode {
 
   async setModel(model: string): Promise<void> {
     const row = this.catalogModels().find((item) => item.id === model || item.name.toLowerCase() === model.toLowerCase())
-    const settings = this.readSettings()
+    const settings = this.readSettingsForWrite()
     settings.model = row?.id || model
     this.writeSettings(settings)
   }
 
   async clearModel(): Promise<void> {
-    const settings = this.readSettings()
+    const settings = this.readSettingsForWrite()
     delete settings.model
     this.writeSettings(settings)
   }
 
+  /** Back to Claude Code's default effort: removes the effort Token Deck or /effort set. */
+  async clearEffort(): Promise<void> {
+    const settings = this.readSettingsForWrite()
+    delete settings.effortLevel
+    const table = settings.modelSettings
+    if (isRecord(table)) {
+      const id = canonicalModel(String(settings.model || 'opus'))
+      const entry = table[id]
+      if (isRecord(entry)) {
+        delete entry.effortLevel
+        if (Object.keys(entry).length === 0) delete table[id]
+      }
+      if (Object.keys(table).length === 0) delete settings.modelSettings
+    }
+    this.writeSettings(settings)
+  }
+
   async setEffort(level: string): Promise<void> {
-    const settings = this.readSettings()
+    const settings = this.readSettingsForWrite()
     const modern = versionAtLeast(this.version, '2.1.251')
     if (modern) {
       const id = canonicalModel(String(settings.model || 'opus'))
@@ -449,7 +493,7 @@ export class ClaudeCode {
   }
 
   async setPermission(mode: PermissionMode): Promise<void> {
-    const settings = this.readSettings()
+    const settings = this.readSettingsForWrite()
     const perms = (settings.permissions || {}) as { defaultMode?: string; disableBypassPermissionsMode?: boolean }
     if (mode === 'FULL' && perms.disableBypassPermissionsMode) throw new Error('NOT AVAILABLE')
     const map = { READ: 'plan', ASK: 'default', AUTO: 'auto', FULL: 'bypassPermissions' } as const
@@ -459,9 +503,13 @@ export class ClaudeCode {
   }
 
   async setUltracode(on: boolean): Promise<void> {
-    const settings = this.readSettings()
+    const settings = this.readSettingsForWrite()
     settings.ultracode = on
     this.writeSettings(settings)
+  }
+
+  readUltracode(): boolean {
+    return this.readSettings().ultracode === true
   }
 
   async launch(): Promise<void> {
@@ -478,30 +526,66 @@ export class ClaudeCode {
   }
 
   async focus(session: LiveSession): Promise<void> {
-    const desktopSession = session.entrypoint === 'claude-desktop' || (!session.tty && !session.termProgram && this.desktop)
+    let tty = session.tty
+    let termProgram = session.termProgram
+    // A session that hasn't sent a hook yet: find its terminal from the running process.
+    if (!tty && session.pid && session.entrypoint !== 'claude-desktop') {
+      const found = await terminalOf(session.pid)
+      if (found) {
+        tty = found.tty
+        termProgram = found.termProgram || termProgram
+      }
+    }
+    const desktopSession = session.entrypoint === 'claude-desktop' || (!tty && !termProgram && this.desktop)
     if (desktopSession && this.bin && session.id) {
       const where = await openClaude(this.bin, ['--desktop', '--resume', session.id])
       if (where === 'already') await openApp('Claude')
       return
     }
-    await focusSession({
-      termProgram: session.termProgram,
-      tty: session.tty,
-      cwd: session.cwd,
-      sessionId: session.id
-    })
+    if (!tty && !termProgram) {
+      // A finished session found only on disk: reopen it in Terminal, in its own folder.
+      const cwd = session.cwd || (session.transcript ? transcriptCwd(session.transcript) : '')
+      if (this.bin && session.id && !session.live) {
+        await launchInTerminal(resumeCommand(this.bin, session.id, cwd))
+        return
+      }
+      // On Windows the best we can do is bring the terminal app forward, below.
+      if (process.platform === 'darwin') throw new Error('no terminal found for this session')
+    }
+    await focusSession({ termProgram, tty, cwd: session.cwd, sessionId: session.id })
   }
 
   readModel(): string {
     return String(this.readSettings().model || '')
   }
 
+  /** settings.json for reading: an empty object when the file is missing or can't be parsed. */
   private readSettings(): Record<string, any> {
     try {
-      return JSON.parse(fs.readFileSync(this.settingsPath(), 'utf8'))
+      return this.readSettingsForWrite()
     } catch {
       return {}
     }
+  }
+
+  /** settings.json before a change. Throws when the file exists but isn't valid JSON, so it's never overwritten. */
+  private readSettingsForWrite(): Record<string, any> {
+    let text = ''
+    try {
+      text = fs.readFileSync(this.settingsPath(), 'utf8')
+    } catch {
+      return {}
+    }
+    if (!text.trim()) return {}
+    let parsed: unknown
+    try {
+      parsed = JSON.parse(text)
+    } catch {
+      this.log('~/.claude/settings.json is not valid JSON; leaving it alone')
+      throw new Error('settings.json is not valid JSON')
+    }
+    if (!isRecord(parsed)) throw new Error('settings.json is not an object')
+    return parsed as Record<string, any>
   }
 
   private writeSettings(settings: Record<string, unknown>): void {
@@ -545,6 +629,84 @@ function withoutTokenDeckHook(entry: unknown): unknown[] {
   if (!isRecord(entry) || !Array.isArray(entry.hooks) || !entry.hooks.some(isTokenDeckHook)) return [entry]
   const rest = entry.hooks.filter((hook) => !isTokenDeckHook(hook))
   return rest.length ? [{ ...entry, hooks: rest }] : []
+}
+
+/** settings.json `hooks` without Token Deck's entries; undefined when nothing is left. */
+export function withoutTokenDeckHooks(hooks: unknown): Record<string, unknown> | undefined {
+  if (!isRecord(hooks)) return hooks === undefined ? undefined : (hooks as Record<string, unknown>)
+  const next: Record<string, unknown> = {}
+  for (const [event, list] of Object.entries(hooks)) {
+    if (!Array.isArray(list)) {
+      next[event] = list
+      continue
+    }
+    const kept = list.flatMap(withoutTokenDeckHook)
+    if (kept.length || list.length === 0) next[event] = kept
+  }
+  return Object.keys(next).length ? next : undefined
+}
+
+function tokendeckDir(): string {
+  return path.join(os.homedir(), '.tokendeck')
+}
+
+/**
+ * The user's status line before Token Deck chained it: the whole object in statusline-original.json
+ * (for Stop watching), and the bare command in statusline-original (for the shim to run as is).
+ */
+export function saveOriginalStatusLine(line: Record<string, unknown>): void {
+  fs.mkdirSync(tokendeckDir(), { recursive: true })
+  fs.writeFileSync(path.join(tokendeckDir(), 'statusline-original.json'), JSON.stringify(line))
+  const command = typeof line.command === 'string' ? line.command : ''
+  fs.writeFileSync(path.join(tokendeckDir(), 'statusline-original'), command)
+}
+
+/** The saved status line, from this version's object or an older version's bare command string. */
+export function readOriginalStatusLine(): Record<string, unknown> | null {
+  try {
+    const parsed = JSON.parse(fs.readFileSync(path.join(tokendeckDir(), 'statusline-original.json'), 'utf8')) as unknown
+    if (typeof parsed === 'string' && parsed) return { type: 'command', command: parsed }
+    if (isRecord(parsed) && typeof parsed.command === 'string' && parsed.command) return parsed
+  } catch {
+    /* none saved */
+  }
+  return null
+}
+
+/** Older versions saved only statusline-original.json; give the shim its bare command file. */
+function migrateOriginalStatusLine(): void {
+  const raw = path.join(tokendeckDir(), 'statusline-original')
+  if (fs.existsSync(raw)) return
+  const original = readOriginalStatusLine()
+  if (original && typeof original.command === 'string') fs.writeFileSync(raw, original.command)
+}
+
+/** The folder a transcript was recorded in, from the `cwd` its first entries carry. */
+export function transcriptCwd(file: string): string {
+  try {
+    const fd = fs.openSync(file, 'r')
+    const buffer = Buffer.alloc(65536)
+    const length = fs.readSync(fd, buffer, 0, buffer.length, 0)
+    fs.closeSync(fd)
+    for (const line of buffer.subarray(0, length).toString('utf8').split('\n')) {
+      try {
+        const cwd = (JSON.parse(line) as { cwd?: unknown }).cwd
+        if (typeof cwd === 'string' && cwd) return cwd
+      } catch {
+        /* a partial last line */
+      }
+    }
+  } catch {
+    /* unreadable */
+  }
+  return ''
+}
+
+/** `claude --resume <id>`, in the session's folder when its path is safe to quote. */
+export function resumeCommand(bin: string, id: string, cwd: string): string {
+  const safe = (value: string) => value && !/["$`\\]/.test(value)
+  const run = `${safe(bin) ? `"${bin}"` : 'claude'} --resume ${id.replace(/[^\w-]/g, '')}`
+  return safe(cwd) ? `cd "${cwd}" && ${run}` : run
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -606,7 +768,8 @@ function recentSessionFiles(): ClaudeAgent[] {
     name: customTitle(row.dir, row.id) || 'SESSION',
     status: 'idle',
     startedAt: row.mtime,
-    updatedAt: row.mtime
+    updatedAt: row.mtime,
+    transcript: path.join(row.dir, `${row.id}.jsonl`)
   }))
 }
 
@@ -690,6 +853,7 @@ function writeStatusline(): void {
   const file = path.join(os.homedir(), '.tokendeck', 'bin', 'statusline')
   fs.mkdirSync(path.dirname(file), { recursive: true })
   fs.writeFileSync(file, STATUSLINE, { mode: 0o755 })
+  migrateOriginalStatusLine()
 }
 
 function runningClaudeModels(): Promise<Map<string, string>> {

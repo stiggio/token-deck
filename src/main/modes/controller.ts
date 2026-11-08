@@ -27,6 +27,8 @@ export class Controller {
   custom: CustomMode | null = null
   picker = false
   permissionPreview = 0
+  /** True once the right knob has been turned in Models & Usage, so a press applies a level the user saw. */
+  permissionPending = false
   effortIndex = 2
   modelIndex = 0
   selectedAgent: AgentId = 'claude-code'
@@ -148,7 +150,7 @@ export class Controller {
     if (this.mode === 'agents') {
       const agent = AGENT_ORDER[key - 1]!
       if (this.readableInstalled().includes(agent)) this.selectedAgent = agent
-      const session = this.latest(agent)
+      const session = this.latestLive(agent)
       if (session) {
         this.selectedId = session.id
         await this.focus(session)
@@ -203,6 +205,7 @@ export class Controller {
       const knob = this.custom.knobs[which]
       const step = action === 'cw' ? knob?.cw : action === 'ccw' ? knob?.ccw : knob?.click
       const result = await runAction(step)
+      if (result === 'mode' && step && step.type === 'mode') return this.enter(step.mode)
       this.flash([result === 'failed' ? 'FAILED' : 'OK'])
       return
     }
@@ -238,22 +241,18 @@ export class Controller {
       return
     }
     if (which === 'left') {
+      if (action === 'click') return this.restoreDefault(agent, 'model')
       const models = this.modelsFor(agent)
       if (!models.length) return this.flash(['NOT', 'AVAILABLE'])
-      if (action === 'click') {
-        if (agent === 'claude-code') await this.claude.clearModel()
-        this.flash(['NEXT', 'SESSION'])
-        return
-      }
       this.modelIndex = wrap(this.modelIndex + (action === 'cw' ? 1 : -1), models.length)
       this.selectedAgent = agent
       await this.applyModel(models[this.modelIndex] || models[0]!)
       return
     }
+    if (action === 'click') return this.restoreDefault(agent, 'effort')
     const levels = this.effortsFor(agent)
     if (!levels.length) return this.flash(['NOT', 'AVAILABLE'])
-    this.effortIndex = wrap(this.effortIndex + (action === 'cw' ? 1 : action === 'ccw' ? -1 : 0), levels.length)
-    if (action === 'click') this.effortIndex = 0
+    this.effortIndex = wrap(this.effortIndex + (action === 'cw' ? 1 : -1), levels.length)
     this.selectedAgent = agent
     await this.applyEffort(levels[this.effortIndex] || levels[0]!)
   }
@@ -262,10 +261,8 @@ export class Controller {
     const rows = this.sessions()
     if (which === 'main') {
       const last = Math.max(0, Math.ceil(rows.length / 6) - 1)
-      if (action === 'click') {
-        const next = rows.find((row) => row.status === 'needs-approval' || row.status === 'needs-input')
-        this.page = next ? Math.floor(rows.indexOf(next) / 6) : 0
-      } else this.page = Math.min(last, Math.max(0, this.page + (action === 'cw' ? 1 : -1)))
+      if (action === 'click') this.page = nextPageNeedingYou(rows, this.page)
+      else this.page = Math.min(last, Math.max(0, this.page + (action === 'cw' ? 1 : -1)))
       await this.render(true)
       return
     }
@@ -309,8 +306,12 @@ export class Controller {
     if (which === 'main') {
       if (action === 'click') {
         if (this.configAgent() !== 'claude-code') return this.flash(['NOT', 'AVAILABLE'])
-        this.ultracodeOn = !this.ultracodeOn
-        await this.claude.setUltracode(this.ultracodeOn)
+        this.ultracodeOn = !this.claude.readUltracode()
+        try {
+          await this.claude.setUltracode(this.ultracodeOn)
+        } catch {
+          return this.flash(['FAILED'])
+        }
         this.flash(['ULTRACODE', this.ultracodeOn ? 'ON' : 'OFF'])
         return
       }
@@ -321,16 +322,23 @@ export class Controller {
       return
     }
     if (action === 'click') {
+      if (!this.permissionPending) return this.flash(['TURN', 'FIRST'])
       const mode = PERMS[this.permissionPreview]!
       if (mode === 'FULL') {
         this.flash(['CONFIRM ON', 'COMPUTER'])
         const ok = await this.confirmFull()
         if (!ok) return
       }
-      await this.applyPermission(mode)
+      try {
+        await this.applyPermission(mode)
+      } catch {
+        return this.flash(['NOT', 'AVAILABLE'])
+      }
+      this.permissionPending = false
       this.flash([mode, 'NEXT', 'SESSION'])
       return
     }
+    this.permissionPending = true
     this.permissionPreview = wrap(this.permissionPreview + (action === 'cw' ? 1 : -1), PERMS.length)
     const mode = PERMS[this.permissionPreview]!
     this.flash(mode === 'ASK' ? ['ASK', 'PRESS TO', 'APPLY'] : [mode, 'PRESS TO', 'APPLY'])
@@ -351,6 +359,18 @@ export class Controller {
     } catch {
       this.flash(['NOT', 'AVAILABLE'])
     }
+  }
+
+  /** A knob press in Agents: back to the agent's own default model or effort, for the next session. */
+  private async restoreDefault(agent: AgentId, what: 'model' | 'effort'): Promise<void> {
+    try {
+      if (agent === 'claude-code') await (what === 'model' ? this.claude.clearModel() : this.claude.clearEffort())
+      else if (agent === 'codex') await (what === 'model' ? this.codex.clearModel() : this.codex.clearEffort())
+      else return this.flash(['NOT', 'AVAILABLE'])
+    } catch {
+      return this.flash(['FAILED'])
+    }
+    this.flash(what === 'model' ? ['DEFAULT', 'NEXT', 'SESSION'] : ['DEFAULT', 'EFFORT'])
   }
 
   private async applyEffort(level: string): Promise<void> {
@@ -471,15 +491,17 @@ export class Controller {
     const agent = this.configAgent()
     const usage = agent ? this.store.get('usage')[agent] : undefined
     const expired = !usage || Date.now() - usage.at > 24 * 60 * 60 * 1000
+    const five = expired ? undefined : current(usage?.five)
+    const seven = expired ? undefined : current(usage?.seven)
     return {
       agent: agent === 'codex' ? 'Codex' : agent === 'opencode' ? 'OpenCode' : 'Claude Code',
-      fiveHour: !usage || expired ? null : usage.five?.pct ?? null,
-      sevenDay: !usage || expired ? null : usage.seven?.pct ?? null,
+      fiveHour: five?.pct ?? null,
+      sevenDay: seven?.pct ?? null,
       fiveLabel: usage?.labels?.five || '5H',
       sevenLabel: usage?.labels?.seven || '7D',
       fiveResets: usage?.five?.resetsAt ?? null,
       sevenResets: usage?.seven?.resetsAt ?? null,
-      known: !!usage && !expired && (usage.five?.pct != null || usage.seven?.pct != null)
+      known: five?.pct != null || seven?.pct != null
     }
   }
 
@@ -617,23 +639,34 @@ export class Controller {
     const seen = new Set<AgentId>()
     for (const [id, agent] of pairs) {
       if (!running.has(id)) continue
-      const session = this.latest(agent)
+      const session = this.latestLive(agent)
       if (session) targets.push({ session })
       else targets.push({ bundleId: id })
       seen.add(agent)
     }
     for (const agent of ['claude-code', 'codex', 'opencode'] as const) {
       if (seen.has(agent)) continue
-      const session = this.latest(agent)
+      const session = this.latestLive(agent)
       if (session) targets.push({ session })
     }
     return targets
   }
 
-  private latest(agent: AgentId): LiveSession | undefined {
+  /** The newest session that is running now, not one found only as a transcript on disk. */
+  private latestLive(agent: AgentId): LiveSession | undefined {
     return [...this.claude.sessions.values(), ...this.codex.sessions.values(), ...this.opencode.sessions.values()]
-      .filter((row) => row.agent === agent)
+      .filter((row) => row.agent === agent && isLive(row))
       .sort((a, b) => b.updatedAt - a.updatedAt)[0]
+  }
+
+  /** The mode files changed: an open mode picks up its new keys, a deleted one closes. */
+  async modesChanged(): Promise<void> {
+    if (this.mode === 'custom' && this.custom) {
+      const fresh = this.modes().find((mode) => mode.file === this.custom!.file)
+      if (fresh) this.custom = fresh
+      else return this.enter(this.store.get('mode'))
+    }
+    await this.render(true)
   }
 
   private selected(): LiveSession | undefined {
@@ -647,8 +680,7 @@ export class Controller {
       else await this.opencode.focus(session)
     } catch (err) {
       this.log(`focus ${err}`)
-      if (session.agent === 'claude-code') await this.claude.launch()
-      else this.flash(['FAILED'])
+      this.flash(['FAILED'])
     }
   }
 
@@ -658,6 +690,26 @@ export class Controller {
     else if (agent === 'opencode') await this.opencode.launch()
     else await this.launch[agent].launch()
   }
+}
+
+/** Live: a running process or a hook vouches for it, or it's doing something right now. */
+function isLive(row: LiveSession): boolean {
+  if (row.agent !== 'claude-code') return true
+  return row.live === true || row.status === 'working' || row.status === 'needs-approval' || row.status === 'needs-input'
+}
+
+/** A usage window, unless its reset time has passed. */
+export function current(window?: { pct: number; resetsAt?: number }): { pct: number; resetsAt?: number } | undefined {
+  if (!window) return undefined
+  if (window.resetsAt && (window.resetsAt > 1e12 ? window.resetsAt : window.resetsAt * 1000) < Date.now()) return undefined
+  return window
+}
+
+/** The next page, after this one, with a session that needs you; wraps around, page 1 when none does. */
+export function nextPageNeedingYou(rows: Array<{ status: string }>, page: number): number {
+  const pages = [...new Set(rows.map((row, index) => (row.status === 'needs-approval' || row.status === 'needs-input' ? Math.floor(index / 6) : -1)).filter((p) => p >= 0))].sort((a, b) => a - b)
+  if (!pages.length) return 0
+  return pages.find((p) => p > page) ?? pages[0]!
 }
 
 function wrap(index: number, length: number): number {

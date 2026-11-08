@@ -79,8 +79,9 @@ function readSettings() {
   return JSON.parse(fs.readFileSync(settingsFile(), 'utf8'))
 }
 
+/** The command the status line shim runs, saved verbatim. */
 function savedStatusline(): unknown {
-  return JSON.parse(fs.readFileSync(path.join(home, '.tokendeck', 'statusline-original.json'), 'utf8'))
+  return fs.readFileSync(path.join(home, '.tokendeck', 'statusline-original'), 'utf8')
 }
 
 function claude(): ClaudeCode {

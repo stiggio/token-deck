@@ -20,6 +20,7 @@ import { Controller } from './modes/controller'
 import { MODE_EXAMPLE, watchModes } from './modes/custom'
 import { shouldAutoBurn, shippedRecords } from './burn/records'
 import { accessibilityTrusted, askAutomation } from './system/focus'
+import { isAppUrl, isExternalLink } from './system/navigation'
 import type { AgentId } from '../shared/model'
 import type { IpcCall, Snapshot } from '../shared/ipc'
 
@@ -172,7 +173,7 @@ async function start(): Promise<void> {
   claude.start()
   if (codex.bin) void codex.start()
   opencode.start()
-  watchModes(() => void controller.render(true))
+  watchModes(() => void controller.modesChanged())
   app.setLoginItemSettings({ openAtLogin: store.get('startAtLogin') })
 
   const welcomePng = `data:image/png;base64,${fs.readFileSync(resource('welcome-320x240.png')).toString('base64')}`
@@ -200,6 +201,16 @@ async function start(): Promise<void> {
       if (quitting) return
       event.preventDefault()
       window?.hide()
+    })
+    // The window holds the app's bridge, so nothing but the app's own page may load in it.
+    window.webContents.setWindowOpenHandler(({ url }) => {
+      if (isExternalLink(url)) void shell.openExternal(url)
+      return { action: 'deny' }
+    })
+    window.webContents.on('will-navigate', (event, url) => {
+      if (isAppUrl(url, process.env.ELECTRON_RENDERER_URL)) return
+      event.preventDefault()
+      if (isExternalLink(url)) void shell.openExternal(url)
     })
     const devUrl = process.env.ELECTRON_RENDERER_URL
     if (devUrl) void window.loadURL(devUrl)
@@ -280,7 +291,11 @@ async function start(): Promise<void> {
   rebuildTray()
   tray.on('click', openWindow)
 
-  ipcMain.handle('td', async (_event, call: IpcCall) => {
+  ipcMain.handle('td', async (event, call: IpcCall) => {
+    if (!isAppUrl(event.senderFrame?.url || '', process.env.ELECTRON_RENDERER_URL)) {
+      log.write(`ignored a call from ${event.senderFrame?.url || 'an unknown frame'}`)
+      throw new Error('not allowed')
+    }
     await dispatch(call)
     broadcast()
     return snapshot()
@@ -303,15 +318,20 @@ async function start(): Promise<void> {
     } else if (call.method === 'connect') await connectAgent(call.id)
     else if (call.method === 'disconnect') disconnect(call.id)
     else if (call.method === 'restore') {
-      if (call.id === 'claude-code') claude.restore()
-      if (call.id === 'codex') restoreCodex()
+      try {
+        if (call.id === 'claude-code') claude.uninstall()
+        if (call.id === 'codex') restoreCodex()
+      } catch (err) {
+        log.write(`restore ${err}`)
+        await settingsProblem()
+      }
       await claude.detect()
     } else if (call.method === 'favorites') {
       const favorites = store.get('favorites')
       favorites[call.agent] = call.models.slice(0, 6)
       store.set('favorites', favorites)
       await controller.render(true)
-    } else if (call.method === 'reloadModes') await controller.render(true)
+    } else if (call.method === 'reloadModes') await controller.modesChanged()
     else if (call.method === 'openModes') {
       const { modesDir } = await import('./modes/custom')
       await shell.openPath(modesDir())
@@ -355,10 +375,25 @@ async function start(): Promise<void> {
     }
   }
 
+  /** Token Deck never overwrites a settings.json it can't parse; say so instead. */
+  async function settingsProblem(): Promise<void> {
+    await dialog.showMessageBox({
+      type: 'warning',
+      message: 'Token Deck didn’t change ~/.claude/settings.json',
+      detail: 'The file isn’t valid JSON, so Token Deck left it as it is. Fix the file, then try again.',
+      buttons: ['OK']
+    })
+  }
+
   async function connectAgent(id: AgentId): Promise<void> {
     if (id === 'claude-code') {
-      const notes = await claude.install()
-      log.write(notes.join(' '))
+      try {
+        const notes = await claude.install()
+        log.write(notes.join(' '))
+      } catch (err) {
+        log.write(`connect claude ${err}`)
+        await settingsProblem()
+      }
       if (controller.mode === 'idle') controller.mode = store.get('mode')
     } else if (id === 'codex') await codex.start()
     else if (id === 'opencode') opencode.start()
