@@ -1,61 +1,250 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Token Deck</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2227%22%20height%3D%2226%22%20viewBox%3D%220%200%2027%2026%22%20fill%3D%22none%22%20role%3D%22img%22%20aria-label%3D%22Stigg%22%3E%3Ctitle%3EStigg%3C%2Ftitle%3E%3Cpath%20d%3D%22M19.0306%2024.6139C18.9021%2024.6781%2016.4488%2025.7577%2012.1101%2025.5546C9.84964%2025.4477%207.88917%2025.0308%206.49649%2024.646L14.0063%2015.9447C15.3454%2016.2868%2017.0702%2016.6075%2019.0306%2016.7037C23.3694%2016.9175%2025.8226%2015.8271%2025.9512%2015.763L19.0306%2024.6246V24.6139ZM7.81418%207.89553C6.5822%203.7373%207.06428%201.10768%207.09642%200.96872L0.111585%209.77688C0.0901591%209.91584%20-0.391923%2012.5455%200.829351%2016.7037C1.47213%2018.863%202.33987%2020.6695%203.04693%2021.9309L9.74251%2012.5989C9.09974%2011.3803%208.37126%209.77688%207.81418%207.90621V7.89553ZM25.2227%208.81482C24.2371%205.47969%2022.6944%203.01042%2022.0624%202.06974L15.8489%209.96929L17.0166%2015.5599C17.7129%2015.6561%2018.3986%2015.7202%2019.0949%2015.763C19.4484%2015.7737%2019.802%2015.7844%2020.1448%2015.7844C23.5086%2015.7844%2025.3834%2014.9934%2025.5869%2014.8972L26.069%2014.6834C26.1119%2013.5289%2026.0369%2011.4872%2025.2334%208.80413L25.2227%208.81482ZM21.3232%201.5032C20.2626%201.10768%2017.4987%200.199075%2014.017%200.0280425C11.2209%20-0.110921%209.21758%200.29528%208.10343%200.615966L8.00702%201.12906C7.98559%201.23596%207.55707%203.72661%208.70336%207.62829C8.89619%208.29104%209.13187%208.9431%209.38898%209.59516L15.1097%209.40275L21.3339%201.51388L21.3232%201.5032Z%22%20fill%3D%22%23FFFFFF%22%2F%3E%3C%2Fsvg%3E%0A">
+<title>Token Deck by Stigg</title>
+<meta name="description" content="Token Deck is the app for the deck from your After Tokens box. It puts your Claude Code, Codex and OpenCode sessions on the keys, takes you to the one that needs you, and shows how much of your 5-hour and weekly limits you have used. For macOS and Windows.">
+<meta name="theme-color" content="#131512">
+<link rel="canonical" href="https://usage.stigg.io/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Stigg">
+<meta property="og:url" content="https://usage.stigg.io/">
+<meta property="og:title" content="Token Deck">
+<meta property="og:description" content="Token Deck is the app for the deck from your After Tokens box. It puts your Claude Code, Codex and OpenCode sessions on the keys, takes you to the one that needs you, and shows how much of your 5-hour and weekly limits you have used. For macOS and Windows.">
+<meta property="og:image" content="https://usage.stigg.io/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Token Deck logo next to a drawing of the deck showing six coding sessions">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://cdn.prod.website-files.com" crossorigin>
+<link rel="preload" href="https://cdn.prod.website-files.com/6a2ff0758d0f9f6abcd082f0/6a2ff738fe0dab30dc7d8faa_soehne-buch.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="https://cdn.prod.website-files.com/6a2ff0758d0f9f6abcd082f0/6a2ff738fe713781beb04518_soehne-leicht.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 @font-face { font-family: "Soehne Buch"; src: url("https://cdn.prod.website-files.com/6a2ff0758d0f9f6abcd082f0/6a2ff738fe0dab30dc7d8faa_soehne-buch.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "Soehne Leicht"; src: url("https://cdn.prod.website-files.com/6a2ff0758d0f9f6abcd082f0/6a2ff738fe713781beb04518_soehne-leicht.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "Soehne Mono Buch"; src: url("https://cdn.prod.website-files.com/6a2ff0758d0f9f6abcd082f0/6a2ff7385d9084e037c340d7_soehne-mono-buch.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "Soehne Mono Leicht"; src: url("https://cdn.prod.website-files.com/6a2ff0758d0f9f6abcd082f0/6a2ff738aaffb29b8ccee03b_soehne-mono-leicht.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: Geist; src: url("fonts/Geist-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Geist Light"; src: url("fonts/Geist-Light.woff2") format("woff2"); font-weight: 400; font-display: swap; }
 @font-face { font-family: "Geist Mono"; src: url("fonts/GeistMono-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
-:root { color-scheme: dark; --bg:#131512; --ink:#fff; --muted:#9ea19d; --dim:#838682; --line:#3c3e3a; --lime:#92e759; }
-* { box-sizing: border-box; }
-html, body { margin: 0; background: var(--bg); color: var(--ink); }
-body { font-family: "Soehne Buch", Geist, sans-serif; font-weight: 400; font-synthesis: none; }
-h1, h2, h3, strong, b { font-weight: 400; }
-h2 { font-size: clamp(32px, 4vw, 44px); line-height: 1.15; letter-spacing: -0.03em; margin: 8px 0 16px; }
-a { color: inherit; }
-.wrap { width: min(960px, calc(100% - 48px)); margin: 0 auto; }
-.eyebrow { font-family: "Soehne Mono Buch", "Geist Mono", monospace; font-size: 12px; letter-spacing: .03em; text-transform: uppercase; color: var(--lime); }
-.eyebrow::before { content: ""; display: inline-block; width: 6px; height: 6px; background: var(--lime); margin-right: 8px; vertical-align: 1px; }
-.hero { padding: 72px 0 32px; border-bottom: 1px solid var(--line); }
-.lockup svg { width: min(420px, 100%); height: auto; }
-.tag { font-family: "Soehne Leicht", Geist, sans-serif; font-size: 22px; margin: 18px 0 28px; }
-.installs { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-@media (max-width: 800px) { .installs { grid-template-columns: 1fr; } }
-.cmd { display: flex; gap: 8px; align-items: stretch; }
-.cmd code, .note, pre { font-family: "Soehne Mono Buch", "Geist Mono", monospace; font-size: 13px; }
-.cmd code { display: block; border: 1px solid var(--line); border-radius: 4px; padding: 12px; overflow: auto; flex: 1; }
-.btn { height: 44px; padding: 0 16px; border-radius: 4px; border: 1px solid transparent; background: #fff; color: #131512; font-family: inherit; font-size: 16px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
-.btn:hover { background: var(--lime); }
-.plain { color: var(--muted); line-height: 1.5; }
-.lead { color: var(--ink); font-size: 18px; line-height: 1.45; max-width: 38em; }
-.device { position: relative; margin: 48px 0 8px; }
-.device svg { width: 100%; height: auto; display: block; }
-.device svg [stroke] { stroke-width: 1px; vector-effect: non-scaling-stroke; }
-.tile { position: absolute; image-rendering: pixelated; object-fit: fill; }
-.block { padding: 48px 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: center; }
-@media (max-width: 800px) { .block { grid-template-columns: 1fr; } }
-.block svg { width: 100%; height: auto; }
-.legend { font-family: "Soehne Mono Buch", "Geist Mono", monospace; font-size: 13px; color: var(--muted); line-height: 1.7; }
-pre { border: 1px solid var(--line); border-radius: 8px; padding: 16px; overflow: auto; color: var(--muted); }
-footer { padding: 40px 0 64px; display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
-.mono { font-family: "Soehne Mono Buch", "Geist Mono", monospace; letter-spacing: .03em; }
-.version { color: var(--dim); font-family: "Soehne Mono Buch", "Geist Mono", monospace; font-size: 12px; }
 </style>
+<link rel="stylesheet" href="style.css?v=1.0.0">
 </head>
 <body>
-<main class="wrap">
-  <header class="hero">
-    <div class="lockup"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108.94 67.86">
-<g id="plain">
+<a class="skip" href="#install">Skip to the download</a>
+<svg class="visually-hidden" aria-hidden="true" focusable="false"><defs>
+<symbol id="n3" viewBox="0 0 129 78"><g>
+<rect x="0.133" y="0.133" width="128.735" height="77.735" rx="3.868" ry="3.868" fill="none" stroke="#c4c7c3" stroke-width="1" vector-effect="non-scaling-stroke"/>
+</g>
+<g>
+<rect x="13.9" y="11.4" width="17.6" height="17.1" rx="1.8" ry="1.8" fill="none" stroke="#838682" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<rect x="14.7" y="12.2" width="16" height="15.5" rx="1" ry="1" fill="none" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<rect x="32.7" y="11.4" width="17.6" height="17.1" rx="1.8" ry="1.8" fill="none" stroke="#838682" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<rect x="33.5" y="12.2" width="16" height="15.5" rx="1" ry="1" fill="none" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<rect x="51.5" y="11.4" width="17.6" height="17.1" rx="1.8" ry="1.8" fill="none" stroke="#838682" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<rect x="52.3" y="12.2" width="16" height="15.5" rx="1" ry="1" fill="none" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<rect x="13.9" y="29.9" width="17.6" height="17.1" rx="1.8" ry="1.8" fill="none" stroke="#838682" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<rect x="14.7" y="30.7" width="16" height="15.5" rx="1" ry="1" fill="none" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<rect x="32.7" y="29.9" width="17.6" height="17.1" rx="1.8" ry="1.8" fill="none" stroke="#838682" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<rect x="33.5" y="30.7" width="16" height="15.5" rx="1" ry="1" fill="none" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<rect x="51.5" y="29.9" width="17.6" height="17.1" rx="1.8" ry="1.8" fill="none" stroke="#838682" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<rect x="52.3" y="30.7" width="16" height="15.5" rx="1" ry="1" fill="none" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+</g>
+<g>
+<g>
+<circle cx="22.7" cy="62.9" r="6.317" fill="none" stroke="#c4c7c3" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<circle cx="22.7" cy="62.9" r="5.25" fill="none" stroke="#5b5d59" stroke-width="1" vector-effect="non-scaling-stroke"/>
+</g>
+<g>
+<circle cx="41.5" cy="62.9" r="6.317" fill="none" stroke="#c4c7c3" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<circle cx="41.5" cy="62.9" r="5.25" fill="none" stroke="#5b5d59" stroke-width="1" vector-effect="non-scaling-stroke"/>
+</g>
+<g>
+<circle cx="60.3" cy="62.9" r="6.317" fill="none" stroke="#c4c7c3" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<circle cx="60.3" cy="62.9" r="5.25" fill="none" stroke="#5b5d59" stroke-width="1" vector-effect="non-scaling-stroke"/>
+</g>
+</g>
+<g>
+<circle cx="96.1" cy="26.7" r="14.518" fill="none" stroke="#c4c7c3" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="96.1" y1="13.95" x2="96.1" y2="12.85" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="97.433" y1="14.02" x2="97.548" y2="12.926" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="98.751" y1="14.229" x2="98.98" y2="13.153" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="100.04" y1="14.574" x2="100.38" y2="13.528" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="101.286" y1="15.052" x2="101.733" y2="14.047" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="102.475" y1="15.658" x2="103.025" y2="14.706" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="103.594" y1="16.385" x2="104.241" y2="15.495" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="104.631" y1="17.225" x2="105.367" y2="16.407" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="105.575" y1="18.169" x2="106.393" y2="17.433" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="106.415" y1="19.206" x2="107.305" y2="18.559" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="107.142" y1="20.325" x2="108.094" y2="19.775" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="107.748" y1="21.514" x2="108.753" y2="21.067" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="108.226" y1="22.76" x2="109.272" y2="22.42" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="108.571" y1="24.049" x2="109.647" y2="23.82" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="108.78" y1="25.367" x2="109.874" y2="25.252" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="108.85" y1="26.7" x2="109.95" y2="26.7" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="108.78" y1="28.033" x2="109.874" y2="28.148" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="108.571" y1="29.351" x2="109.647" y2="29.58" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="108.226" y1="30.64" x2="109.272" y2="30.98" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="107.748" y1="31.886" x2="108.753" y2="32.333" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="107.142" y1="33.075" x2="108.094" y2="33.625" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="106.415" y1="34.194" x2="107.305" y2="34.841" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="105.575" y1="35.231" x2="106.393" y2="35.967" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="104.631" y1="36.175" x2="105.367" y2="36.993" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="103.594" y1="37.015" x2="104.241" y2="37.905" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="102.475" y1="37.742" x2="103.025" y2="38.694" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="101.286" y1="38.348" x2="101.733" y2="39.353" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="100.04" y1="38.826" x2="100.38" y2="39.872" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="98.751" y1="39.171" x2="98.98" y2="40.247" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="97.433" y1="39.38" x2="97.548" y2="40.474" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="96.1" y1="39.45" x2="96.1" y2="40.55" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="94.767" y1="39.38" x2="94.652" y2="40.474" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="93.449" y1="39.171" x2="93.22" y2="40.247" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="92.16" y1="38.826" x2="91.82" y2="39.872" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="90.914" y1="38.348" x2="90.467" y2="39.353" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="89.725" y1="37.742" x2="89.175" y2="38.694" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="88.606" y1="37.015" x2="87.959" y2="37.905" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="87.569" y1="36.175" x2="86.833" y2="36.993" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="86.625" y1="35.231" x2="85.807" y2="35.967" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="85.785" y1="34.194" x2="84.895" y2="34.841" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="85.058" y1="33.075" x2="84.106" y2="33.625" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="84.452" y1="31.886" x2="83.447" y2="32.333" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="83.974" y1="30.64" x2="82.928" y2="30.98" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="83.629" y1="29.351" x2="82.553" y2="29.58" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="83.42" y1="28.033" x2="82.326" y2="28.148" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="83.35" y1="26.7" x2="82.25" y2="26.7" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="83.42" y1="25.367" x2="82.326" y2="25.252" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="83.629" y1="24.049" x2="82.553" y2="23.82" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="83.974" y1="22.76" x2="82.928" y2="22.42" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="84.452" y1="21.514" x2="83.447" y2="21.067" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="85.058" y1="20.325" x2="84.106" y2="19.775" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="85.785" y1="19.206" x2="84.895" y2="18.559" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="86.625" y1="18.169" x2="85.807" y2="17.433" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="87.569" y1="17.225" x2="86.833" y2="16.407" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="88.606" y1="16.385" x2="87.959" y2="15.495" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="89.725" y1="15.658" x2="89.175" y2="14.706" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="90.914" y1="15.052" x2="90.467" y2="14.047" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="92.16" y1="14.574" x2="91.82" y2="13.528" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="93.449" y1="14.229" x2="93.22" y2="13.153" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="94.767" y1="14.02" x2="94.652" y2="12.926" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<circle cx="96.1" cy="26.7" r="12.15" fill="none" stroke="#838682" stroke-width="1" vector-effect="non-scaling-stroke"/>
+</g>
+<g>
+<circle cx="85" cy="59.1" r="7.467" fill="none" stroke="#c4c7c3" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="85" y1="52.95" x2="85" y2="52.15" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="86.068" y1="53.043" x2="86.207" y2="52.256" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="87.103" y1="53.321" x2="87.377" y2="52.569" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="88.075" y1="53.774" x2="88.475" y2="53.081" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="88.953" y1="54.389" x2="89.467" y2="53.776" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="89.711" y1="55.147" x2="90.324" y2="54.633" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="90.326" y1="56.025" x2="91.019" y2="55.625" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="90.779" y1="56.997" x2="91.531" y2="56.723" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="91.057" y1="58.032" x2="91.844" y2="57.893" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="91.15" y1="59.1" x2="91.95" y2="59.1" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="91.057" y1="60.168" x2="91.844" y2="60.307" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="90.779" y1="61.203" x2="91.531" y2="61.477" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="90.326" y1="62.175" x2="91.019" y2="62.575" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="89.711" y1="63.053" x2="90.324" y2="63.567" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="88.953" y1="63.811" x2="89.467" y2="64.424" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="88.075" y1="64.426" x2="88.475" y2="65.119" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="87.103" y1="64.879" x2="87.377" y2="65.631" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="86.068" y1="65.157" x2="86.207" y2="65.944" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="85" y1="65.25" x2="85" y2="66.05" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="83.932" y1="65.157" x2="83.793" y2="65.944" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="82.897" y1="64.879" x2="82.623" y2="65.631" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="81.925" y1="64.426" x2="81.525" y2="65.119" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="81.047" y1="63.811" x2="80.533" y2="64.424" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="80.289" y1="63.053" x2="79.676" y2="63.567" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="79.674" y1="62.175" x2="78.981" y2="62.575" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="79.221" y1="61.203" x2="78.469" y2="61.477" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="78.943" y1="60.168" x2="78.156" y2="60.307" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="78.85" y1="59.1" x2="78.05" y2="59.1" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="78.943" y1="58.032" x2="78.156" y2="57.893" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="79.221" y1="56.997" x2="78.469" y2="56.723" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="79.674" y1="56.025" x2="78.981" y2="55.625" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="80.289" y1="55.147" x2="79.676" y2="54.633" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="81.047" y1="54.389" x2="80.533" y2="53.776" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="81.925" y1="53.774" x2="81.525" y2="53.081" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="82.897" y1="53.321" x2="82.623" y2="52.569" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="83.932" y1="53.043" x2="83.793" y2="52.256" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<circle cx="85" cy="59.1" r="5.6" fill="none" stroke="#838682" stroke-width="1" vector-effect="non-scaling-stroke"/>
+</g>
+<g>
+<circle cx="110.6" cy="59.1" r="7.467" fill="none" stroke="#c4c7c3" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="110.6" y1="52.95" x2="110.6" y2="52.15" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="111.668" y1="53.043" x2="111.807" y2="52.256" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="112.703" y1="53.321" x2="112.977" y2="52.569" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="113.675" y1="53.774" x2="114.075" y2="53.081" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="114.553" y1="54.389" x2="115.067" y2="53.776" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="115.311" y1="55.147" x2="115.924" y2="54.633" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="115.926" y1="56.025" x2="116.619" y2="55.625" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="116.379" y1="56.997" x2="117.131" y2="56.723" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="116.657" y1="58.032" x2="117.444" y2="57.893" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="116.75" y1="59.1" x2="117.55" y2="59.1" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="116.657" y1="60.168" x2="117.444" y2="60.307" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="116.379" y1="61.203" x2="117.131" y2="61.477" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="115.926" y1="62.175" x2="116.619" y2="62.575" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="115.311" y1="63.053" x2="115.924" y2="63.567" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="114.553" y1="63.811" x2="115.067" y2="64.424" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="113.675" y1="64.426" x2="114.075" y2="65.119" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="112.703" y1="64.879" x2="112.977" y2="65.631" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="111.668" y1="65.157" x2="111.807" y2="65.944" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="110.6" y1="65.25" x2="110.6" y2="66.05" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="109.532" y1="65.157" x2="109.393" y2="65.944" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="108.497" y1="64.879" x2="108.223" y2="65.631" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="107.525" y1="64.426" x2="107.125" y2="65.119" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="106.647" y1="63.811" x2="106.133" y2="64.424" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="105.889" y1="63.053" x2="105.276" y2="63.567" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="105.274" y1="62.175" x2="104.581" y2="62.575" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="104.821" y1="61.203" x2="104.069" y2="61.477" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="104.543" y1="60.168" x2="103.756" y2="60.307" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="104.45" y1="59.1" x2="103.65" y2="59.1" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="104.543" y1="58.032" x2="103.756" y2="57.893" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="104.821" y1="56.997" x2="104.069" y2="56.723" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="105.274" y1="56.025" x2="104.581" y2="55.625" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="105.889" y1="55.147" x2="105.276" y2="54.633" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="106.647" y1="54.389" x2="106.133" y2="53.776" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="107.525" y1="53.774" x2="107.125" y2="53.081" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="108.497" y1="53.321" x2="108.223" y2="52.569" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<line x1="109.532" y1="53.043" x2="109.393" y2="52.256" stroke="#3c3e3a" stroke-width="1" vector-effect="non-scaling-stroke"/>
+<circle cx="110.6" cy="59.1" r="5.6" fill="none" stroke="#838682" stroke-width="1" vector-effect="non-scaling-stroke"/>
+</g>
+<g transform="translate(100 3.925) scale(0.236559)"><path d="M46.3497 15.3357C46.3497 17.8021 44.1485 19.3268 40.8051 19.3268C39.0152 19.3268 37.5688 19.0082 36.183 18.3274C36.34 17.4015 36.4326 16.466 36.4602 15.5275C37.7228 16.2501 39.153 16.6329 40.6098 16.6382C42.2819 16.6382 43.1445 16.2503 43.1445 15.4468C43.1723 14.6426 42.5599 14.2824 40.0521 13.8106C37.1548 13.2303 35.873 12.0381 35.873 9.93205C35.873 7.54939 38.0742 5.99608 41.4176 5.99608C42.8133 5.98119 44.1983 6.23979 45.4936 6.75713L44.9334 9.43261C43.8291 8.93494 42.6299 8.67978 41.4174 8.6845C39.8573 8.6845 39.0774 9.07244 39.0774 9.82303C39.0774 10.4889 39.6064 10.7656 42.0585 11.2641C45.1796 11.9275 46.3497 13.1189 46.3497 15.3357ZM53.6856 16.3856C52.4322 16.3856 51.4282 15.7197 51.4282 13.9753V9.09603H54.6064L55.1975 6.2693H51.4288V2.24791C50.3454 2.55283 49.2346 2.75139 48.1123 2.84077L48.0854 14.533C48.0854 17.7199 50.0076 19.3308 52.8775 19.3308C53.451 19.3346 54.0231 19.2746 54.5832 19.152L55.2095 16.1611C54.7179 16.3205 54.2027 16.3964 53.6856 16.3856V16.3856ZM57.3143 19.1505H60.6577V6.27425H57.3143V19.1505ZM58.9995 1.00796C58.7525 1.00137 58.5066 1.04349 58.276 1.1319C58.0454 1.22031 57.8347 1.35325 57.6561 1.52306C57.4775 1.69288 57.3344 1.89619 57.2352 2.12127C57.136 2.34636 57.0826 2.58876 57.078 2.83448C57.0735 3.0802 57.1179 3.32439 57.2088 3.55294C57.2996 3.7815 57.4351 3.98989 57.6073 4.16611C57.7796 4.34233 57.9852 4.48287 58.2124 4.57963C58.4395 4.6764 58.6837 4.72746 58.9308 4.72988C60.0174 4.73635 60.8155 3.97759 60.8326 2.92239C60.8458 2.67511 60.8081 2.42775 60.7219 2.19545C60.6357 1.96315 60.5027 1.75078 60.3311 1.57136C60.1595 1.39194 59.9529 1.24922 59.7239 1.15196C59.495 1.05469 59.2485 1.00492 58.9995 1.00568V1.00796ZM76.6445 6.27672V17.1369C76.6445 21.2386 73.8579 24.0653 69.1491 24.0653C67.4615 24.0653 65.5899 23.6938 64.3348 22.9797C65.0143 22.3043 65.6284 21.5667 66.1688 20.7766C67.0205 21.0665 67.9145 21.2144 68.8147 21.2143C71.7958 21.2143 73.3005 19.578 73.3005 17.5003V17.0848C72.7519 17.7153 72.0708 18.2183 71.3053 18.5583C70.5398 18.8983 69.7086 19.0671 68.8704 19.0527C65.3594 19.0527 62.7127 16.4505 62.7127 12.5959C62.7127 8.79904 65.6104 6.00008 69.1493 6.00008C70.9882 6.00008 72.5762 6.666 73.6351 7.91279L73.7462 6.27653L76.6445 6.27672ZM73.328 12.5953C73.328 10.5445 71.8236 8.99291 69.7613 8.99291C67.6991 8.99291 66.1638 10.5434 66.1638 12.5952C66.1638 14.5899 67.6692 16.1424 69.7615 16.1424C70.233 16.1528 70.7016 16.0681 71.1393 15.8934C71.5769 15.7187 71.9744 15.4576 72.3077 15.1259C72.6411 14.7941 72.9033 14.3986 73.0787 13.9633C73.2541 13.5279 73.339 13.0617 73.3282 12.5929L73.328 12.5953ZM92.2098 6.27444V17.1371C92.2098 21.2388 89.4232 24.0655 84.7145 24.0655C83.0268 24.0655 81.1552 23.6939 79.9009 22.9799C80.5804 22.3045 81.1945 21.5669 81.7349 20.7768C82.5863 21.0667 83.48 21.2146 84.3799 21.2144C87.361 21.2144 88.8663 19.5782 88.8663 17.5005V17.085C88.3178 17.7158 87.6367 18.219 86.871 18.5591C86.1054 18.8991 85.2739 19.0677 84.4355 19.0529C80.9253 19.0529 78.2778 16.4506 78.2778 12.5961C78.2778 8.79923 81.1755 6.00027 84.7145 6.00027C86.5533 6.00027 88.1421 6.66619 89.2009 7.91298L89.3121 6.27672L92.2098 6.27444ZM88.8943 12.5931C88.8943 10.5422 87.3898 8.99063 85.3278 8.99063C83.2657 8.99063 81.7288 10.5418 81.7288 12.5927C81.7288 14.5874 83.2332 16.1399 85.3264 16.1399C85.7979 16.1509 86.2666 16.0667 86.7044 15.8923C87.1421 15.7179 87.5398 15.4571 87.8733 15.1255C88.2067 14.7939 88.4691 14.3984 88.6445 13.9631C88.8199 13.5278 88.9047 13.0615 88.8937 12.5927L88.8943 12.5931Z" fill="#a9acaf"/><path d="M19.0306 24.6139C18.9021 24.6781 16.4488 25.7577 12.1101 25.5546C9.84964 25.4477 7.88917 25.0308 6.49649 24.646L14.0063 15.9447C15.3454 16.2868 17.0702 16.6075 19.0306 16.7037C23.3694 16.9175 25.8226 15.8271 25.9512 15.763L19.0306 24.6246V24.6139ZM7.81418 7.89553C6.5822 3.7373 7.06428 1.10768 7.09642 0.96872L0.111585 9.77688C0.0901591 9.91584 -0.391923 12.5455 0.829351 16.7037C1.47213 18.863 2.33987 20.6695 3.04693 21.9309L9.74251 12.5989C9.09974 11.3803 8.37126 9.77688 7.81418 7.90621V7.89553ZM25.2227 8.81482C24.2371 5.47969 22.6944 3.01042 22.0624 2.06974L15.8489 9.96929L17.0166 15.5599C17.7129 15.6561 18.3986 15.7202 19.0949 15.763C19.4484 15.7737 19.802 15.7844 20.1448 15.7844C23.5086 15.7844 25.3834 14.9934 25.5869 14.8972L26.069 14.6834C26.1119 13.5289 26.0369 11.4872 25.2334 8.80413L25.2227 8.81482ZM21.3232 1.5032C20.2626 1.10768 17.4987 0.199075 14.017 0.0280425C11.2209 -0.110921 9.21758 0.29528 8.10343 0.615966L8.00702 1.12906C7.98559 1.23596 7.55707 3.72661 8.70336 7.62829C8.89619 8.29104 9.13187 8.9431 9.38898 9.59516L15.1097 9.40275L21.3339 1.51388L21.3232 1.5032Z" fill="#a9acaf"/></g></symbol>
+<clipPath id="key-1"><rect x="14.7" y="12.2" width="16" height="15.5" rx="1"/></clipPath>
+<clipPath id="key-2"><rect x="33.5" y="12.2" width="16" height="15.5" rx="1"/></clipPath>
+<clipPath id="key-3"><rect x="52.3" y="12.2" width="16" height="15.5" rx="1"/></clipPath>
+<clipPath id="key-4"><rect x="14.7" y="30.7" width="16" height="15.5" rx="1"/></clipPath>
+<clipPath id="key-5"><rect x="33.5" y="30.7" width="16" height="15.5" rx="1"/></clipPath>
+<clipPath id="key-6"><rect x="52.3" y="30.7" width="16" height="15.5" rx="1"/></clipPath>
+</defs></svg>
+<div class="frame">
+
+<header class="top wrap">
+  <a class="brand" href="https://usage.stigg.io/" aria-label="Token Deck by Stigg, home">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 93 26" class="stigg" aria-hidden="true" focusable="false"><path d="M46.3497 15.3357C46.3497 17.8021 44.1485 19.3268 40.8051 19.3268C39.0152 19.3268 37.5688 19.0082 36.183 18.3274C36.34 17.4015 36.4326 16.466 36.4602 15.5275C37.7228 16.2501 39.153 16.6329 40.6098 16.6382C42.2819 16.6382 43.1445 16.2503 43.1445 15.4468C43.1723 14.6426 42.5599 14.2824 40.0521 13.8106C37.1548 13.2303 35.873 12.0381 35.873 9.93205C35.873 7.54939 38.0742 5.99608 41.4176 5.99608C42.8133 5.98119 44.1983 6.23979 45.4936 6.75713L44.9334 9.43261C43.8291 8.93494 42.6299 8.67978 41.4174 8.6845C39.8573 8.6845 39.0774 9.07244 39.0774 9.82303C39.0774 10.4889 39.6064 10.7656 42.0585 11.2641C45.1796 11.9275 46.3497 13.1189 46.3497 15.3357ZM53.6856 16.3856C52.4322 16.3856 51.4282 15.7197 51.4282 13.9753V9.09603H54.6064L55.1975 6.2693H51.4288V2.24791C50.3454 2.55283 49.2346 2.75139 48.1123 2.84077L48.0854 14.533C48.0854 17.7199 50.0076 19.3308 52.8775 19.3308C53.451 19.3346 54.0231 19.2746 54.5832 19.152L55.2095 16.1611C54.7179 16.3205 54.2027 16.3964 53.6856 16.3856V16.3856ZM57.3143 19.1505H60.6577V6.27425H57.3143V19.1505ZM58.9995 1.00796C58.7525 1.00137 58.5066 1.04349 58.276 1.1319C58.0454 1.22031 57.8347 1.35325 57.6561 1.52306C57.4775 1.69288 57.3344 1.89619 57.2352 2.12127C57.136 2.34636 57.0826 2.58876 57.078 2.83448C57.0735 3.0802 57.1179 3.32439 57.2088 3.55294C57.2996 3.7815 57.4351 3.98989 57.6073 4.16611C57.7796 4.34233 57.9852 4.48287 58.2124 4.57963C58.4395 4.6764 58.6837 4.72746 58.9308 4.72988C60.0174 4.73635 60.8155 3.97759 60.8326 2.92239C60.8458 2.67511 60.8081 2.42775 60.7219 2.19545C60.6357 1.96315 60.5027 1.75078 60.3311 1.57136C60.1595 1.39194 59.9529 1.24922 59.7239 1.15196C59.495 1.05469 59.2485 1.00492 58.9995 1.00568V1.00796ZM76.6445 6.27672V17.1369C76.6445 21.2386 73.8579 24.0653 69.1491 24.0653C67.4615 24.0653 65.5899 23.6938 64.3348 22.9797C65.0143 22.3043 65.6284 21.5667 66.1688 20.7766C67.0205 21.0665 67.9145 21.2144 68.8147 21.2143C71.7958 21.2143 73.3005 19.578 73.3005 17.5003V17.0848C72.7519 17.7153 72.0708 18.2183 71.3053 18.5583C70.5398 18.8983 69.7086 19.0671 68.8704 19.0527C65.3594 19.0527 62.7127 16.4505 62.7127 12.5959C62.7127 8.79904 65.6104 6.00008 69.1493 6.00008C70.9882 6.00008 72.5762 6.666 73.6351 7.91279L73.7462 6.27653L76.6445 6.27672ZM73.328 12.5953C73.328 10.5445 71.8236 8.99291 69.7613 8.99291C67.6991 8.99291 66.1638 10.5434 66.1638 12.5952C66.1638 14.5899 67.6692 16.1424 69.7615 16.1424C70.233 16.1528 70.7016 16.0681 71.1393 15.8934C71.5769 15.7187 71.9744 15.4576 72.3077 15.1259C72.6411 14.7941 72.9033 14.3986 73.0787 13.9633C73.2541 13.5279 73.339 13.0617 73.3282 12.5929L73.328 12.5953ZM92.2098 6.27444V17.1371C92.2098 21.2388 89.4232 24.0655 84.7145 24.0655C83.0268 24.0655 81.1552 23.6939 79.9009 22.9799C80.5804 22.3045 81.1945 21.5669 81.7349 20.7768C82.5863 21.0667 83.48 21.2146 84.3799 21.2144C87.361 21.2144 88.8663 19.5782 88.8663 17.5005V17.085C88.3178 17.7158 87.6367 18.219 86.871 18.5591C86.1054 18.8991 85.2739 19.0677 84.4355 19.0529C80.9253 19.0529 78.2778 16.4506 78.2778 12.5961C78.2778 8.79923 81.1755 6.00027 84.7145 6.00027C86.5533 6.00027 88.1421 6.66619 89.2009 7.91298L89.3121 6.27672L92.2098 6.27444ZM88.8943 12.5931C88.8943 10.5422 87.3898 8.99063 85.3278 8.99063C83.2657 8.99063 81.7288 10.5418 81.7288 12.5927C81.7288 14.5874 83.2332 16.1399 85.3264 16.1399C85.7979 16.1509 86.2666 16.0667 86.7044 15.8923C87.1421 15.7179 87.5398 15.4571 87.8733 15.1255C88.2067 14.7939 88.4691 14.3984 88.6445 13.9631C88.8199 13.5278 88.9047 13.0615 88.8937 12.5927L88.8943 12.5931Z" fill="#FFFFFF"/><path d="M19.0306 24.6139C18.9021 24.6781 16.4488 25.7577 12.1101 25.5546C9.84964 25.4477 7.88917 25.0308 6.49649 24.646L14.0063 15.9447C15.3454 16.2868 17.0702 16.6075 19.0306 16.7037C23.3694 16.9175 25.8226 15.8271 25.9512 15.763L19.0306 24.6246V24.6139ZM7.81418 7.89553C6.5822 3.7373 7.06428 1.10768 7.09642 0.96872L0.111585 9.77688C0.0901591 9.91584 -0.391923 12.5455 0.829351 16.7037C1.47213 18.863 2.33987 20.6695 3.04693 21.9309L9.74251 12.5989C9.09974 11.3803 8.37126 9.77688 7.81418 7.90621V7.89553ZM25.2227 8.81482C24.2371 5.47969 22.6944 3.01042 22.0624 2.06974L15.8489 9.96929L17.0166 15.5599C17.7129 15.6561 18.3986 15.7202 19.0949 15.763C19.4484 15.7737 19.802 15.7844 20.1448 15.7844C23.5086 15.7844 25.3834 14.9934 25.5869 14.8972L26.069 14.6834C26.1119 13.5289 26.0369 11.4872 25.2334 8.80413L25.2227 8.81482ZM21.3232 1.5032C20.2626 1.10768 17.4987 0.199075 14.017 0.0280425C11.2209 -0.110921 9.21758 0.29528 8.10343 0.615966L8.00702 1.12906C7.98559 1.23596 7.55707 3.72661 8.70336 7.62829C8.89619 8.29104 9.13187 8.9431 9.38898 9.59516L15.1097 9.40275L21.3339 1.51388L21.3232 1.5032Z" fill="url(#stigg-mark-grad)"/><defs><linearGradient id="stigg-mark-grad" x1="64.2599" y1="-38.4573" x2="-2.2688" y2="31.0069" gradientUnits="userSpaceOnUse"><stop offset="0.577084" stop-color="#F9F8F5"/><stop offset="0.735323" stop-color="#92E759"/><stop offset="0.928921" stop-color="#69FFF1"/></linearGradient></defs></svg>
+    <span class="sep" aria-hidden="true"></span>
+    <span class="name">Token Deck</span>
+  </a>
+  <nav class="nav" aria-label="Page">
+    <a href="#modes">How it works</a>
+    <a href="#program">Your own modes</a>
+    <a href="#help">Setup notes</a>
+    <a class="ext" href="https://github.com/stiggio/token-deck">GitHub</a>
+    <a class="btn btn-sm" href="#install">Install</a>
+  </nav>
+</header>
+
+<main id="main">
+<section class="hero wrap rule" aria-labelledby="title">
+  <p class="eyebrow">The AI Usage Management Console</p>
+  <div class="hero-intro">
+    <h1 id="title" class="lockup"><span class="visually-hidden">Token Deck</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108.94 67.86" aria-hidden="true" focusable="false">
+<g>
 <text x="-3.2042" y="67.34" font-family="Soehne Buch" font-size="40.56" letter-spacing="-2.9609" fill="#ffffff">Deck</text>
 </g>
-<g id="pixel">
+<g>
 <rect x="0" y="5.2" width="1.04" height="1.04" fill="#92e759"/>
 <rect x="1.3" y="5.2" width="1.04" height="1.04" fill="#92e759"/>
 <rect x="2.6" y="5.2" width="1.04" height="1.04" fill="#92e759"/>
@@ -662,7 +851,7 @@ footer { padding: 40px 0 64px; display: flex; justify-content: space-between; ga
 <rect x="91" y="33.8" width="1.04" height="1.04" fill="#92e759"/>
 <rect x="93.6" y="33.8" width="1.04" height="1.04" fill="#92e759"/>
 </g>
-<g id="explosion">
+<g>
 <rect x="88.4" y="11.7" width="1.04" height="1.04" fill="#92e759"/>
 <rect x="91" y="13" width="1.04" height="1.04" fill="#92e759"/>
 <rect x="93.6" y="13" width="1.04" height="1.04" fill="#92e759"/>
@@ -713,658 +902,958 @@ footer { padding: 40px 0 64px; display: flex; justify-content: space-between; ga
 <rect x="106.6" y="0" width="1.04" height="1.04" fill="#92e759"/>
 <rect x="98.8" y="27.3" width="1.04" height="1.04" fill="#92e759"/>
 </g>
-</svg>
-</div>
-    <h2>A desk controller for the coding apps on your computer.</h2>
-    <p class="lead">Three buttons. The apps. The chats already open. The model the next chat will use.</p>
-    <div class="installs">
-      <div>
-        <p class="eyebrow">Mac</p>
-        <div class="cmd">
-          <code id="cmd">/bin/bash -c "$(curl -fsSL https://usage.stigg.io/install.sh)"</code>
-          <button class="btn" id="copy" type="button">Copy</button>
+</svg></h1>
+    <div class="hero-copy">
+      <p class="display">Your coding agents, on six keys and three knobs<span class="dot">.</span></p>
+      <p class="lead">Token Deck is the app for the deck from your After Tokens box. It puts your Claude Code, Codex and OpenCode sessions on the keys, takes you to the one that needs you, and shows how much of your 5-hour and weekly limits you’ve used.</p>
+    </div>
+  </div>
+  <div class="hero-main">
+    <div class="install" id="install">
+      <h2 class="visually-hidden">Install Token Deck</h2>
+      <div class="install-row" data-os-row="mac">
+        <div class="install-head">
+          <p class="eyebrow">Mac <span class="sub"></span></p>
+          <p class="req">macOS 12 or later · Apple silicon and Intel</p>
         </div>
-        <p class="plain">Paste it in Terminal. It picks the build for your Mac (Apple Silicon or Intel), checks it and puts Token Deck in Applications. Read the script first: <a href="https://usage.stigg.io/install.sh">usage.stigg.io/install.sh</a></p>
+        <div class="cmd">
+          <code id="install-cmd">/bin/bash -c &quot;$(curl -fsSL https://usage.stigg.io/install.sh)&quot;</code>
+          <button class="copy" type="button" data-copy="install-cmd" aria-label="Copy the install command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="idle">Copy</span><span class="done">Copied</span></button>
+        </div>
+        <p class="small">Paste it into Terminal. It downloads the build for your Mac, checks it against its checksum and puts Token Deck in Applications. <a class="link" href="https://usage.stigg.io/install.sh">Read the script</a> before you run it.</p>
       </div>
-      <div>
-        <p class="eyebrow">Windows</p>
-        <p><a class="btn" href="https://github.com/stiggio/token-deck/releases/latest/download/TokenDeck-win-x64.exe">Download for Windows</a></p>
+      <div class="install-row" data-os-row="windows">
+        <div class="install-head">
+          <p class="eyebrow">Windows <span class="sub"></span></p>
+          <p class="req">Windows 10 or 11 · 64-bit</p>
+        </div>
+        <div class="install-actions">
+          <a class="btn" href="https://github.com/stiggio/token-deck/releases/latest/download/TokenDeck-win-x64.exe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/></svg>Download for Windows</a>
+          <span class="file">TokenDeck-win-x64.exe</span>
+        </div>
+        <p class="small">If Windows says it protected your PC, choose More info, then Run anyway. The installer isn’t code-signed yet.</p>
+      </div>
+      <p class="install-more"><span>Mac disk images: <a id="dmg-arm" href="https://github.com/stiggio/token-deck/releases/latest/download/TokenDeck-mac-arm64.dmg">Apple silicon<span class="badge-rec">Your Mac</span></a><span class="sep">·</span><a id="dmg-intel" href="https://github.com/stiggio/token-deck/releases/latest/download/TokenDeck-mac-x64.dmg">Intel<span class="badge-rec">Your Mac</span></a></span><a href="#damaged">How to open one</a><a href="https://github.com/stiggio/token-deck/releases">All releases</a></p>
+    </div>
+    <figure class="hero-device" data-screen="sessions">
+      <div class="deck-fig"><svg class="deck" viewBox="0 0 129 78" role="img" aria-label="Token Deck in Sessions mode: six live sessions, one of them waiting for approval" data-label-welcome="Token Deck before the app runs: the welcome screen with the Stigg logo and io.stigg.io/usage" data-label-agents="Token Deck in Agents mode: keys for Claude Code, Cursor, Codex, OpenCode, Amp and Devin" data-label-sessions="Token Deck in Sessions mode: six live sessions, one of them waiting for approval" data-label-models="Token Deck in Models &amp; Usage mode: the usage key at 62% of the 5-hour limit and 41% of the week, then Opus, Sonnet, Haiku and Fable">
+<g class="layer" data-screen="welcome"><image class="tile" style="--k:0" href="tiles/welcome-1.png" x="14.95" y="12.2" width="15.5" height="15.5" clip-path="url(#key-1)" preserveAspectRatio="none"/><image class="tile" style="--k:1" href="tiles/welcome-2.png" x="33.75" y="12.2" width="15.5" height="15.5" clip-path="url(#key-2)" preserveAspectRatio="none"/><image class="tile" style="--k:2" href="tiles/welcome-3.png" x="52.55" y="12.2" width="15.5" height="15.5" clip-path="url(#key-3)" preserveAspectRatio="none"/><image class="tile" style="--k:3" href="tiles/welcome-4.png" x="14.95" y="30.7" width="15.5" height="15.5" clip-path="url(#key-4)" preserveAspectRatio="none"/><image class="tile" style="--k:4" href="tiles/welcome-5.png" x="33.75" y="30.7" width="15.5" height="15.5" clip-path="url(#key-5)" preserveAspectRatio="none"/><image class="tile" style="--k:5" href="tiles/welcome-6.png" x="52.55" y="30.7" width="15.5" height="15.5" clip-path="url(#key-6)" preserveAspectRatio="none"/></g>
+<g class="layer" data-screen="agents"><image class="tile" style="--k:0" href="tiles/agents-1.png" x="14.95" y="12.2" width="15.5" height="15.5" clip-path="url(#key-1)" preserveAspectRatio="none"/><image class="tile" style="--k:1" href="tiles/agents-2.png" x="33.75" y="12.2" width="15.5" height="15.5" clip-path="url(#key-2)" preserveAspectRatio="none"/><image class="tile" style="--k:2" href="tiles/agents-3.png" x="52.55" y="12.2" width="15.5" height="15.5" clip-path="url(#key-3)" preserveAspectRatio="none"/><image class="tile" style="--k:3" href="tiles/agents-4.png" x="14.95" y="30.7" width="15.5" height="15.5" clip-path="url(#key-4)" preserveAspectRatio="none"/><image class="tile" style="--k:4" href="tiles/agents-5.png" x="33.75" y="30.7" width="15.5" height="15.5" clip-path="url(#key-5)" preserveAspectRatio="none"/><image class="tile" style="--k:5" href="tiles/agents-6.png" x="52.55" y="30.7" width="15.5" height="15.5" clip-path="url(#key-6)" preserveAspectRatio="none"/></g>
+<g class="layer" data-screen="sessions"><image class="tile" style="--k:0" href="tiles/sessions-1.png" x="14.95" y="12.2" width="15.5" height="15.5" clip-path="url(#key-1)" preserveAspectRatio="none"/><image class="tile" style="--k:1" href="tiles/sessions-2.png" x="33.75" y="12.2" width="15.5" height="15.5" clip-path="url(#key-2)" preserveAspectRatio="none"/><image class="tile" style="--k:2" href="tiles/sessions-3.png" x="52.55" y="12.2" width="15.5" height="15.5" clip-path="url(#key-3)" preserveAspectRatio="none"/><image class="tile" style="--k:3" href="tiles/sessions-4.png" x="14.95" y="30.7" width="15.5" height="15.5" clip-path="url(#key-4)" preserveAspectRatio="none"/><image class="tile" style="--k:4" href="tiles/sessions-5.png" x="33.75" y="30.7" width="15.5" height="15.5" clip-path="url(#key-5)" preserveAspectRatio="none"/><image class="tile" style="--k:5" href="tiles/sessions-6.png" x="52.55" y="30.7" width="15.5" height="15.5" clip-path="url(#key-6)" preserveAspectRatio="none"/></g>
+<g class="layer" data-screen="models"><image class="tile" style="--k:0" href="tiles/models-1.png" x="14.95" y="12.2" width="15.5" height="15.5" clip-path="url(#key-1)" preserveAspectRatio="none"/><image class="tile" style="--k:1" href="tiles/models-2.png" x="33.75" y="12.2" width="15.5" height="15.5" clip-path="url(#key-2)" preserveAspectRatio="none"/><image class="tile" style="--k:2" href="tiles/models-3.png" x="52.55" y="12.2" width="15.5" height="15.5" clip-path="url(#key-3)" preserveAspectRatio="none"/><image class="tile" style="--k:3" href="tiles/models-4.png" x="14.95" y="30.7" width="15.5" height="15.5" clip-path="url(#key-4)" preserveAspectRatio="none"/><image class="tile" style="--k:4" href="tiles/models-5.png" x="33.75" y="30.7" width="15.5" height="15.5" clip-path="url(#key-5)" preserveAspectRatio="none"/><image class="tile" style="--k:5" href="tiles/models-6.png" x="52.55" y="30.7" width="15.5" height="15.5" clip-path="url(#key-6)" preserveAspectRatio="none"/></g>
+<use href="#n3" width="129" height="78"/>
+<g class="lit-group" data-for="agents"><circle class="lit" cx="22.7" cy="62.9" r="6.317"/><circle class="lit" cx="22.7" cy="62.9" r="5.25"/><circle class="lit-core" cx="22.7" cy="62.9" r="1"/></g><g class="lit-group" data-for="sessions"><circle class="lit" cx="41.5" cy="62.9" r="6.317"/><circle class="lit" cx="41.5" cy="62.9" r="5.25"/><circle class="lit-core" cx="41.5" cy="62.9" r="1"/></g><g class="lit-group" data-for="models"><circle class="lit" cx="60.3" cy="62.9" r="6.317"/><circle class="lit" cx="60.3" cy="62.9" r="5.25"/><circle class="lit-core" cx="60.3" cy="62.9" r="1"/></g>
+<g data-mode-button="agents" aria-hidden="true"><title>Agents</title><circle class="hit" cx="22.7" cy="62.9" r="6.8"/><circle class="ring" cx="22.7" cy="62.9" r="6.317"/></g><g data-mode-button="sessions" aria-hidden="true"><title>Sessions</title><circle class="hit" cx="41.5" cy="62.9" r="6.8"/><circle class="ring" cx="41.5" cy="62.9" r="6.317"/></g><g data-mode-button="models" aria-hidden="true"><title>Models &amp; Usage</title><circle class="hit" cx="60.3" cy="62.9" r="6.8"/><circle class="ring" cx="60.3" cy="62.9" r="6.317"/></g>
+</svg></div>
+      <script>if (!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) document.currentScript.parentNode.setAttribute('data-screen', 'welcome')</script>
+      <div class="modes-switch" role="group" aria-label="Show a mode">
+        <button type="button" data-show="agents" aria-pressed="false">Agents</button>
+        <button type="button" data-show="sessions" aria-pressed="true">Sessions</button>
+        <button type="button" data-show="models" aria-pressed="false">Models &amp; Usage</button>
+      </div>
+      <figcaption class="fig-note">The app’s own tiles. Press a button to switch modes.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="section wrap rule" id="modes" aria-labelledby="modes-title">
+  <div class="section-head">
+    <p class="eyebrow">How it works</p>
+    <h2 class="h2" id="modes-title">Three metal buttons, three modes. <span class="dim">Each one changes what the keys show and what the knobs do.</span></h2>
+  </div>
+
+  <article class="mode" aria-labelledby="agents-title">
+    <div class="mode-head">
+      <p class="eyebrow">01 Agents <span class="sub">· Left button</span></p>
+      <h3 class="h3" id="agents-title">Jump to any coding agent. <span class="dim">Turn the dial to hop windows.</span></h3>
+      <p class="body">Each key is an agent: Claude Code, Cursor and Codex on top, OpenCode, Amp and Devin below. Press one to bring its latest window to the front. If it isn’t running, the key opens it.</p>
+    </div>
+    <figure class="mode-fig"><div class="deck-fig">
+<svg class="deck" viewBox="0 0 129 78" role="img" aria-label="Token Deck in Agents mode: keys for Claude Code, Cursor, Codex, OpenCode, Amp and Devin"><image class="tile" style="--k:0" href="tiles/agents-1.png" x="14.95" y="12.2" width="15.5" height="15.5" clip-path="url(#key-1)" preserveAspectRatio="none"/><image class="tile" style="--k:1" href="tiles/agents-2.png" x="33.75" y="12.2" width="15.5" height="15.5" clip-path="url(#key-2)" preserveAspectRatio="none"/><image class="tile" style="--k:2" href="tiles/agents-3.png" x="52.55" y="12.2" width="15.5" height="15.5" clip-path="url(#key-3)" preserveAspectRatio="none"/><image class="tile" style="--k:3" href="tiles/agents-4.png" x="14.95" y="30.7" width="15.5" height="15.5" clip-path="url(#key-4)" preserveAspectRatio="none"/><image class="tile" style="--k:4" href="tiles/agents-5.png" x="33.75" y="30.7" width="15.5" height="15.5" clip-path="url(#key-5)" preserveAspectRatio="none"/><image class="tile" style="--k:5" href="tiles/agents-6.png" x="52.55" y="30.7" width="15.5" height="15.5" clip-path="url(#key-6)" preserveAspectRatio="none"/><use href="#n3" width="129" height="78"/><g class="lit-group" data-for="agents"><circle class="lit" cx="22.7" cy="62.9" r="6.317"/><circle class="lit" cx="22.7" cy="62.9" r="5.25"/><circle class="lit-core" cx="22.7" cy="62.9" r="1"/></g></svg>
+<span class="callout" style="left:5.43%;top:37.44%" aria-hidden="true">1</span><span class="callout" style="left:74.50%;top:34.23%" aria-hidden="true">2</span><span class="callout" style="left:65.89%;top:75.77%" aria-hidden="true">3</span><span class="callout" style="left:85.74%;top:75.77%" aria-hidden="true">4</span>
+</div></figure>
+    <div class="mode-legend">
+      <dl class="legend"><div><span class="num" aria-hidden="true">1</span><dt>Keys</dt><dd><b>Press:</b> go to that agent, or open it. A dim key isn’t installed.</dd></div><div><span class="num" aria-hidden="true">2</span><dt>Big knob</dt><dd><b>Turn:</b> hop between open agent windows. <b>Press:</b> back to the last one.</dd></div><div><span class="num" aria-hidden="true">3</span><dt>Left knob</dt><dd><b>Turn:</b> the model your next session starts with.</dd></div><div><span class="num" aria-hidden="true">4</span><dt>Right knob</dt><dd><b>Turn:</b> the effort your next session starts with.</dd></div></dl>
+    </div>
+  </article>
+
+  <article class="mode" aria-labelledby="sessions-title">
+    <div class="mode-head">
+      <p class="eyebrow">02 Sessions <span class="sub">· Middle button</span></p>
+      <h3 class="h3" id="sessions-title">Every session and its context. <span class="dim">See which one needs you.</span></h3>
+      <p class="body">Each key is one live session from Claude Code, Codex or OpenCode, newest first. The dot says what it’s doing and the ring shows how full its context window is. Press a key to jump to that session’s window.</p>
+      <ul class="states" aria-label="Status dots">
+        <li><i style="background:var(--blue)"></i>Working</li>
+        <li><i class="framed" style="background:var(--coral)"></i>Needs your approval</li>
+        <li><i style="background:var(--ink)"></i>Waiting for your reply</li>
+        <li><i style="background:var(--n500)"></i>Idle</li>
+        <li><i style="background:var(--lime)"></i>Done</li>
+      </ul>
+    </div>
+    <figure class="mode-fig"><div class="deck-fig">
+<svg class="deck" viewBox="0 0 129 78" role="img" aria-label="Token Deck in Sessions mode: six live sessions, one of them waiting for approval"><image class="tile" style="--k:0" href="tiles/sessions-1.png" x="14.95" y="12.2" width="15.5" height="15.5" clip-path="url(#key-1)" preserveAspectRatio="none"/><image class="tile" style="--k:1" href="tiles/sessions-2.png" x="33.75" y="12.2" width="15.5" height="15.5" clip-path="url(#key-2)" preserveAspectRatio="none"/><image class="tile" style="--k:2" href="tiles/sessions-3.png" x="52.55" y="12.2" width="15.5" height="15.5" clip-path="url(#key-3)" preserveAspectRatio="none"/><image class="tile" style="--k:3" href="tiles/sessions-4.png" x="14.95" y="30.7" width="15.5" height="15.5" clip-path="url(#key-4)" preserveAspectRatio="none"/><image class="tile" style="--k:4" href="tiles/sessions-5.png" x="33.75" y="30.7" width="15.5" height="15.5" clip-path="url(#key-5)" preserveAspectRatio="none"/><image class="tile" style="--k:5" href="tiles/sessions-6.png" x="52.55" y="30.7" width="15.5" height="15.5" clip-path="url(#key-6)" preserveAspectRatio="none"/><use href="#n3" width="129" height="78"/><g class="lit-group" data-for="sessions"><circle class="lit" cx="41.5" cy="62.9" r="6.317"/><circle class="lit" cx="41.5" cy="62.9" r="5.25"/><circle class="lit-core" cx="41.5" cy="62.9" r="1"/></g></svg>
+<span class="callout" style="left:5.43%;top:37.44%" aria-hidden="true">1</span><span class="callout" style="left:74.50%;top:34.23%" aria-hidden="true">2</span><span class="callout" style="left:65.89%;top:75.77%" aria-hidden="true">3</span><span class="callout" style="left:85.74%;top:75.77%" aria-hidden="true">4</span>
+</div></figure>
+    <div class="mode-legend">
+      <dl class="legend"><div><span class="num" aria-hidden="true">1</span><dt>Keys</dt><dd><b>Press:</b> jump to that session’s window.</dd></div><div><span class="num" aria-hidden="true">2</span><dt>Big knob</dt><dd><b>Turn:</b> the next six sessions. <b>Press:</b> the next session that needs you.</dd></div><div><span class="num" aria-hidden="true">3</span><dt>Left knob</dt><dd><b>Turn:</b> filter by agent. <b>Press:</b> all agents.</dd></div><div><span class="num" aria-hidden="true">4</span><dt>Right knob</dt><dd><b>Turn:</b> filter by status. <b>Press:</b> all statuses.</dd></div></dl>
+      <p class="note">Only Claude Code reports context, so Codex and OpenCode sessions get a dashed ring. OpenCode sessions show up while <code class="inline">opencode serve</code> is running.</p>
+      <p class="note">The deck never approves anything. It takes you to the window where you decide.</p>
+    </div>
+  </article>
+
+  <article class="mode" aria-labelledby="models-title">
+    <div class="mode-head">
+      <p class="eyebrow">03 Models &amp; Usage <span class="sub">· Right button</span></p>
+      <h3 class="h3" id="models-title">Pick the next model. <span class="dim">Live 5H and 7D limits.</span></h3>
+      <p class="body">The first key shows how much of your 5-hour and weekly limits you’ve used. The others are your favorite models: press one, and your next session starts on it.</p>
+    </div>
+    <figure class="mode-fig"><div class="deck-fig">
+<svg class="deck" viewBox="0 0 129 78" role="img" aria-label="Token Deck in Models &amp; Usage mode: the usage key at 62% of the 5-hour limit and 41% of the week, then Opus, Sonnet, Haiku and Fable"><image class="tile" style="--k:0" href="tiles/models-1.png" x="14.95" y="12.2" width="15.5" height="15.5" clip-path="url(#key-1)" preserveAspectRatio="none"/><image class="tile" style="--k:1" href="tiles/models-2.png" x="33.75" y="12.2" width="15.5" height="15.5" clip-path="url(#key-2)" preserveAspectRatio="none"/><image class="tile" style="--k:2" href="tiles/models-3.png" x="52.55" y="12.2" width="15.5" height="15.5" clip-path="url(#key-3)" preserveAspectRatio="none"/><image class="tile" style="--k:3" href="tiles/models-4.png" x="14.95" y="30.7" width="15.5" height="15.5" clip-path="url(#key-4)" preserveAspectRatio="none"/><image class="tile" style="--k:4" href="tiles/models-5.png" x="33.75" y="30.7" width="15.5" height="15.5" clip-path="url(#key-5)" preserveAspectRatio="none"/><image class="tile" style="--k:5" href="tiles/models-6.png" x="52.55" y="30.7" width="15.5" height="15.5" clip-path="url(#key-6)" preserveAspectRatio="none"/><use href="#n3" width="129" height="78"/><g class="lit-group" data-for="models"><circle class="lit" cx="60.3" cy="62.9" r="6.317"/><circle class="lit" cx="60.3" cy="62.9" r="5.25"/><circle class="lit-core" cx="60.3" cy="62.9" r="1"/></g></svg>
+<span class="callout" style="left:5.43%;top:37.44%" aria-hidden="true">1</span><span class="callout" style="left:74.50%;top:34.23%" aria-hidden="true">2</span><span class="callout" style="left:65.89%;top:75.77%" aria-hidden="true">3</span><span class="callout" style="left:85.74%;top:75.77%" aria-hidden="true">4</span><span class="callout" style="left:5.43%;top:80.64%" aria-hidden="true">5</span>
+</div></figure>
+    <div class="mode-legend">
+      <dl class="legend"><div><span class="num" aria-hidden="true">1</span><dt>Keys</dt><dd><b>Press</b> a model to start your next session on it. <b>Press</b> the usage key for exact numbers and reset times.</dd></div><div><span class="num" aria-hidden="true">2</span><dt>Big knob</dt><dd><b>Turn:</b> effort. <b>Press:</b> Ultracode.</dd></div><div><span class="num" aria-hidden="true">3</span><dt>Left knob</dt><dd><b>Turn:</b> agent. <b>Press:</b> last agent.</dd></div><div><span class="num" aria-hidden="true">4</span><dt>Right knob</dt><dd><b>Turn:</b> permission. <b>Press:</b> apply.</dd></div><div><span class="num" aria-hidden="true">5</span><dt>Metal buttons</dt><dd>Select the mode, one per button.</dd></div></dl>
+      <p class="note">Every change applies from your next session, and the deck says <span class="mono">NEXT SESSION</span>. Sessions that are already running keep their settings. Full access waits until you confirm it on the computer.</p>
+      <p class="note">Claude Code reports limits on Pro and Max plans once a session has replied. Codex reports them when you sign in with ChatGPT. OpenCode doesn’t report limits.</p>
+    </div>
+  </article>
+</section>
+
+<section class="section wrap rule" id="program" aria-labelledby="program-title">
+  <div class="section-head">
+      <p class="eyebrow">Program it yourself</p>
+      <h2 class="h2" id="program-title">Write your own modes for any screen, button or knob<span class="dot">.</span></h2>
+      <p class="body">A mode is a JSON file in <code class="inline">~/.tokendeck/modes</code>: up to six keys and three knobs, each tied to an action. Hold the middle button and the keys list your modes; press one to open it. Save a file and the deck picks up the change.</p>
+    </div>
+  <div class="program-grid">
+    <div class="program-code">
+      <div class="code">
+        <div class="code-bar"><span>~/.tokendeck/modes/deploy.json</span><span>JSON</span></div>
+        <pre><code><span class="p">{</span>
+  <span class="k">&quot;name&quot;</span>: <span class="s">&quot;Deploy&quot;</span><span class="p">,</span>
+  <span class="k">&quot;tiles&quot;</span>: <span class="p">[</span>
+    <span class="p">{</span> <span class="k">&quot;label&quot;</span>: <span class="s">&quot;BUILD&quot;</span><span class="p">,</span> <span class="k">&quot;icon&quot;</span>: <span class="s">&quot;~/icons/hammer.svg&quot;</span><span class="p">,</span>
+      <span class="k">&quot;action&quot;</span>: <span class="p">{</span> <span class="k">&quot;type&quot;</span>: <span class="s">&quot;shell&quot;</span><span class="p">,</span> <span class="k">&quot;command&quot;</span>: <span class="s">&quot;npm run build&quot;</span><span class="p">,</span>
+                  <span class="k">&quot;cwd&quot;</span>: <span class="s">&quot;~/dev/app&quot;</span> <span class="p">}</span> <span class="p">}</span><span class="p">,</span>
+    <span class="p">{</span> <span class="k">&quot;label&quot;</span>: <span class="s">&quot;LOGS&quot;</span><span class="p">,</span>
+      <span class="k">&quot;action&quot;</span>: <span class="p">{</span> <span class="k">&quot;type&quot;</span>: <span class="s">&quot;url&quot;</span><span class="p">,</span> <span class="k">&quot;url&quot;</span>: <span class="s">&quot;https://grafana.example.com/d/abc&quot;</span> <span class="p">}</span> <span class="p">}</span><span class="p">,</span>
+    <span class="p">{</span> <span class="k">&quot;label&quot;</span>: <span class="s">&quot;EDITOR&quot;</span><span class="p">,</span>  <span class="k">&quot;action&quot;</span>: <span class="p">{</span> <span class="k">&quot;type&quot;</span>: <span class="s">&quot;open&quot;</span><span class="p">,</span> <span class="k">&quot;app&quot;</span>: <span class="s">&quot;Cursor&quot;</span> <span class="p">}</span> <span class="p">}</span><span class="p">,</span>
+    <span class="p">{</span> <span class="k">&quot;label&quot;</span>: <span class="s">&quot;PALETTE&quot;</span><span class="p">,</span> <span class="k">&quot;action&quot;</span>: <span class="p">{</span> <span class="k">&quot;type&quot;</span>: <span class="s">&quot;keys&quot;</span><span class="p">,</span> <span class="k">&quot;keys&quot;</span>: <span class="s">&quot;cmd+shift+p&quot;</span> <span class="p">}</span> <span class="p">}</span><span class="p">,</span>
+    <span class="p">{</span> <span class="k">&quot;label&quot;</span>: <span class="s">&quot;AGENTS&quot;</span><span class="p">,</span>  <span class="k">&quot;action&quot;</span>: <span class="p">{</span> <span class="k">&quot;type&quot;</span>: <span class="s">&quot;mode&quot;</span><span class="p">,</span> <span class="k">&quot;mode&quot;</span>: <span class="s">&quot;agents&quot;</span> <span class="p">}</span> <span class="p">}</span><span class="p">,</span>
+    <span class="v">null</span>
+  <span class="p">]</span><span class="p">,</span>
+  <span class="k">&quot;knobs&quot;</span>: <span class="p">{</span>
+    <span class="k">&quot;main&quot;</span>: <span class="p">{</span>
+      <span class="k">&quot;cw&quot;</span>:    <span class="p">{</span> <span class="k">&quot;type&quot;</span>: <span class="s">&quot;keys&quot;</span><span class="p">,</span> <span class="k">&quot;keys&quot;</span>: <span class="s">&quot;cmd+=&quot;</span> <span class="p">}</span><span class="p">,</span>
+      <span class="k">&quot;ccw&quot;</span>:   <span class="p">{</span> <span class="k">&quot;type&quot;</span>: <span class="s">&quot;keys&quot;</span><span class="p">,</span> <span class="k">&quot;keys&quot;</span>: <span class="s">&quot;cmd+-&quot;</span> <span class="p">}</span><span class="p">,</span>
+      <span class="k">&quot;click&quot;</span>: <span class="p">{</span> <span class="k">&quot;type&quot;</span>: <span class="s">&quot;shell&quot;</span><span class="p">,</span> <span class="k">&quot;command&quot;</span>: <span class="s">&quot;say done&quot;</span> <span class="p">}</span>
+    <span class="p">}</span><span class="p">,</span>
+    <span class="k">&quot;left&quot;</span>: <span class="v">null</span><span class="p">,</span>
+    <span class="k">&quot;right&quot;</span>: <span class="v">null</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre>
       </div>
     </div>
-    <p class="plain">Other downloads: <a id="arm" href="https://github.com/stiggio/token-deck/releases/latest/download/TokenDeck-mac-arm64.dmg">Mac (Apple Silicon)</a> · <a id="intel" href="https://github.com/stiggio/token-deck/releases/latest/download/TokenDeck-mac-x64.dmg">Mac (Intel)</a> · <a href="https://github.com/stiggio/token-deck/releases">All releases</a></p>
-    <p class="version">Version 1.0.0</p>
-    <div class="device">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 78">
-<!-- MiraBox N3 face, 129 x 78 mm, line drawing. Screen apertures #screen-1..6 (16 x 15.5, r 1), left to right then top to bottom. 1:1, every stroke 0.265 mm. -->
-<g id="body">
-<rect x="0.133" y="0.133" width="128.735" height="77.735" rx="3.868" ry="3.868" fill="none" stroke="#c4c7c3" stroke-width="0.265"/>
-</g>
-<g id="lcd-keys">
-<rect x="13.9" y="11.4" width="17.6" height="17.1" rx="1.8" ry="1.8" fill="none" stroke="#838682" stroke-width="0.265" id="bezel-1"/>
-<rect x="14.7" y="12.2" width="16" height="15.5" rx="1" ry="1" fill="none" stroke="#3c3e3a" stroke-width="0.265" id="screen-1"/>
-<rect x="32.7" y="11.4" width="17.6" height="17.1" rx="1.8" ry="1.8" fill="none" stroke="#838682" stroke-width="0.265" id="bezel-2"/>
-<rect x="33.5" y="12.2" width="16" height="15.5" rx="1" ry="1" fill="none" stroke="#3c3e3a" stroke-width="0.265" id="screen-2"/>
-<rect x="51.5" y="11.4" width="17.6" height="17.1" rx="1.8" ry="1.8" fill="none" stroke="#838682" stroke-width="0.265" id="bezel-3"/>
-<rect x="52.3" y="12.2" width="16" height="15.5" rx="1" ry="1" fill="none" stroke="#3c3e3a" stroke-width="0.265" id="screen-3"/>
-<rect x="13.9" y="29.9" width="17.6" height="17.1" rx="1.8" ry="1.8" fill="none" stroke="#838682" stroke-width="0.265" id="bezel-4"/>
-<rect x="14.7" y="30.7" width="16" height="15.5" rx="1" ry="1" fill="none" stroke="#3c3e3a" stroke-width="0.265" id="screen-4"/>
-<rect x="32.7" y="29.9" width="17.6" height="17.1" rx="1.8" ry="1.8" fill="none" stroke="#838682" stroke-width="0.265" id="bezel-5"/>
-<rect x="33.5" y="30.7" width="16" height="15.5" rx="1" ry="1" fill="none" stroke="#3c3e3a" stroke-width="0.265" id="screen-5"/>
-<rect x="51.5" y="29.9" width="17.6" height="17.1" rx="1.8" ry="1.8" fill="none" stroke="#838682" stroke-width="0.265" id="bezel-6"/>
-<rect x="52.3" y="30.7" width="16" height="15.5" rx="1" ry="1" fill="none" stroke="#3c3e3a" stroke-width="0.265" id="screen-6"/>
-</g>
-<g id="mode-buttons">
-<g id="button-left">
-<circle cx="22.7" cy="62.9" r="6.317" fill="none" stroke="#c4c7c3" stroke-width="0.265"/>
-<circle cx="22.7" cy="62.9" r="5.25" fill="none" stroke="#5b5d59" stroke-width="0.265"/>
-</g>
-<g id="button-middle">
-<circle cx="41.5" cy="62.9" r="6.317" fill="none" stroke="#c4c7c3" stroke-width="0.265"/>
-<circle cx="41.5" cy="62.9" r="5.25" fill="none" stroke="#5b5d59" stroke-width="0.265"/>
-</g>
-<g id="button-right">
-<circle cx="60.3" cy="62.9" r="6.317" fill="none" stroke="#c4c7c3" stroke-width="0.265"/>
-<circle cx="60.3" cy="62.9" r="5.25" fill="none" stroke="#5b5d59" stroke-width="0.265"/>
-</g>
-</g>
-<g id="knob-main">
-<circle cx="96.1" cy="26.7" r="14.518" fill="none" stroke="#c4c7c3" stroke-width="0.265"/>
-<line x1="96.1" y1="13.95" x2="96.1" y2="12.85" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="97.433" y1="14.02" x2="97.548" y2="12.926" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="98.751" y1="14.229" x2="98.98" y2="13.153" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="100.04" y1="14.574" x2="100.38" y2="13.528" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="101.286" y1="15.052" x2="101.733" y2="14.047" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="102.475" y1="15.658" x2="103.025" y2="14.706" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="103.594" y1="16.385" x2="104.241" y2="15.495" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="104.631" y1="17.225" x2="105.367" y2="16.407" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="105.575" y1="18.169" x2="106.393" y2="17.433" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="106.415" y1="19.206" x2="107.305" y2="18.559" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="107.142" y1="20.325" x2="108.094" y2="19.775" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="107.748" y1="21.514" x2="108.753" y2="21.067" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="108.226" y1="22.76" x2="109.272" y2="22.42" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="108.571" y1="24.049" x2="109.647" y2="23.82" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="108.78" y1="25.367" x2="109.874" y2="25.252" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="108.85" y1="26.7" x2="109.95" y2="26.7" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="108.78" y1="28.033" x2="109.874" y2="28.148" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="108.571" y1="29.351" x2="109.647" y2="29.58" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="108.226" y1="30.64" x2="109.272" y2="30.98" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="107.748" y1="31.886" x2="108.753" y2="32.333" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="107.142" y1="33.075" x2="108.094" y2="33.625" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="106.415" y1="34.194" x2="107.305" y2="34.841" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="105.575" y1="35.231" x2="106.393" y2="35.967" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="104.631" y1="36.175" x2="105.367" y2="36.993" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="103.594" y1="37.015" x2="104.241" y2="37.905" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="102.475" y1="37.742" x2="103.025" y2="38.694" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="101.286" y1="38.348" x2="101.733" y2="39.353" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="100.04" y1="38.826" x2="100.38" y2="39.872" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="98.751" y1="39.171" x2="98.98" y2="40.247" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="97.433" y1="39.38" x2="97.548" y2="40.474" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="96.1" y1="39.45" x2="96.1" y2="40.55" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="94.767" y1="39.38" x2="94.652" y2="40.474" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="93.449" y1="39.171" x2="93.22" y2="40.247" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="92.16" y1="38.826" x2="91.82" y2="39.872" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="90.914" y1="38.348" x2="90.467" y2="39.353" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="89.725" y1="37.742" x2="89.175" y2="38.694" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="88.606" y1="37.015" x2="87.959" y2="37.905" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="87.569" y1="36.175" x2="86.833" y2="36.993" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="86.625" y1="35.231" x2="85.807" y2="35.967" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="85.785" y1="34.194" x2="84.895" y2="34.841" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="85.058" y1="33.075" x2="84.106" y2="33.625" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="84.452" y1="31.886" x2="83.447" y2="32.333" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="83.974" y1="30.64" x2="82.928" y2="30.98" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="83.629" y1="29.351" x2="82.553" y2="29.58" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="83.42" y1="28.033" x2="82.326" y2="28.148" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="83.35" y1="26.7" x2="82.25" y2="26.7" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="83.42" y1="25.367" x2="82.326" y2="25.252" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="83.629" y1="24.049" x2="82.553" y2="23.82" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="83.974" y1="22.76" x2="82.928" y2="22.42" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="84.452" y1="21.514" x2="83.447" y2="21.067" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="85.058" y1="20.325" x2="84.106" y2="19.775" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="85.785" y1="19.206" x2="84.895" y2="18.559" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="86.625" y1="18.169" x2="85.807" y2="17.433" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="87.569" y1="17.225" x2="86.833" y2="16.407" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="88.606" y1="16.385" x2="87.959" y2="15.495" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="89.725" y1="15.658" x2="89.175" y2="14.706" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="90.914" y1="15.052" x2="90.467" y2="14.047" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="92.16" y1="14.574" x2="91.82" y2="13.528" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="93.449" y1="14.229" x2="93.22" y2="13.153" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="94.767" y1="14.02" x2="94.652" y2="12.926" stroke="#3c3e3a" stroke-width="0.265"/>
-<circle cx="96.1" cy="26.7" r="12.15" fill="none" stroke="#838682" stroke-width="0.265"/>
-</g>
-<g id="knob-left">
-<circle cx="85" cy="59.1" r="7.467" fill="none" stroke="#c4c7c3" stroke-width="0.265"/>
-<line x1="85" y1="52.95" x2="85" y2="52.15" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="86.068" y1="53.043" x2="86.207" y2="52.256" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="87.103" y1="53.321" x2="87.377" y2="52.569" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="88.075" y1="53.774" x2="88.475" y2="53.081" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="88.953" y1="54.389" x2="89.467" y2="53.776" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="89.711" y1="55.147" x2="90.324" y2="54.633" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="90.326" y1="56.025" x2="91.019" y2="55.625" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="90.779" y1="56.997" x2="91.531" y2="56.723" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="91.057" y1="58.032" x2="91.844" y2="57.893" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="91.15" y1="59.1" x2="91.95" y2="59.1" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="91.057" y1="60.168" x2="91.844" y2="60.307" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="90.779" y1="61.203" x2="91.531" y2="61.477" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="90.326" y1="62.175" x2="91.019" y2="62.575" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="89.711" y1="63.053" x2="90.324" y2="63.567" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="88.953" y1="63.811" x2="89.467" y2="64.424" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="88.075" y1="64.426" x2="88.475" y2="65.119" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="87.103" y1="64.879" x2="87.377" y2="65.631" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="86.068" y1="65.157" x2="86.207" y2="65.944" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="85" y1="65.25" x2="85" y2="66.05" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="83.932" y1="65.157" x2="83.793" y2="65.944" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="82.897" y1="64.879" x2="82.623" y2="65.631" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="81.925" y1="64.426" x2="81.525" y2="65.119" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="81.047" y1="63.811" x2="80.533" y2="64.424" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="80.289" y1="63.053" x2="79.676" y2="63.567" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="79.674" y1="62.175" x2="78.981" y2="62.575" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="79.221" y1="61.203" x2="78.469" y2="61.477" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="78.943" y1="60.168" x2="78.156" y2="60.307" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="78.85" y1="59.1" x2="78.05" y2="59.1" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="78.943" y1="58.032" x2="78.156" y2="57.893" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="79.221" y1="56.997" x2="78.469" y2="56.723" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="79.674" y1="56.025" x2="78.981" y2="55.625" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="80.289" y1="55.147" x2="79.676" y2="54.633" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="81.047" y1="54.389" x2="80.533" y2="53.776" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="81.925" y1="53.774" x2="81.525" y2="53.081" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="82.897" y1="53.321" x2="82.623" y2="52.569" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="83.932" y1="53.043" x2="83.793" y2="52.256" stroke="#3c3e3a" stroke-width="0.265"/>
-<circle cx="85" cy="59.1" r="5.6" fill="none" stroke="#838682" stroke-width="0.265"/>
-</g>
-<g id="knob-right">
-<circle cx="110.6" cy="59.1" r="7.467" fill="none" stroke="#c4c7c3" stroke-width="0.265"/>
-<line x1="110.6" y1="52.95" x2="110.6" y2="52.15" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="111.668" y1="53.043" x2="111.807" y2="52.256" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="112.703" y1="53.321" x2="112.977" y2="52.569" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="113.675" y1="53.774" x2="114.075" y2="53.081" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="114.553" y1="54.389" x2="115.067" y2="53.776" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="115.311" y1="55.147" x2="115.924" y2="54.633" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="115.926" y1="56.025" x2="116.619" y2="55.625" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="116.379" y1="56.997" x2="117.131" y2="56.723" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="116.657" y1="58.032" x2="117.444" y2="57.893" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="116.75" y1="59.1" x2="117.55" y2="59.1" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="116.657" y1="60.168" x2="117.444" y2="60.307" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="116.379" y1="61.203" x2="117.131" y2="61.477" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="115.926" y1="62.175" x2="116.619" y2="62.575" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="115.311" y1="63.053" x2="115.924" y2="63.567" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="114.553" y1="63.811" x2="115.067" y2="64.424" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="113.675" y1="64.426" x2="114.075" y2="65.119" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="112.703" y1="64.879" x2="112.977" y2="65.631" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="111.668" y1="65.157" x2="111.807" y2="65.944" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="110.6" y1="65.25" x2="110.6" y2="66.05" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="109.532" y1="65.157" x2="109.393" y2="65.944" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="108.497" y1="64.879" x2="108.223" y2="65.631" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="107.525" y1="64.426" x2="107.125" y2="65.119" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="106.647" y1="63.811" x2="106.133" y2="64.424" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="105.889" y1="63.053" x2="105.276" y2="63.567" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="105.274" y1="62.175" x2="104.581" y2="62.575" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="104.821" y1="61.203" x2="104.069" y2="61.477" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="104.543" y1="60.168" x2="103.756" y2="60.307" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="104.45" y1="59.1" x2="103.65" y2="59.1" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="104.543" y1="58.032" x2="103.756" y2="57.893" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="104.821" y1="56.997" x2="104.069" y2="56.723" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="105.274" y1="56.025" x2="104.581" y2="55.625" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="105.889" y1="55.147" x2="105.276" y2="54.633" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="106.647" y1="54.389" x2="106.133" y2="53.776" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="107.525" y1="53.774" x2="107.125" y2="53.081" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="108.497" y1="53.321" x2="108.223" y2="52.569" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="109.532" y1="53.043" x2="109.393" y2="52.256" stroke="#3c3e3a" stroke-width="0.265"/>
-<circle cx="110.6" cy="59.1" r="5.6" fill="none" stroke="#838682" stroke-width="0.265"/>
-</g>
-<g id="stigg-logo" transform="translate(100 3.925) scale(0.236559)"><path d="M46.3497 15.3357C46.3497 17.8021 44.1485 19.3268 40.8051 19.3268C39.0152 19.3268 37.5688 19.0082 36.183 18.3274C36.34 17.4015 36.4326 16.466 36.4602 15.5275C37.7228 16.2501 39.153 16.6329 40.6098 16.6382C42.2819 16.6382 43.1445 16.2503 43.1445 15.4468C43.1723 14.6426 42.5599 14.2824 40.0521 13.8106C37.1548 13.2303 35.873 12.0381 35.873 9.93205C35.873 7.54939 38.0742 5.99608 41.4176 5.99608C42.8133 5.98119 44.1983 6.23979 45.4936 6.75713L44.9334 9.43261C43.8291 8.93494 42.6299 8.67978 41.4174 8.6845C39.8573 8.6845 39.0774 9.07244 39.0774 9.82303C39.0774 10.4889 39.6064 10.7656 42.0585 11.2641C45.1796 11.9275 46.3497 13.1189 46.3497 15.3357ZM53.6856 16.3856C52.4322 16.3856 51.4282 15.7197 51.4282 13.9753V9.09603H54.6064L55.1975 6.2693H51.4288V2.24791C50.3454 2.55283 49.2346 2.75139 48.1123 2.84077L48.0854 14.533C48.0854 17.7199 50.0076 19.3308 52.8775 19.3308C53.451 19.3346 54.0231 19.2746 54.5832 19.152L55.2095 16.1611C54.7179 16.3205 54.2027 16.3964 53.6856 16.3856V16.3856ZM57.3143 19.1505H60.6577V6.27425H57.3143V19.1505ZM58.9995 1.00796C58.7525 1.00137 58.5066 1.04349 58.276 1.1319C58.0454 1.22031 57.8347 1.35325 57.6561 1.52306C57.4775 1.69288 57.3344 1.89619 57.2352 2.12127C57.136 2.34636 57.0826 2.58876 57.078 2.83448C57.0735 3.0802 57.1179 3.32439 57.2088 3.55294C57.2996 3.7815 57.4351 3.98989 57.6073 4.16611C57.7796 4.34233 57.9852 4.48287 58.2124 4.57963C58.4395 4.6764 58.6837 4.72746 58.9308 4.72988C60.0174 4.73635 60.8155 3.97759 60.8326 2.92239C60.8458 2.67511 60.8081 2.42775 60.7219 2.19545C60.6357 1.96315 60.5027 1.75078 60.3311 1.57136C60.1595 1.39194 59.9529 1.24922 59.7239 1.15196C59.495 1.05469 59.2485 1.00492 58.9995 1.00568V1.00796ZM76.6445 6.27672V17.1369C76.6445 21.2386 73.8579 24.0653 69.1491 24.0653C67.4615 24.0653 65.5899 23.6938 64.3348 22.9797C65.0143 22.3043 65.6284 21.5667 66.1688 20.7766C67.0205 21.0665 67.9145 21.2144 68.8147 21.2143C71.7958 21.2143 73.3005 19.578 73.3005 17.5003V17.0848C72.7519 17.7153 72.0708 18.2183 71.3053 18.5583C70.5398 18.8983 69.7086 19.0671 68.8704 19.0527C65.3594 19.0527 62.7127 16.4505 62.7127 12.5959C62.7127 8.79904 65.6104 6.00008 69.1493 6.00008C70.9882 6.00008 72.5762 6.666 73.6351 7.91279L73.7462 6.27653L76.6445 6.27672ZM73.328 12.5953C73.328 10.5445 71.8236 8.99291 69.7613 8.99291C67.6991 8.99291 66.1638 10.5434 66.1638 12.5952C66.1638 14.5899 67.6692 16.1424 69.7615 16.1424C70.233 16.1528 70.7016 16.0681 71.1393 15.8934C71.5769 15.7187 71.9744 15.4576 72.3077 15.1259C72.6411 14.7941 72.9033 14.3986 73.0787 13.9633C73.2541 13.5279 73.339 13.0617 73.3282 12.5929L73.328 12.5953ZM92.2098 6.27444V17.1371C92.2098 21.2388 89.4232 24.0655 84.7145 24.0655C83.0268 24.0655 81.1552 23.6939 79.9009 22.9799C80.5804 22.3045 81.1945 21.5669 81.7349 20.7768C82.5863 21.0667 83.48 21.2146 84.3799 21.2144C87.361 21.2144 88.8663 19.5782 88.8663 17.5005V17.085C88.3178 17.7158 87.6367 18.219 86.871 18.5591C86.1054 18.8991 85.2739 19.0677 84.4355 19.0529C80.9253 19.0529 78.2778 16.4506 78.2778 12.5961C78.2778 8.79923 81.1755 6.00027 84.7145 6.00027C86.5533 6.00027 88.1421 6.66619 89.2009 7.91298L89.3121 6.27672L92.2098 6.27444ZM88.8943 12.5931C88.8943 10.5422 87.3898 8.99063 85.3278 8.99063C83.2657 8.99063 81.7288 10.5418 81.7288 12.5927C81.7288 14.5874 83.2332 16.1399 85.3264 16.1399C85.7979 16.1509 86.2666 16.0667 86.7044 15.8923C87.1421 15.7179 87.5398 15.4571 87.8733 15.1255C88.2067 14.7939 88.4691 14.3984 88.6445 13.9631C88.8199 13.5278 88.9047 13.0615 88.8937 12.5927L88.8943 12.5931Z" fill="#a9acaf"/><path d="M19.0306 24.6139C18.9021 24.6781 16.4488 25.7577 12.1101 25.5546C9.84964 25.4477 7.88917 25.0308 6.49649 24.646L14.0063 15.9447C15.3454 16.2868 17.0702 16.6075 19.0306 16.7037C23.3694 16.9175 25.8226 15.8271 25.9512 15.763L19.0306 24.6246V24.6139ZM7.81418 7.89553C6.5822 3.7373 7.06428 1.10768 7.09642 0.96872L0.111585 9.77688C0.0901591 9.91584 -0.391923 12.5455 0.829351 16.7037C1.47213 18.863 2.33987 20.6695 3.04693 21.9309L9.74251 12.5989C9.09974 11.3803 8.37126 9.77688 7.81418 7.90621V7.89553ZM25.2227 8.81482C24.2371 5.47969 22.6944 3.01042 22.0624 2.06974L15.8489 9.96929L17.0166 15.5599C17.7129 15.6561 18.3986 15.7202 19.0949 15.763C19.4484 15.7737 19.802 15.7844 20.1448 15.7844C23.5086 15.7844 25.3834 14.9934 25.5869 14.8972L26.069 14.6834C26.1119 13.5289 26.0369 11.4872 25.2334 8.80413L25.2227 8.81482ZM21.3232 1.5032C20.2626 1.10768 17.4987 0.199075 14.017 0.0280425C11.2209 -0.110921 9.21758 0.29528 8.10343 0.615966L8.00702 1.12906C7.98559 1.23596 7.55707 3.72661 8.70336 7.62829C8.89619 8.29104 9.13187 8.9431 9.38898 9.59516L15.1097 9.40275L21.3339 1.51388L21.3232 1.5032Z" fill="#a9acaf"/></g>
-</svg>
+    <div class="program-side">
+      <figure class="program-fig"><div class="deck-fig">
+<svg class="deck" viewBox="0 0 129 78" role="img" aria-label="Token Deck showing a custom mode with BUILD, LOGS, EDITOR, PALETTE and AGENTS keys"><image class="tile" style="--k:0" href="tiles/custom-1.png" x="14.95" y="12.2" width="15.5" height="15.5" clip-path="url(#key-1)" preserveAspectRatio="none"/><image class="tile" style="--k:1" href="tiles/custom-2.png" x="33.75" y="12.2" width="15.5" height="15.5" clip-path="url(#key-2)" preserveAspectRatio="none"/><image class="tile" style="--k:2" href="tiles/custom-3.png" x="52.55" y="12.2" width="15.5" height="15.5" clip-path="url(#key-3)" preserveAspectRatio="none"/><image class="tile" style="--k:3" href="tiles/custom-4.png" x="14.95" y="30.7" width="15.5" height="15.5" clip-path="url(#key-4)" preserveAspectRatio="none"/><image class="tile" style="--k:4" href="tiles/custom-5.png" x="33.75" y="30.7" width="15.5" height="15.5" clip-path="url(#key-5)" preserveAspectRatio="none"/><image class="tile" style="--k:5" href="tiles/custom-6.png" x="52.55" y="30.7" width="15.5" height="15.5" clip-path="url(#key-6)" preserveAspectRatio="none"/><use href="#n3" width="129" height="78"/><g class="lit-group" data-for="sessions"><circle class="lit" cx="41.5" cy="62.9" r="6.317"/><circle class="lit" cx="41.5" cy="62.9" r="5.25"/><circle class="lit-core" cx="41.5" cy="62.9" r="1"/></g></svg>
 
-      <img class="tile" style="left:11.395348837209301%;top:15.64102564102564%;width:12.4031007751938%;height:19.871794871794872%" src="tiles/key1.png" alt="">
-<img class="tile" style="left:25.968992248062015%;top:15.64102564102564%;width:12.4031007751938%;height:19.871794871794872%" src="tiles/key2.png" alt="">
-<img class="tile" style="left:40.542635658914726%;top:15.64102564102564%;width:12.4031007751938%;height:19.871794871794872%" src="tiles/key3.png" alt="">
-<img class="tile" style="left:11.395348837209301%;top:39.35897435897436%;width:12.4031007751938%;height:19.871794871794872%" src="tiles/key4.png" alt="">
-<img class="tile" style="left:25.968992248062015%;top:39.35897435897436%;width:12.4031007751938%;height:19.871794871794872%" src="tiles/key5.png" alt="">
-<img class="tile" style="left:40.542635658914726%;top:39.35897435897436%;width:12.4031007751938%;height:19.871794871794872%" src="tiles/key6.png" alt="">
+</div></figure>
+      <div class="program-actions">
+      <table class="actions">
+        <caption class="visually-hidden">Actions a key or knob can run</caption>
+        <tr><th scope="row">shell</th><td>Runs a command in your login shell (cmd on Windows) for up to 10 seconds. The deck shows OK or FAILED.</td></tr>
+        <tr><th scope="row">open</th><td>Opens an app, like Cursor.</td></tr>
+        <tr><th scope="row">url</th><td>Opens a link in your browser.</td></tr>
+        <tr><th scope="row">keys</th><td>Sends a shortcut, like <span class="mono">cmd+shift+p</span>, to the app in front.</td></tr>
+        <tr><th scope="row">mode</th><td>Switches the deck to <span class="mono">agents</span>, <span class="mono">sessions</span> or <span class="mono">models</span>.</td></tr>
+      </table>
+      <p class="note">A key can also show an icon: a PNG or SVG file, drawn at 28 pixels.</p>
     </div>
-  </header>
-  <section class="block">
-    <div>
-      <p class="eyebrow">Agents</p>
-      <h2>Open a coding app, or move to one that is already open.</h2>
-      <p class="lead">Claude Code, Cursor, Codex, OpenCode, Amp, and Devin. Press a key to open that app. The large knob moves between the ones already running. It does not launch a new one.</p>
     </div>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 78">
-<!-- Mode 1 Agents screens v2 (no text) in n3-line.svg coordinates, designed for the small demo at 44 mm wide (0.341x). Official one-colour agent logos (assets/logos-3p, shapes untouched, optically sized), then a 4-token activity meter (lit = busy). -->
-<g id="m1-screens">
-<g id="m1-screen-1" data-screen="1" transform="translate(14.7 12.2)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<g id="m1-logo-claude-code" transform="translate(4.202 2.523) scale(0.0291772)"><path fill="#ffffff" d="m50.228 170.321 50.357-28.257.843-2.463-.843-1.361h-2.462l-8.426-.518-28.775-.778-24.952-1.037-24.175-1.296-6.092-1.297L0 125.796l.583-3.759 5.12-3.434 7.324.648 16.202 1.101 24.304 1.685 17.629 1.037 26.118 2.722h4.148l.583-1.685-1.426-1.037-1.101-1.037-25.147-17.045-27.22-18.017-14.258-10.37-7.713-5.25-3.888-4.925-1.685-10.758 7-7.713 9.397.649 2.398.648 9.527 7.323 20.35 15.75L94.817 91.9l3.889 3.24 1.555-1.102.195-.777-1.75-2.917-14.453-26.118-15.425-26.572-6.87-11.018-1.814-6.61c-.648-2.723-1.102-4.991-1.102-7.778l7.972-10.823L71.42 0 82.05 1.426l4.472 3.888 6.61 15.101 10.694 23.786 16.591 32.34 4.861 9.592 2.592 8.879.973 2.722h1.685v-1.556l1.36-18.211 2.528-22.36 2.463-28.776.843-8.1 4.018-9.722 7.971-5.25 6.222 2.981 5.12 7.324-.713 4.73-3.046 19.768-5.962 30.98-3.889 20.739h2.268l2.593-2.593 10.499-13.934 17.628-22.036 7.778-8.749 9.073-9.657 5.833-4.601h11.018l8.1 12.055-3.628 12.443-11.342 14.388-9.398 12.184-13.48 18.147-8.426 14.518.778 1.166 2.01-.194 30.46-6.481 16.462-2.982 19.637-3.37 8.88 4.148.971 4.213-3.5 8.62-20.998 5.184-24.628 4.926-36.682 8.685-.454.324.519.648 16.526 1.555 7.065.389h17.304l32.21 2.398 8.426 5.574 5.055 6.805-.843 5.184-12.962 6.611-17.498-4.148-40.83-9.721-14-3.5h-1.944v1.167l11.666 11.406 21.387 19.314 26.767 24.887 1.36 6.157-3.434 4.86-3.63-.518-23.526-17.693-9.073-7.972-20.545-17.304h-1.36v1.814l4.73 6.935 25.017 37.59 1.296 11.536-1.814 3.76-6.481 2.268-7.13-1.297-14.647-20.544-15.1-23.138-12.185-20.739-1.49.843-7.194 77.448-3.37 3.953-7.778 2.981-6.48-4.925-3.436-7.972 3.435-15.749 4.148-20.544 3.37-16.333 3.046-20.285 1.815-6.74-.13-.454-1.49.194-15.295 20.999-23.267 31.433-18.406 19.702-4.407 1.75-7.648-3.954.713-7.064 4.277-6.286 25.47-32.405 15.36-20.092 9.917-11.6-.065-1.686h-.583L44.07 198.125l-12.055 1.555-5.185-4.86.648-7.972 2.463-2.593 20.35-13.999-.064.065Z"/></g>
-<rect x="3.1" y="11.6" width="2" height="2" fill="#92e759"/>
-<rect x="5.7" y="11.6" width="2" height="2" fill="#92e759"/>
-<rect x="8.3" y="11.6" width="2" height="2" fill="#92e759"/>
-<rect x="10.9" y="11.6" width="2" height="2" fill="#92e759"/>
-</g>
-<g id="m1-screen-2" data-screen="1" transform="translate(33.5 12.2)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<g id="m1-logo-cursor" transform="translate(4.903 2.497) scale(0.0137035)"><path fill="#ffffff" d="M457.43,125.94L244.42,2.96c-6.84-3.95-15.28-3.95-22.12,0L9.3,125.94c-5.75,3.32-9.3,9.46-9.3,16.11v247.99c0,6.65,3.55,12.79,9.3,16.11l213.01,122.98c6.84,3.95,15.28,3.95,22.12,0l213.01-122.98c5.75-3.32,9.3-9.46,9.3-16.11v-247.99c0-6.65-3.55-12.79-9.3-16.11h-.01ZM444.05,151.99l-205.63,356.16c-1.39,2.4-5.06,1.42-5.06-1.36v-233.21c0-4.66-2.49-8.97-6.53-11.31L24.87,145.67c-2.4-1.39-1.42-5.06,1.36-5.06h411.26c5.84,0,9.49,6.33,6.57,11.39h-.01Z"/></g>
-<rect x="3.1" y="11.6" width="2" height="2" fill="#92e759"/>
-<rect x="5.7" y="11.6" width="2" height="2" fill="#92e759"/>
-<rect x="8.3" y="11.6" width="2" height="2" fill="#3c3e3a"/>
-<rect x="10.9" y="11.6" width="2" height="2" fill="#3c3e3a"/>
-</g>
-<g id="m1-screen-3" data-screen="1" transform="translate(52.3 12.2)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<g id="m1-logo-codex" transform="translate(4.638 2.862) scale(0.279276)"><path fill="#ffffff" fill-rule="evenodd" d="M8.086.457a6.105 6.105 0 013.046-.415c1.333.153 2.521.72 3.564 1.7a.117.117 0 00.107.029c1.408-.346 2.762-.224 4.061.366l.063.03.154.076c1.357.703 2.33 1.77 2.918 3.198.278.679.418 1.388.421 2.126a5.655 5.655 0 01-.18 1.631.167.167 0 00.04.155 5.982 5.982 0 011.578 2.891c.385 1.901-.01 3.615-1.183 5.14l-.182.22a6.063 6.063 0 01-2.934 1.851.162.162 0 00-.108.102c-.255.736-.511 1.364-.987 1.992-1.199 1.582-2.962 2.462-4.948 2.451-1.583-.008-2.986-.587-4.21-1.736a.145.145 0 00-.14-.032c-.518.167-1.04.191-1.604.185a5.924 5.924 0 01-2.595-.622 6.058 6.058 0 01-2.146-1.781c-.203-.269-.404-.522-.551-.821a7.74 7.74 0 01-.495-1.283 6.11 6.11 0 01-.017-3.064.166.166 0 00.008-.074.115.115 0 00-.037-.064 5.958 5.958 0 01-1.38-2.202 5.196 5.196 0 01-.333-1.589 6.915 6.915 0 01.188-2.132c.45-1.484 1.309-2.648 2.577-3.493.282-.188.55-.334.802-.438.286-.12.573-.22.861-.304a.129.129 0 00.087-.087A6.016 6.016 0 015.635 2.31C6.315 1.464 7.132.846 8.086.457zm-.804 7.85a.848.848 0 00-1.473.842l1.694 2.965-1.688 2.848a.849.849 0 001.46.864l1.94-3.272a.849.849 0 00.007-.854l-1.94-3.393zm5.446 6.24a.849.849 0 000 1.695h4.848a.849.849 0 000-1.696h-4.848z"/></g>
-<rect x="3.1" y="11.6" width="2" height="2" fill="#92e759"/>
-<rect x="5.7" y="11.6" width="2" height="2" fill="#92e759"/>
-<rect x="8.3" y="11.6" width="2" height="2" fill="#92e759"/>
-<rect x="10.9" y="11.6" width="2" height="2" fill="#3c3e3a"/>
-</g>
-<g id="m1-screen-4" data-screen="1" transform="translate(14.7 30.7)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<g id="m1-logo-opencode" transform="translate(3.056 1.228) scale(0.0193175)"><path fill="#5b5d59" d="M320 224V352H192V224H320Z"/><path fill="#ffffff" fill-rule="evenodd" d="M384 416H128V96H384V416ZM320 160H192V352H320V160Z"/></g>
-<rect x="3.1" y="11.6" width="2" height="2" fill="#3c3e3a"/>
-<rect x="5.7" y="11.6" width="2" height="2" fill="#3c3e3a"/>
-<rect x="8.3" y="11.6" width="2" height="2" fill="#3c3e3a"/>
-<rect x="10.9" y="11.6" width="2" height="2" fill="#3c3e3a"/>
-</g>
-<g id="m1-screen-5" data-screen="1" transform="translate(33.5 30.7)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<g id="m1-logo-amp" transform="translate(2.063 0.449) scale(0.011535)"><g transform="translate(113 302.27) scale(2.8362989324)"><path fill="#ffffff" d="M236.014 20C260.431 20.0001 280.602 37.4115 280.603 64.7432C280.602 93.5337 260.065 114.166 233.52 114.166C224.158 114.166 215.639 112.422 208.63 108.49C202.886 105.27 198.203 100.605 194.919 94.3379L188.115 141.822L187.946 143.016H174.214L174.448 141.423L191.772 22.4941H205.372L203.937 31.3369C212.143 23.8608 223.2 20.0002 236.014 20ZM47.082 20.1543C56.4435 20.1543 65.0012 21.8991 72.0488 25.8486C77.8222 29.0831 82.5323 33.7713 85.8271 40.085L88.1201 23.6924L88.2861 22.4932H101.863L89.1611 110.633L88.9873 111.826H75.4092L76.7227 102.855C68.5854 110.456 57.3981 114.323 44.5889 114.323C20.1709 114.323 0.000167223 96.9087 0 69.5771C0.000149745 40.7854 20.54 20.1549 47.082 20.1543ZM116.234 110.636L116.061 111.827H102.485L115.351 23.6855L115.521 22.4941H129.083L116.234 110.636ZM140.673 110.636L140.499 111.827H126.924L139.789 23.6855L139.96 22.4941H153.521L140.673 110.636ZM177.958 22.4941L165.108 110.636L164.935 111.827H151.36L164.225 23.6855L164.396 22.4941H177.958ZM48.4854 31.9844C27.8638 31.985 14.0133 48.3799 14.0127 68.9521C14.0127 77.7907 16.8094 86.1771 22.3145 92.334C27.7973 98.4657 36.0631 102.493 47.2402 102.493C67.8534 102.493 81.7122 85.9487 81.7129 65.3682C81.7129 55.4076 78.2493 47.0792 72.4131 41.2441C66.5794 35.4088 58.2871 31.9844 48.4854 31.9844ZM233.362 31.8291C212.749 31.8297 198.89 48.3716 198.89 68.9521C198.89 78.9123 202.356 87.2403 208.189 93.0742C214.023 98.9107 222.315 102.336 232.116 102.336C252.738 102.335 266.589 85.9407 266.59 65.3682C266.59 56.5296 263.795 48.1424 258.29 41.9863C252.807 35.8551 244.542 31.8291 233.362 31.8291Z"/></g></g>
-<rect x="3.1" y="11.6" width="2" height="2" fill="#92e759"/>
-<rect x="5.7" y="11.6" width="2" height="2" fill="#3c3e3a"/>
-<rect x="8.3" y="11.6" width="2" height="2" fill="#3c3e3a"/>
-<rect x="10.9" y="11.6" width="2" height="2" fill="#3c3e3a"/>
-</g>
-<g id="m1-screen-6" data-screen="1" transform="translate(52.3 30.7)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<g id="m1-logo-devin" transform="translate(3.483 1.416) scale(0.0224529)"><path fill="#ffffff" d="M70 159.333V91.3471C70 88.3592 71.594 85.5983 74.1816 84.1044L133.043 50.1205C135.631 48.6265 138.819 48.6265 141.407 50.1205L200.269 84.1044C202.856 85.5983 204.45 88.3592 204.45 91.3471V126.068C204.708 137.606 210.806 148.734 221.531 154.926C232.256 161.117 244.942 160.834 255.063 155.289L285.132 137.929C287.719 136.435 290.907 136.435 293.495 137.929L352.357 171.913C354.944 173.406 356.538 176.167 356.538 179.155V247.123C356.538 250.111 354.944 252.872 352.357 254.366L293.495 288.35C290.907 289.844 287.719 289.844 285.132 288.35L255.306 271.13C245.146 265.456 232.344 265.117 221.534 271.358C210.809 277.55 204.711 288.678 204.453 300.215V334.926C204.453 337.914 202.859 340.675 200.271 342.169L141.41 376.153C138.822 377.647 135.634 377.647 133.046 376.153L74.1845 342.169C71.5969 340.675 70.0028 337.914 70.0028 334.926V266.959C70.0029 263.971 71.5969 261.21 74.1845 259.716L133.046 225.732C135.634 224.238 138.822 224.238 141.41 225.732L171.547 243.132C181.656 248.638 194.306 248.906 205.005 242.729C215.815 236.488 221.922 225.231 222.088 213.595C221.83 202.057 215.732 189.737 205.008 183.545C194.283 177.353 181.597 177.636 171.476 183.181L141.269 200.72C138.67 202.229 135.461 202.228 132.864 200.716L74.1576 166.562C71.5835 165.065 70 162.311 70 159.333Z"/></g>
-<rect x="3.1" y="11.6" width="2" height="2" fill="#92e759"/>
-<rect x="5.7" y="11.6" width="2" height="2" fill="#92e759"/>
-<rect x="8.3" y="11.6" width="2" height="2" fill="#3c3e3a"/>
-<rect x="10.9" y="11.6" width="2" height="2" fill="#3c3e3a"/>
-</g>
-</g>
-</svg>
+  </div>
+</section>
 
-  </section>
-  <section class="block">
-    <div>
-      <p class="eyebrow">Sessions</p>
-      <h2>The chats that are already going.</h2>
-      <p class="lead">Claude Code and Codex, one chat per key. Press a key to bring that chat forward. OpenCode appears here while it is running on this computer. Cursor, Amp, and Devin do not have a chat list. They stay on Agents.</p>
-    </div>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 78">
-<!-- Mode 2 Sessions screens v2 (no text) in n3-line.svg coordinates, designed for the small demo at 44 mm wide (0.341x). Official agent logo in a context-usage ring, status dot (working blue, needs approval coral + frame, completed lime, needs input white, idle grey, disconnected dim ring), title as word bars. -->
-<g id="m2-screens">
-<g id="m2-screen-1" data-screen="1" transform="translate(14.7 12.2)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<circle cx="8" cy="6.7" r="4.25" fill="none" stroke="#3c3e3a" stroke-width="1.1"/>
-<path d="M8 2.45A4.25 4.25 0 1 1 4.725 9.409" fill="none" stroke="#ffffff" stroke-width="1.1"/>
-<circle cx="11.005" cy="3.695" r="1.9" fill="#131512"/>
-<g id="m2-logo-claude-code" transform="translate(5.721 4.494) scale(0.0175063)"><path fill="#ffffff" d="m50.228 170.321 50.357-28.257.843-2.463-.843-1.361h-2.462l-8.426-.518-28.775-.778-24.952-1.037-24.175-1.296-6.092-1.297L0 125.796l.583-3.759 5.12-3.434 7.324.648 16.202 1.101 24.304 1.685 17.629 1.037 26.118 2.722h4.148l.583-1.685-1.426-1.037-1.101-1.037-25.147-17.045-27.22-18.017-14.258-10.37-7.713-5.25-3.888-4.925-1.685-10.758 7-7.713 9.397.649 2.398.648 9.527 7.323 20.35 15.75L94.817 91.9l3.889 3.24 1.555-1.102.195-.777-1.75-2.917-14.453-26.118-15.425-26.572-6.87-11.018-1.814-6.61c-.648-2.723-1.102-4.991-1.102-7.778l7.972-10.823L71.42 0 82.05 1.426l4.472 3.888 6.61 15.101 10.694 23.786 16.591 32.34 4.861 9.592 2.592 8.879.973 2.722h1.685v-1.556l1.36-18.211 2.528-22.36 2.463-28.776.843-8.1 4.018-9.722 7.971-5.25 6.222 2.981 5.12 7.324-.713 4.73-3.046 19.768-5.962 30.98-3.889 20.739h2.268l2.593-2.593 10.499-13.934 17.628-22.036 7.778-8.749 9.073-9.657 5.833-4.601h11.018l8.1 12.055-3.628 12.443-11.342 14.388-9.398 12.184-13.48 18.147-8.426 14.518.778 1.166 2.01-.194 30.46-6.481 16.462-2.982 19.637-3.37 8.88 4.148.971 4.213-3.5 8.62-20.998 5.184-24.628 4.926-36.682 8.685-.454.324.519.648 16.526 1.555 7.065.389h17.304l32.21 2.398 8.426 5.574 5.055 6.805-.843 5.184-12.962 6.611-17.498-4.148-40.83-9.721-14-3.5h-1.944v1.167l11.666 11.406 21.387 19.314 26.767 24.887 1.36 6.157-3.434 4.86-3.63-.518-23.526-17.693-9.073-7.972-20.545-17.304h-1.36v1.814l4.73 6.935 25.017 37.59 1.296 11.536-1.814 3.76-6.481 2.268-7.13-1.297-14.647-20.544-15.1-23.138-12.185-20.739-1.49.843-7.194 77.448-3.37 3.953-7.778 2.981-6.48-4.925-3.436-7.972 3.435-15.749 4.148-20.544 3.37-16.333 3.046-20.285 1.815-6.74-.13-.454-1.49.194-15.295 20.999-23.267 31.433-18.406 19.702-4.407 1.75-7.648-3.954.713-7.064 4.277-6.286 25.47-32.405 15.36-20.092 9.917-11.6-.065-1.686h-.583L44.07 198.125l-12.055 1.555-5.185-4.86.648-7.972 2.463-2.593 20.35-13.999-.064.065Z"/></g>
-<circle cx="11.005" cy="3.695" r="1.25" fill="#7da2ff"/>
-<rect x="3.825" y="12.4" width="2" height="1.2" fill="#c4c7c3"/>
-<rect x="6.625" y="12.4" width="2.75" height="1.2" fill="#c4c7c3"/>
-<rect x="10.175" y="12.4" width="2" height="1.2" fill="#c4c7c3"/>
-</g>
-<g id="m2-screen-2" data-screen="1" transform="translate(33.5 12.2)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<rect x="0.9" y="0.9" width="14.2" height="13.7" rx="0.5" ry="0.5" fill="none" stroke="#ff8e6d" stroke-width="0.777"/>
-<circle cx="8" cy="6.7" r="4.25" fill="none" stroke="#3c3e3a" stroke-width="1.1"/>
-<path d="M8 2.45A4.25 4.25 0 0 1 10.909 9.798" fill="none" stroke="#ffffff" stroke-width="1.1"/>
-<circle cx="11.005" cy="3.695" r="1.9" fill="#131512"/>
-<g id="m2-logo-cursor" transform="translate(6.142 4.478) scale(0.00822212)"><path fill="#ffffff" d="M457.43,125.94L244.42,2.96c-6.84-3.95-15.28-3.95-22.12,0L9.3,125.94c-5.75,3.32-9.3,9.46-9.3,16.11v247.99c0,6.65,3.55,12.79,9.3,16.11l213.01,122.98c6.84,3.95,15.28,3.95,22.12,0l213.01-122.98c5.75-3.32,9.3-9.46,9.3-16.11v-247.99c0-6.65-3.55-12.79-9.3-16.11h-.01ZM444.05,151.99l-205.63,356.16c-1.39,2.4-5.06,1.42-5.06-1.36v-233.21c0-4.66-2.49-8.97-6.53-11.31L24.87,145.67c-2.4-1.39-1.42-5.06,1.36-5.06h411.26c5.84,0,9.49,6.33,6.57,11.39h-.01Z"/></g>
-<circle cx="11.005" cy="3.695" r="1.25" fill="#ff8e6d"/>
-<rect x="4.4" y="12.4" width="4.4" height="1.2" fill="#c4c7c3"/>
-<rect x="9.6" y="12.4" width="2" height="1.2" fill="#c4c7c3"/>
-</g>
-<g id="m2-screen-3" data-screen="1" transform="translate(52.3 12.2)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<circle cx="8" cy="6.7" r="4.25" fill="none" stroke="#3c3e3a" stroke-width="1.1"/>
-<path d="M8 2.45A4.25 4.25 0 1 1 3.884 7.757" fill="none" stroke="#ffffff" stroke-width="1.1"/>
-<circle cx="11.005" cy="3.695" r="1.9" fill="#131512"/>
-<g id="m2-logo-codex" transform="translate(5.983 4.697) scale(0.167565)"><path fill="#ffffff" fill-rule="evenodd" d="M8.086.457a6.105 6.105 0 013.046-.415c1.333.153 2.521.72 3.564 1.7a.117.117 0 00.107.029c1.408-.346 2.762-.224 4.061.366l.063.03.154.076c1.357.703 2.33 1.77 2.918 3.198.278.679.418 1.388.421 2.126a5.655 5.655 0 01-.18 1.631.167.167 0 00.04.155 5.982 5.982 0 011.578 2.891c.385 1.901-.01 3.615-1.183 5.14l-.182.22a6.063 6.063 0 01-2.934 1.851.162.162 0 00-.108.102c-.255.736-.511 1.364-.987 1.992-1.199 1.582-2.962 2.462-4.948 2.451-1.583-.008-2.986-.587-4.21-1.736a.145.145 0 00-.14-.032c-.518.167-1.04.191-1.604.185a5.924 5.924 0 01-2.595-.622 6.058 6.058 0 01-2.146-1.781c-.203-.269-.404-.522-.551-.821a7.74 7.74 0 01-.495-1.283 6.11 6.11 0 01-.017-3.064.166.166 0 00.008-.074.115.115 0 00-.037-.064 5.958 5.958 0 01-1.38-2.202 5.196 5.196 0 01-.333-1.589 6.915 6.915 0 01.188-2.132c.45-1.484 1.309-2.648 2.577-3.493.282-.188.55-.334.802-.438.286-.12.573-.22.861-.304a.129.129 0 00.087-.087A6.016 6.016 0 015.635 2.31C6.315 1.464 7.132.846 8.086.457zm-.804 7.85a.848.848 0 00-1.473.842l1.694 2.965-1.688 2.848a.849.849 0 001.46.864l1.94-3.272a.849.849 0 00.007-.854l-1.94-3.393zm5.446 6.24a.849.849 0 000 1.695h4.848a.849.849 0 000-1.696h-4.848z"/></g>
-<circle cx="11.005" cy="3.695" r="1.25" fill="#92e759"/>
-<rect x="3.45" y="12.4" width="2" height="1.2" fill="#c4c7c3"/>
-<rect x="6.25" y="12.4" width="2.75" height="1.2" fill="#c4c7c3"/>
-<rect x="9.8" y="12.4" width="2.75" height="1.2" fill="#c4c7c3"/>
-</g>
-<g id="m2-screen-4" data-screen="1" transform="translate(14.7 30.7)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<circle cx="8" cy="6.7" r="4.25" fill="none" stroke="#3c3e3a" stroke-width="1.1"/>
-<path d="M8 2.45A4.25 4.25 0 1 1 5.723 3.112" fill="none" stroke="#ffffff" stroke-width="1.1"/>
-<circle cx="11.005" cy="3.695" r="1.9" fill="#131512"/>
-<g id="m2-logo-opencode" transform="translate(4.934 3.817) scale(0.0115905)"><path fill="#5b5d59" d="M320 224V352H192V224H320Z"/><path fill="#ffffff" fill-rule="evenodd" d="M384 416H128V96H384V416ZM320 160H192V352H320V160Z"/></g>
-<circle cx="11.005" cy="3.695" r="1.25" fill="#ffffff"/>
-<rect x="4.85" y="12.4" width="2.75" height="1.2" fill="#c4c7c3"/>
-<rect x="8.4" y="12.4" width="2.75" height="1.2" fill="#c4c7c3"/>
-</g>
-<g id="m2-screen-5" data-screen="1" transform="translate(33.5 30.7)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<circle cx="8" cy="6.7" r="4.25" fill="none" stroke="#3c3e3a" stroke-width="1.1"/>
-<path d="M8 2.45A4.25 4.25 0 0 1 8.796 10.875" fill="none" stroke="#ffffff" stroke-width="1.1"/>
-<circle cx="11.005" cy="3.695" r="1.9" fill="#131512"/>
-<g id="m2-logo-amp" transform="translate(4.438 3.249) scale(0.00692097)"><g transform="translate(113 302.27) scale(2.8362989324)"><path fill="#ffffff" d="M236.014 20C260.431 20.0001 280.602 37.4115 280.603 64.7432C280.602 93.5337 260.065 114.166 233.52 114.166C224.158 114.166 215.639 112.422 208.63 108.49C202.886 105.27 198.203 100.605 194.919 94.3379L188.115 141.822L187.946 143.016H174.214L174.448 141.423L191.772 22.4941H205.372L203.937 31.3369C212.143 23.8608 223.2 20.0002 236.014 20ZM47.082 20.1543C56.4435 20.1543 65.0012 21.8991 72.0488 25.8486C77.8222 29.0831 82.5323 33.7713 85.8271 40.085L88.1201 23.6924L88.2861 22.4932H101.863L89.1611 110.633L88.9873 111.826H75.4092L76.7227 102.855C68.5854 110.456 57.3981 114.323 44.5889 114.323C20.1709 114.323 0.000167223 96.9087 0 69.5771C0.000149745 40.7854 20.54 20.1549 47.082 20.1543ZM116.234 110.636L116.061 111.827H102.485L115.351 23.6855L115.521 22.4941H129.083L116.234 110.636ZM140.673 110.636L140.499 111.827H126.924L139.789 23.6855L139.96 22.4941H153.521L140.673 110.636ZM177.958 22.4941L165.108 110.636L164.935 111.827H151.36L164.225 23.6855L164.396 22.4941H177.958ZM48.4854 31.9844C27.8638 31.985 14.0133 48.3799 14.0127 68.9521C14.0127 77.7907 16.8094 86.1771 22.3145 92.334C27.7973 98.4657 36.0631 102.493 47.2402 102.493C67.8534 102.493 81.7122 85.9487 81.7129 65.3682C81.7129 55.4076 78.2493 47.0792 72.4131 41.2441C66.5794 35.4088 58.2871 31.9844 48.4854 31.9844ZM233.362 31.8291C212.749 31.8297 198.89 48.3716 198.89 68.9521C198.89 78.9123 202.356 87.2403 208.189 93.0742C214.023 98.9107 222.315 102.336 232.116 102.336C252.738 102.335 266.589 85.9407 266.59 65.3682C266.59 56.5296 263.795 48.1424 258.29 41.9863C252.807 35.8551 244.542 31.8291 233.362 31.8291Z"/></g></g>
-<circle cx="11.005" cy="3.695" r="1.25" fill="#838682"/>
-<rect x="2.525" y="12.4" width="3.3" height="1.2" fill="#c4c7c3"/>
-<rect x="6.625" y="12.4" width="3.85" height="1.2" fill="#c4c7c3"/>
-<rect x="11.275" y="12.4" width="2.2" height="1.2" fill="#c4c7c3"/>
-</g>
-<g id="m2-screen-6" data-screen="1" transform="translate(52.3 30.7)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<circle cx="8" cy="6.7" r="4.25" fill="none" stroke="#3c3e3a" stroke-width="1.1"/>
-<path d="M8 2.45A4.25 4.25 0 0 1 10.909 3.602" fill="none" stroke="#5b5d59" stroke-width="1.1"/>
-<circle cx="11.005" cy="3.695" r="1.9" fill="#131512"/>
-<g id="m2-logo-devin" transform="translate(5.29 3.83) scale(0.0134717)"><path fill="#ffffff" d="M70 159.333V91.3471C70 88.3592 71.594 85.5983 74.1816 84.1044L133.043 50.1205C135.631 48.6265 138.819 48.6265 141.407 50.1205L200.269 84.1044C202.856 85.5983 204.45 88.3592 204.45 91.3471V126.068C204.708 137.606 210.806 148.734 221.531 154.926C232.256 161.117 244.942 160.834 255.063 155.289L285.132 137.929C287.719 136.435 290.907 136.435 293.495 137.929L352.357 171.913C354.944 173.406 356.538 176.167 356.538 179.155V247.123C356.538 250.111 354.944 252.872 352.357 254.366L293.495 288.35C290.907 289.844 287.719 289.844 285.132 288.35L255.306 271.13C245.146 265.456 232.344 265.117 221.534 271.358C210.809 277.55 204.711 288.678 204.453 300.215V334.926C204.453 337.914 202.859 340.675 200.271 342.169L141.41 376.153C138.822 377.647 135.634 377.647 133.046 376.153L74.1845 342.169C71.5969 340.675 70.0028 337.914 70.0028 334.926V266.959C70.0029 263.971 71.5969 261.21 74.1845 259.716L133.046 225.732C135.634 224.238 138.822 224.238 141.41 225.732L171.547 243.132C181.656 248.638 194.306 248.906 205.005 242.729C215.815 236.488 221.922 225.231 222.088 213.595C221.83 202.057 215.732 189.737 205.008 183.545C194.283 177.353 181.597 177.636 171.476 183.181L141.269 200.72C138.67 202.229 135.461 202.228 132.864 200.716L74.1576 166.562C71.5835 165.065 70 162.311 70 159.333Z"/></g>
-<circle cx="11.005" cy="3.695" r="0.862" fill="none" stroke="#5b5d59" stroke-width="0.777"/>
-<rect x="5.5" y="12.4" width="2.2" height="1.2" fill="#5b5d59"/>
-<rect x="8.5" y="12.4" width="2" height="1.2" fill="#5b5d59"/>
-</g>
-</g>
-</svg>
+<section class="section wrap rule" id="privacy" aria-labelledby="privacy-title">
+  <div class="section-head">
+    <p class="eyebrow">On your computer</p>
+    <h2 class="h2" id="privacy-title">No account, no telemetry. <span class="dim">Here’s what Token Deck reads and changes.</span></h2>
+  </div>
+  <div class="facts">
+    <div class="fact"><h3>Claude Code</h3><p>With your OK, Token Deck writes its hooks and status line into <code class="inline">~/.claude/settings.json</code>, so the deck sees a session change the moment it does. It backs the file up first, and Stop watching puts the backup back.</p></div>
+    <div class="fact"><h3>Your status line</h3><p>Keeps working. Token Deck’s status line passes everything through to the one you already had.</p></div>
+    <div class="fact"><h3>Defaults</h3><p>Turning a knob writes your default model, effort or permission to the agent’s own config file. Nothing is typed into a running session.</p></div>
+    <div class="fact"><h3>Credentials</h3><p>Never read. The limits come from what Claude Code and Codex already report.</p></div>
+    <div class="fact"><h3>Network</h3><p>Hooks reach the app on 127.0.0.1 only. Token Deck goes online for one thing: checking GitHub for a new version.</p></div>
+    <div class="fact"><h3>Open source</h3><p>MIT licensed. <a class="link" href="https://github.com/stiggio/token-deck">Read the code</a> and <a class="link" href="https://usage.stigg.io/install.sh">the install script</a>.</p></div>
+  </div>
+</section>
 
-  </section>
-  <section class="block">
-    <div>
-      <p class="eyebrow">Models &amp; usage</p>
-      <h2>Choose the model the next chat will use.</h2>
-      <p class="lead">The other keys are models. The first key is the allowance: how much of the 5-hour window and the week is already used, for that app. Press it for the details. A chat that is already running keeps its model.</p>
+<section class="section wrap rule" id="help" aria-labelledby="help-title">
+  <div class="help-grid">
+    <div class="section-head">
+      <p class="eyebrow">Help</p>
+      <h2 class="h2" id="help-title">Setup notes<span class="dot">.</span></h2>
+      <p class="body">Something else? <a class="link" href="https://github.com/stiggio/token-deck/issues">Open an issue on GitHub</a>.</p>
     </div>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 78">
-<!-- Mode 3 Models & Usage screens v2 in n3-line.svg coordinates. Designed for the device at 0.85x-1.0x: names 2.6 mm (6.3 pt at 0.85x), labels 2.15 mm (5.2 pt at 0.85x). Pools: Opus, Sonnet, Haiku, Fable shared (5H 62%, 7D 41%); Astra own (24%, 58%); Grok own (9%, 17%). Bars: 10 tokens, nearest 10%. -->
-<g id="m3-screens">
-<g id="m3-screen-1" data-screen="1" transform="translate(14.7 12.2)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<rect x="0.6" y="0.6" width="14.8" height="3.4" rx="0.5" ry="0.5" fill="#92e759"/>
-<text x="1.404" y="3.233" font-family="Soehne Buch" font-size="2.6" letter-spacing="-0.026" fill="#131512">Opus</text>
-<text x="1.41" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">5H</text>
-<text x="10.54" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">62%</text>
-<rect x="1.5" y="7.044" width="1" height="1" fill="#92e759"/>
-<rect x="2.833" y="7.044" width="1" height="1" fill="#92e759"/>
-<rect x="4.167" y="7.044" width="1" height="1" fill="#92e759"/>
-<rect x="5.5" y="7.044" width="1" height="1" fill="#92e759"/>
-<rect x="6.833" y="7.044" width="1" height="1" fill="#92e759"/>
-<rect x="8.167" y="7.044" width="1" height="1" fill="#92e759"/>
-<rect x="9.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="10.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="12.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="13.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<text x="1.403" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">7D</text>
-<text x="10.54" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">41%</text>
-<rect x="1.5" y="11.087" width="1" height="1" fill="#92e759"/>
-<rect x="2.833" y="11.087" width="1" height="1" fill="#92e759"/>
-<rect x="4.167" y="11.087" width="1" height="1" fill="#92e759"/>
-<rect x="5.5" y="11.087" width="1" height="1" fill="#92e759"/>
-<rect x="6.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="8.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="9.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="10.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="12.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="13.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="1.5" y="13.359" width="1" height="1" fill="#92e759"/>
-<text x="3.079" y="14.631" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">SHARED</text>
-</g>
-<g id="m3-screen-2" data-screen="1" transform="translate(33.5 12.2)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<text x="1.49" y="3.233" font-family="Soehne Buch" font-size="2.6" letter-spacing="-0.026" fill="#ffffff">Sonnet</text>
-<text x="1.41" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">5H</text>
-<text x="10.54" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">62%</text>
-<rect x="1.5" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="2.833" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="4.167" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="5.5" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="6.833" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="8.167" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="9.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="10.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="12.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="13.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<text x="1.403" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">7D</text>
-<text x="10.54" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">41%</text>
-<rect x="1.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="2.833" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="4.167" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="5.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="6.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="8.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="9.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="10.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="12.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="13.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="1.5" y="13.359" width="1" height="1" fill="#838682"/>
-<text x="3.079" y="14.631" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">SHARED</text>
-</g>
-<g id="m3-screen-3" data-screen="1" transform="translate(52.3 12.2)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<text x="1.295" y="3.233" font-family="Soehne Buch" font-size="2.6" letter-spacing="-0.026" fill="#ffffff">Haiku</text>
-<text x="1.41" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">5H</text>
-<text x="10.54" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">62%</text>
-<rect x="1.5" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="2.833" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="4.167" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="5.5" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="6.833" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="8.167" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="9.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="10.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="12.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="13.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<text x="1.403" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">7D</text>
-<text x="10.54" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">41%</text>
-<rect x="1.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="2.833" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="4.167" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="5.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="6.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="8.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="9.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="10.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="12.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="13.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="1.5" y="13.359" width="1" height="1" fill="#838682"/>
-<text x="3.079" y="14.631" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">SHARED</text>
-</g>
-<g id="m3-screen-4" data-screen="1" transform="translate(14.7 30.7)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<text x="1.295" y="3.233" font-family="Soehne Buch" font-size="2.6" letter-spacing="-0.026" fill="#ffffff">Fable</text>
-<text x="1.41" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">5H</text>
-<text x="10.54" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">62%</text>
-<rect x="1.5" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="2.833" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="4.167" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="5.5" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="6.833" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="8.167" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="9.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="10.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="12.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="13.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<text x="1.403" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">7D</text>
-<text x="10.54" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">41%</text>
-<rect x="1.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="2.833" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="4.167" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="5.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="6.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="8.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="9.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="10.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="12.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="13.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="1.5" y="13.359" width="1" height="1" fill="#838682"/>
-<text x="3.079" y="14.631" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">SHARED</text>
-</g>
-<g id="m3-screen-5" data-screen="1" transform="translate(33.5 30.7)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<text x="1.458" y="3.233" font-family="Soehne Buch" font-size="2.6" letter-spacing="-0.026" fill="#ffffff">Astra</text>
-<text x="1.41" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">5H</text>
-<text x="10.54" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">24%</text>
-<rect x="1.5" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="2.833" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="4.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="5.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="6.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="8.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="9.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="10.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="12.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="13.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<text x="1.403" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">7D</text>
-<text x="10.54" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">58%</text>
-<rect x="1.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="2.833" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="4.167" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="5.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="6.833" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="8.167" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="9.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="10.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="12.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="13.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-</g>
-<g id="m3-screen-6" data-screen="1" transform="translate(52.3 30.7)">
-<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
-<text x="1.404" y="3.233" font-family="Soehne Buch" font-size="2.6" letter-spacing="-0.026" fill="#ffffff">Grok</text>
-<text x="1.41" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">5H</text>
-<text x="11.894" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">9%</text>
-<rect x="1.5" y="7.044" width="1" height="1" fill="#9ea19d"/>
-<rect x="2.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="4.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="5.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="6.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="8.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="9.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="10.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="12.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<rect x="13.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
-<text x="1.403" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">7D</text>
-<text x="10.54" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">17%</text>
-<rect x="1.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="2.833" y="11.087" width="1" height="1" fill="#9ea19d"/>
-<rect x="4.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="5.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="6.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="8.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="9.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="10.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="12.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-<rect x="13.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
-</g>
-</g>
-</svg>
-
-  </section>
-  <section class="block">
-    <div>
-      <p class="eyebrow">Your own screen</p>
-      <h2>Hold the middle button for a screen you wrote.</h2>
-      <p class="lead">Token Deck reads a folder on this computer, ~/.tokendeck/modes, and shows those keys instead. A key can run a command, open an app, or open a page.</p>
-      <pre>{
-  "name": "Deploy",
-  "tiles": [
-    { "label": "BUILD", "icon": "~/icons/hammer.svg", "action": { "type": "shell", "command": "npm run build", "cwd": "~/dev/app" } },
-    { "label": "LOGS", "action": { "type": "url", "url": "https://grafana.example.com/d/abc" } },
-    { "label": "EDITOR", "action": { "type": "open", "app": "Cursor" } },
-    { "label": "PALETTE", "action": { "type": "keys", "keys": "cmd+shift+p" } },
-    { "label": "AGENTS", "action": { "type": "mode", "mode": "agents" } },
-    null
-  ],
-  "knobs": {
-    "main": { "cw": { "type": "keys", "keys": "cmd+=" }, "ccw": { "type": "keys", "keys": "cmd+-" }, "click": { "type": "shell", "command": "say done" } },
-    "left": null,
-    "right": null
-  }
-}</pre>
+    <div class="faq">
+      <details id="agents">
+        <summary>Which coding agents does it work with?</summary>
+        <div class="answer">
+          <table class="support">
+            <thead><tr><th scope="col">Agent</th><th scope="col">What the deck does</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Claude Code</th><td>Sessions, context, usage limits, model, effort, permission, Ultracode</td></tr>
+              <tr><th scope="row">Codex</th><td>Sessions, usage limits, model, effort, permission</td></tr>
+              <tr><th scope="row">OpenCode</th><td>Sessions while <span class="mono">opencode serve</span> runs, model, permission</td></tr>
+              <tr><th scope="row">Cursor, Amp, Devin</th><td>A key that opens or focuses the app</td></tr>
+            </tbody>
+          </table>
+          <p>Amp’s key opens VS Code. Devin’s opens app.devin.ai in your browser.</p>
+        </div>
+      </details>
+      <details id="no-change">
+        <summary>The deck still shows the welcome screen.</summary>
+        <div class="answer">
+          <p>Check that Token Deck is running: it lives in the menu bar on a Mac and in the system tray on Windows. If the StreamDock or VSD Craft app is open, quit it, because only one program can use the deck at a time. Then unplug the deck and plug it back in.</p>
+        </div>
+      </details>
+      <details id="damaged">
+        <summary>macOS says Token Deck is damaged, or won’t open it.</summary>
+        <div class="answer">
+          <p>That happens with the disk images, because Token Deck isn’t notarized by Apple yet. The install command doesn’t have this problem. If you used a disk image, run this in Terminal and open the app again:</p>
+          <div class="cmd"><code id="xattr-cmd">xattr -d com.apple.quarantine "/Applications/Token Deck.app"</code><button class="copy" type="button" data-copy="xattr-cmd" aria-label="Copy the command"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="idle">Copy</span><span class="done">Copied</span></button></div>
+          <p>If System Settings → Privacy &amp; Security shows Open Anyway for Token Deck, that works too.</p>
+        </div>
+      </details>
+      <details id="smartscreen">
+        <summary>Windows says it protected my PC.</summary>
+        <div class="answer"><p>The installer isn’t code-signed yet. Choose More info, then Run anyway.</p></div>
+      </details>
+      <details id="permissions">
+        <summary>Why does macOS ask for Automation and Accessibility?</summary>
+        <div class="answer"><p>So a key can bring the right window to the front. macOS asks once for each app Token Deck switches to, like Terminal, iTerm or Cursor, and once for Accessibility under System Settings → Privacy &amp; Security.</p></div>
+      </details>
+      <details id="update">
+        <summary>How do I update?</summary>
+        <div class="answer"><p>Token Deck checks GitHub for a new version when it starts. On a Mac, click Update now on the app’s About page, or run the install command again. On Windows, the app downloads the update and asks before it installs.</p></div>
+      </details>
+      <details id="simulator">
+        <summary>Can I try it without the deck?</summary>
+        <div class="answer"><p>Yes. Open Token Deck’s window: the deck drawn at the bottom is a simulator that shows the same tiles. Click a key, or press 1 to 6 for the keys, Q, W and E for the metal buttons and the arrow keys for the knobs.</p></div>
+      </details>
+      <details id="remove">
+        <summary>How do I remove it?</summary>
+        <div class="answer">
+          <p>Open Token Deck’s window, go to This Mac and click Stop watching to put your Claude Code settings back. Then quit Token Deck and delete it: drag it out of Applications on a Mac, or use Settings → Apps on Windows.</p>
+          <p>Token Deck keeps its settings and log in <code class="inline">~/.tokendeck</code>. If you changed Codex defaults from the deck, your original config is saved next to it as <code class="inline">~/.codex/config.toml.tokendeck-backup</code>.</p>
+        </div>
+      </details>
+      <details id="welcome">
+        <summary>What does the deck show when the app isn’t running?</summary>
+        <div class="answer"><p>The welcome screen. It’s stored on the deck itself, so it shows on any computer, with or without Token Deck. The decks in the After Tokens boxes came with it, and the app writes it once to any deck that doesn’t have it.</p></div>
+      </details>
     </div>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 28">
-<!-- "Program it yourself" sketch, 45 x 28 mm at its printed size, no text. Every line 0.265 mm. Dashed lime leaders map two code tokens onto LCD key 1 and the main knob. -->
-<g id="program-editor">
-<rect x="0.5" y="0.5" width="33" height="22" rx="2" ry="2" fill="#131512" stroke="#c4c7c3" stroke-width="0.265"/>
-<line x1="0.5" y1="4.5" x2="33.5" y2="4.5" stroke="#3c3e3a" stroke-width="0.265"/>
-<line x1="8.5" y1="4.5" x2="8.5" y2="22.5" stroke="#3c3e3a" stroke-width="0.265"/>
-<circle cx="3" cy="2.5" r="0.6" fill="#5b5d59"/>
-<circle cx="5" cy="2.5" r="0.6" fill="#5b5d59"/>
-<circle cx="7" cy="2.5" r="0.6" fill="#5b5d59"/>
-<rect x="2" y="6.1" width="4.2" height="0.8" fill="#5b5d59"/>
-<rect x="2" y="8.1" width="3.4" height="0.8" fill="#c4c7c3"/>
-<rect x="2" y="10.1" width="4.8" height="0.8" fill="#5b5d59"/>
-<rect x="2" y="12.1" width="3" height="0.8" fill="#5b5d59"/>
-<rect x="2" y="14.1" width="3.8" height="0.8" fill="#5b5d59"/>
-<rect x="9.5" y="6.1" width="0.8" height="0.8" fill="#3c3e3a"/>
-<rect x="12.5" y="6.1" width="3" height="0.8" fill="#9ea19d"/>
-<rect x="16.3" y="6.1" width="4.2" height="0.8" fill="#ffffff"/>
-<rect x="21.3" y="6.1" width="1" height="0.8" fill="#5b5d59"/>
-<rect x="9.5" y="8.1" width="0.8" height="0.8" fill="#3c3e3a"/>
-<rect x="14.5" y="8.1" width="2.4" height="0.8" fill="#9ea19d"/>
-<rect x="17.7" y="8.1" width="1.6" height="0.8" fill="#5b5d59"/>
-<rect x="20.1" y="8.1" width="3.6" height="0.8" fill="#92e759"/>
-<rect x="9.5" y="10.1" width="0.8" height="0.8" fill="#3c3e3a"/>
-<rect x="16.5" y="10.1" width="2.8" height="0.8" fill="#9ea19d"/>
-<rect x="20.1" y="10.1" width="4.6" height="0.8" fill="#c4c7c3"/>
-<rect x="9.5" y="12.1" width="0.8" height="0.8" fill="#3c3e3a"/>
-<rect x="14.5" y="12.1" width="2.4" height="0.8" fill="#9ea19d"/>
-<rect x="17.7" y="12.1" width="2" height="0.8" fill="#5b5d59"/>
-<rect x="20.5" y="12.1" width="3" height="0.8" fill="#92e759"/>
-<rect x="9.5" y="14.1" width="0.8" height="0.8" fill="#3c3e3a"/>
-<rect x="16.5" y="14.1" width="2" height="0.8" fill="#9ea19d"/>
-<rect x="19.3" y="14.1" width="3.4" height="0.8" fill="#c4c7c3"/>
-<rect x="23.5" y="14.1" width="1.4" height="0.8" fill="#5b5d59"/>
-<rect x="9.5" y="16.1" width="0.8" height="0.8" fill="#3c3e3a"/>
-<rect x="16.5" y="16.1" width="3.2" height="0.8" fill="#9ea19d"/>
-<rect x="20.5" y="16.1" width="2.6" height="0.8" fill="#c4c7c3"/>
-<rect x="9.5" y="18.1" width="0.8" height="0.8" fill="#3c3e3a"/>
-<rect x="14.5" y="18.1" width="1" height="0.8" fill="#5b5d59"/>
-<rect x="9.5" y="20.1" width="0.8" height="0.8" fill="#3c3e3a"/>
-<rect x="12.5" y="20.1" width="1" height="0.8" fill="#5b5d59"/>
-</g>
-<g id="program-device">
-<rect x="24.505" y="15.41" width="19.995" height="12.09" rx="1" ry="1" fill="#131512" stroke="#c4c7c3" stroke-width="0.265"/>
-<rect x="26.784" y="17.301" width="2.48" height="2.402" rx="0.3" ry="0.3" fill="#92e759"/>
-<rect x="29.697" y="17.301" width="2.48" height="2.402" rx="0.3" ry="0.3" fill="#5b5d59"/>
-<rect x="32.611" y="17.301" width="2.48" height="2.402" rx="0.3" ry="0.3" fill="#5b5d59"/>
-<rect x="26.784" y="20.169" width="2.48" height="2.402" rx="0.3" ry="0.3" fill="#5b5d59"/>
-<rect x="29.697" y="20.169" width="2.48" height="2.402" rx="0.3" ry="0.3" fill="#5b5d59"/>
-<rect x="32.611" y="20.169" width="2.48" height="2.402" rx="0.3" ry="0.3" fill="#5b5d59"/>
-<circle cx="28.023" cy="25.16" r="0.867" fill="none" stroke="#838682" stroke-width="0.265"/>
-<circle cx="30.938" cy="25.16" r="0.867" fill="none" stroke="#838682" stroke-width="0.265"/>
-<circle cx="33.852" cy="25.16" r="0.867" fill="none" stroke="#838682" stroke-width="0.265"/>
-<circle cx="39.4" cy="19.549" r="2.138" fill="none" stroke="#92e759" stroke-width="0.265"/>
-<circle cx="37.68" cy="24.571" r="1.045" fill="none" stroke="#838682" stroke-width="0.265"/>
-<circle cx="41.648" cy="24.571" r="1.045" fill="none" stroke="#838682" stroke-width="0.265"/>
-</g>
-<g id="program-mapping">
-<circle cx="24.6" cy="8.5" r="0.45" fill="#92e759"/>
-<path d="M39.4 16.853V8.5H26.338" fill="none" stroke="#92e759" stroke-width="0.265" stroke-linejoin="round" stroke-dasharray="1.06 0.79"/>
-<circle cx="24.4" cy="12.5" r="0.45" fill="#92e759"/>
-<path d="M28.023 16.713V12.5H25.625" fill="none" stroke="#92e759" stroke-width="0.265" stroke-linejoin="round" stroke-dasharray="1.06 0.79"/>
-</g>
-</svg>
-
-  </section>
-  <section class="block">
-    <div>
-      <p class="eyebrow">Setup</p>
-      <p class="lead">Quit the StreamDock or VSD Craft app first. Only one program can use the deck.</p>
-      <p class="plain">On a Mac, the install command above is the one to use. A downloaded disk image is not notarized, so macOS may say the app is damaged. The install command does not do that. If you did download the disk image, run <span class="mono">xattr -d com.apple.quarantine "/Applications/Token Deck.app"</span> and open it again.</p>
-      <p class="plain">The first time a key brings a window forward, macOS asks for Accessibility, once. On Windows, SmartScreen says “Windows protected your PC”. Choose More info, then Run anyway.</p>
-    </div>
-  </section>
-  <footer>
-    <div>
-      <canvas id="after" width="320" height="80"></canvas>
-      <p class="mono">Nov 10, 2026 · Terra, San Francisco</p>
-      <p>by Stigg</p>
-    </div>
-    <p class="mono"><a href="https://github.com/stiggio/token-deck">github.com/stiggio/token-deck</a><br><a href="https://stigg.io">stigg.io</a><br>io.stigg.io/usage</p>
-  </footer>
+  </div>
+</section>
 </main>
-<script src="pixelmark.js"></script>
-<script>
-document.getElementById('copy').addEventListener('click', () => navigator.clipboard.writeText(document.getElementById('cmd').textContent))
-if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
-  navigator.userAgentData.getHighEntropyValues(['architecture']).then((v) => {
-    const id = v.architecture === 'arm' ? 'arm' : 'intel'
-    const link = document.getElementById(id)
-    if (link) link.insertAdjacentText('beforeend', ' (recommended)')
-  }).catch(() => {})
-}
-if (window.PixelMark) PixelMark.ready().then(() => PixelMark.draw(document.getElementById('after'), { cap: 22, layout: 'inline', rows: 16, dpr: 2, explode: 0.8 }))
-</script>
+
+<footer>
+  <div class="foot-art wrap rule" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 162 65" focusable="false" preserveAspectRatio="xMidYMid meet">
+<g>
+<rect x="71.2" y="9.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="111.2" y="9.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="115.2" y="9.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="119.2" y="9.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="75.2" y="11.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="95.2" y="11.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="101.2" y="11.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="129.2" y="11.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="99.2" y="13.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="133.2" y="13.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="63.2" y="15.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="73.2" y="15.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="147.2" y="15.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="59.2" y="17.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="61.2" y="17.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="71.2" y="17.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="77.2" y="17.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="89.2" y="17.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="97.2" y="17.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="103.2" y="17.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="127.2" y="17.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="33.2" y="19.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="55.2" y="19.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="59.2" y="19.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="93.2" y="19.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="121.2" y="19.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="39.2" y="21.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="43.2" y="21.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="51.2" y="21.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="55.2" y="21.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="57.2" y="21.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="69.2" y="21.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="75.2" y="21.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="85.2" y="21.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="89.2" y="21.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="107.2" y="21.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="27.2" y="23.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="35.2" y="23.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="43.2" y="23.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="47.2" y="23.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="53.2" y="23.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="55.2" y="23.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="57.2" y="23.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="63.2" y="23.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="31.2" y="25.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="33.2" y="25.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="35.2" y="25.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="39.2" y="25.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="51.2" y="25.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="55.2" y="25.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="57.2" y="25.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="59.2" y="25.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="69.2" y="25.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="71.2" y="25.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="99.2" y="25.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="9.2" y="27.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="11.2" y="27.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="13.2" y="27.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="15.2" y="27.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="23.2" y="27.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="27.2" y="27.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="31.2" y="27.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="37.2" y="27.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="45.2" y="27.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="83.2" y="27.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="95.2" y="27.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="103.2" y="27.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="9.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="11.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="13.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="15.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="17.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="21.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="25.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="29.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="31.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="33.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="35.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="41.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="43.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="45.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="51.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="55.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="57.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="61.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="69.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="73.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="77.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="109.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="143.2" y="29.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="9.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="11.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="13.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="15.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="19.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="21.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="27.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="35.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="37.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="39.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="47.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="53.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="55.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="59.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="73.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="85.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="89.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="95.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="101.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="105.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="113.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="127.2" y="31.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="9.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="11.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="13.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="15.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="17.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="19.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="23.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="25.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="27.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="33.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="37.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="39.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="53.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="55.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="67.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="69.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="81.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="121.2" y="33.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="9.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="11.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="13.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="15.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="19.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="21.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="23.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="27.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="29.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="33.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="35.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="37.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="39.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="41.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="47.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="49.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="51.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="55.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="65.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="67.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="69.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="73.2" y="35.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="9.2" y="37.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="11.2" y="37.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="13.2" y="37.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="15.2" y="37.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="17.2" y="37.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="21.2" y="37.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="23.2" y="37.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="25.2" y="37.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="27.2" y="37.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="35.2" y="37.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="37.2" y="37.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="41.2" y="37.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="43.2" y="37.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="47.2" y="37.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="53.2" y="37.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="59.2" y="37.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="61.2" y="37.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="9.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="11.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="13.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="15.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="17.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="21.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="25.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="27.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="31.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="37.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="39.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="43.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="47.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="63.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="69.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="71.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="73.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="75.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="81.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="85.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="95.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="105.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="111.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="119.2" y="39.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="9.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="11.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="13.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="15.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="17.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="19.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="21.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="27.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="31.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="35.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="37.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="49.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="51.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="55.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="57.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="63.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="65.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="71.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="83.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="99.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="131.2" y="41.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="9.2" y="43.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="11.2" y="43.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="13.2" y="43.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="15.2" y="43.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="19.2" y="43.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="21.2" y="43.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="31.2" y="43.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="33.2" y="43.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="35.2" y="43.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="37.2" y="43.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="43.2" y="43.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="49.2" y="43.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="59.2" y="43.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="65.2" y="43.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="67.2" y="43.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="135.2" y="43.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="9.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="11.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="13.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="15.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="17.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="19.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="21.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="23.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="27.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="31.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="33.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="37.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="39.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="47.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="55.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="59.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="65.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="103.2" y="45.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="9.2" y="47.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="11.2" y="47.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="13.2" y="47.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="15.2" y="47.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="19.2" y="47.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="25.2" y="47.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="27.2" y="47.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="33.2" y="47.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="37.2" y="47.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="41.2" y="47.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="45.2" y="47.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="63.2" y="47.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="9.2" y="49.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="11.2" y="49.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="13.2" y="49.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="15.2" y="49.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="17.2" y="49.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="19.2" y="49.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="23.2" y="49.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="25.2" y="49.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="29.2" y="49.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="31.2" y="49.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="43.2" y="49.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="47.2" y="49.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="51.2" y="49.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="65.2" y="49.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="25.2" y="51.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="29.2" y="51.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="35.2" y="53.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="39.2" y="53.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="47.2" y="53.7" width="1.6" height="1.6" fill="#92e759"/>
+<rect x="71.2" y="53.7" width="1.6" height="1.6" fill="#92e759"/>
+</g>
+</svg></div>
+  <div class="footer wrap">
+    <div class="event">
+      <a class="at" href="https://www.stigg.io/after-tokens" aria-label="After Tokens"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 83.85 17.1" aria-hidden="true" focusable="false">
+<g>
+<text x="-0.15" y="14.7" font-family="Soehne Buch" font-size="16.05" letter-spacing="-1.1716" fill="#ffffff">A</text>
+<text x="9.6887" y="14.7" font-family="Soehne Buch" font-size="16.05" letter-spacing="-1.1716" fill="#ffffff">f</text>
+<text x="13.7012" y="14.7" font-family="Soehne Buch" font-size="16.05" letter-spacing="-1.1716" fill="#ffffff">t</text>
+<text x="17.9384" y="14.7" font-family="Soehne Buch" font-size="16.05" letter-spacing="-1.1716" fill="#ffffff">er</text>
+</g>
+<g>
+<rect x="34.5" y="3" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="35.25" y="3" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="36" y="3" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="36.75" y="3" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="37.5" y="3" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="38.25" y="3" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39" y="3" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39.75" y="3" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="40.5" y="3" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="41.25" y="3" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42" y="3" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42.75" y="3" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="50.25" y="3" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51" y="3" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="34.5" y="3.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="35.25" y="3.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="36" y="3.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="36.75" y="3.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="37.5" y="3.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="38.25" y="3.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39" y="3.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39.75" y="3.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="40.5" y="3.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="41.25" y="3.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42" y="3.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42.75" y="3.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="50.25" y="3.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51" y="3.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="38.25" y="4.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39" y="4.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="50.25" y="4.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51" y="4.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="38.25" y="5.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39" y="5.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="50.25" y="5.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51" y="5.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="38.25" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="43.5" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="44.25" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="45" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="45.75" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="46.5" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="50.25" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="54.75" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="55.5" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="56.25" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="58.5" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="59.25" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="60" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="60.75" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="61.5" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="64.5" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="65.25" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="66.75" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="67.5" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="68.25" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="69" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="73.5" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="74.25" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="38.25" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42.75" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="43.5" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="44.25" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="45" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="45.75" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="46.5" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="47.25" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="50.25" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="54" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="54.75" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="55.5" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="57.75" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="58.5" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="59.25" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="60" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="60.75" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="61.5" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="62.25" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="64.5" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="65.25" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="66" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="66.75" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="67.5" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="68.25" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="69" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="69.75" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="72.75" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="73.5" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="74.25" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="75" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="75.75" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="76.5" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="77.25" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="38.25" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42.75" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="43.5" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="46.5" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="47.25" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="48" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="50.25" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="53.25" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="54" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="54.75" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="57" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="57.75" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="58.5" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="61.5" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="62.25" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="63" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="64.5" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="65.25" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="66" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="69" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="69.75" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="70.5" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="72" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="72.75" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="76.5" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="77.25" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="38.25" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42.75" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="47.25" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="48" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="48.75" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="50.25" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="52.5" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="53.25" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="54" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="57" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="57.75" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="62.25" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="63" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="64.5" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="65.25" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="66" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="69.75" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="70.5" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="72" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="72.75" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="38.25" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42.75" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="48" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="48.75" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="50.25" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="52.5" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="53.25" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="56.25" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="57" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="57.75" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="62.25" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="63" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="64.5" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="65.25" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="69.75" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="70.5" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="72" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="72.75" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="38.25" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="41.25" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42.75" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="48" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="48.75" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="50.25" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51.75" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="52.5" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="53.25" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="56.25" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="57" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="57.75" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="58.5" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="59.25" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="60" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="60.75" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="61.5" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="62.25" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="63" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="64.5" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="65.25" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="69.75" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="70.5" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="72.75" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="73.5" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="74.25" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="76.5" y="9.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="38.25" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="41.25" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42.75" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="48" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="48.75" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="50.25" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51.75" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="52.5" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="53.25" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="54" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="56.25" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="57" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="64.5" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="65.25" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="69.75" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="70.5" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="74.25" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="75" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="75.75" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="76.5" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="77.25" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="38.25" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42.75" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="48" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="48.75" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="50.25" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="53.25" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="54" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="54.75" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="56.25" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="57" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="57.75" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="64.5" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="65.25" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="69.75" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="70.5" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="76.5" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="77.25" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="38.25" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42.75" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="47.25" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="48" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="48.75" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="50.25" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="54" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="54.75" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="57" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="57.75" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="62.25" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="63" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="64.5" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="65.25" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="69.75" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="70.5" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="72" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="77.25" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="78" y="12" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="38.25" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42.75" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="43.5" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="46.5" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="47.25" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="48" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="50.25" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="54.75" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="55.5" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="57" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="57.75" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="58.5" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="61.5" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="62.25" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="63" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="64.5" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="65.25" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="69.75" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="70.5" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="71.25" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="72" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="72.75" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="76.5" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="38.25" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="42.75" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="43.5" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="44.25" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="45" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="45.75" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="46.5" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="47.25" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="50.25" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="54.75" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="55.5" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="56.25" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="57.75" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="58.5" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="59.25" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="60" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="60.75" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="61.5" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="62.25" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="64.5" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="65.25" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="69.75" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="70.5" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="72" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="72.75" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="73.5" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="74.25" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="75" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="76.5" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="77.25" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="38.25" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="39" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="44.25" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="45" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="45.75" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="46.5" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="50.25" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="51" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="55.5" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="56.25" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="59.25" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="60" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="60.75" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="61.5" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="64.5" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="65.25" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="69.75" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="70.5" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="73.5" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="74.25" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="75" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="75.75" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+</g>
+<g>
+<rect x="78.75" y="5.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="79.5" y="4.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="78.75" y="4.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="80.25" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="76.5" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="75.75" y="9" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="80.25" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="78.75" y="14.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="80.25" y="15" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="78.75" y="16.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="80.25" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="83.25" y="11.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="82.5" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="83.25" y="0" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="78" y="10.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="80.25" y="5.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="78.75" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="79.5" y="13.5" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="78" y="6.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="78.75" y="8.25" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="81.75" y="0.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="83.25" y="12.75" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="79.5" y="6" width="0.6" height="0.6" fill="#92e759"/>
+<rect x="78.75" y="7.5" width="0.6" height="0.6" fill="#92e759"/>
+</g>
+</svg></a>
+      <p class="date">Nov 10, 2026 <span>·</span> Terra, San Francisco</p>
+      <p class="blurb">Made by Stigg for everyone at After Tokens.</p>
+    </div>
+    <nav class="links" aria-label="Token Deck">
+      <h2>Token Deck</h2>
+      <ul>
+        <li><a href="#install">Install</a></li>
+        <li><a href="https://github.com/stiggio/token-deck">Source on GitHub</a></li>
+        <li><a href="https://github.com/stiggio/token-deck/releases">Releases</a></li>
+        <li><a href="https://usage.stigg.io/install.sh">Install script</a></li>
+      </ul>
+    </nav>
+    <nav class="links" aria-label="Stigg">
+      <h2>Stigg</h2>
+      <ul>
+        <li><a href="https://stigg.io">stigg.io</a></li>
+        <li><a href="https://www.stigg.io/after-tokens">After Tokens</a></li>
+      </ul>
+    </nav>
+  </div>
+  <div class="legal wrap rule">
+    <span>© 2026 Stigg. The app is MIT licensed. Logos belong to their owners.</span>
+    <span><span class="url">io.stigg.io/usage</span> · v1.0.0</span>
+  </div>
+</footer>
+</div>
+<p id="live" class="visually-hidden" aria-live="polite"></p>
+<script src="main.js?v=1.0.0" defer></script>
 </body>
 </html>

@@ -13,7 +13,8 @@
     "test": "vitest run",
     "lint-fonts": "node scripts/lint-fonts",
     "icons": "node scripts/build-icons.mjs",
-    "export-tiles": "node scripts/export-site-tiles.mjs",
+    "export-tiles": "tsx scripts/export-site-tiles.ts",
+    "site": "tsx scripts/export-site-tiles.ts && node scripts/build-site.mjs",
     "dist:mac": "npm run build && electron-builder --mac dmg zip --arm64 --x64",
     "dist:win": "npm run build && electron-builder --win nsis --x64"
   },
