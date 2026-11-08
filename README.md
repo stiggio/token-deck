@@ -48,7 +48,7 @@ If the deck maker's StreamDock or VSD Craft app is running, quit it before you p
 
 The first time Token Deck starts, it offers three steps. You can skip any of them: connecting Claude Code and the macOS permissions are also on the app's This Mac page later (the app's window opens from the menu bar or tray icon), but starting at login is only offered here.
 
-1. Connect Claude Code. Token Deck adds its hooks and status line to `~/.claude/settings.json`, replacing any hooks you have on the same events, and keeps a backup ([details](#claude-code)).
+1. Connect Claude Code. Token Deck adds its hooks and status line to `~/.claude/settings.json`, next to anything you already have, and keeps a backup ([details](#claude-code)).
 2. On macOS, grant Accessibility and Automation, so the deck can bring windows to the front.
 3. Start Token Deck at login.
 
@@ -197,7 +197,7 @@ When you connect Claude Code (in the first-run setup, or on the app's This Mac p
 1. Copies `~/.claude/settings.json` to `~/.claude/settings.json.tokendeck-backup`. This happens once; reconnecting keeps the first backup.
 2. Writes two small scripts, `~/.tokendeck/bin/hook` and `~/.tokendeck/bin/statusline` (`hook.ps1` on Windows).
 3. Sets its hook on seven events in `settings.json`: `UserPromptSubmit`, `Stop`, `Notification`, `PermissionRequest` and `PostModelSwitch` run in the background, and `SessionStart` and `SessionEnd` run with a two-second limit. Token Deck adds its hook next to any hooks you already have on those events. The hook is a `command` hook that exits at once when Token Deck isn't running, so a quit or crashed app never shows hook errors in your sessions.
-4. Points the status line at `~/.tokendeck/bin/statusline` (macOS only). Your previous status line command is saved in `~/.tokendeck/statusline-original.json`, and the script runs it with the same input, so your status line looks the same (with one exception, under [Known issues](#known-issues)). The script also keeps the latest status line data in `~/.tokendeck/last-statusline.json`, which is where the context ring and usage numbers come from.
+4. Points the status line at `~/.tokendeck/bin/statusline` (macOS only). Your previous status line command is saved in `~/.tokendeck/statusline-original.json`, and the script runs it with the same input, so your status line looks the same. The script also keeps the latest status line data in `~/.tokendeck/last-statusline.json`, which is where the context ring and usage numbers come from.
 
 **Stop watching** on the This Mac page copies that backup over `settings.json`, byte for byte. That undoes every change made to the file since you first connected, not only Token Deck's. If `settings.json` didn't exist when you connected, there's no backup to restore.
 
@@ -253,7 +253,6 @@ Token Deck's own files are in `~/.tokendeck`: `settings.json` (the app's own set
 
 These are open in version 1.0.0:
 
-- Connecting Claude Code replaces any hooks you had on the same seven events. If your previous status line command contains the word `statusline` (like `~/.claude/statusline.sh`), it isn't kept, and your status line goes blank. Stop watching restores both.
 - Token Deck removes `model` from `~/.claude/settings.json` when a running Claude Code session was started with a different `--model` and no running session uses the one in the file. If `settings.json` isn't valid JSON, the next change Token Deck makes replaces the file with just that setting.
 - On Windows, Claude Code's status line isn't installed, so context and usage don't show, and Stop watching doesn't appear.
 - A Claude Code session that hasn't sent a hook event since Token Deck started can't find its terminal: it opens in the Claude desktop app, or nothing happens without it. OpenCode keys can't focus a terminal yet.
