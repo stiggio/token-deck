@@ -1,0 +1,8 @@
+padded after EOI to 8192 bytes
+device: HOTSPOTEKUSB HID DEMO 81D0DA782A24 firmware: V3.VSDN3_PXL.02.010
+after handshake: no input reports
+LOG lime: 8192 bytes as 240x320 JPEG sent in 0.01 s (chunk gap 0 ms)
+after LOG (before STP): no input reports
+STP sent
+after STP: no input reports
+closed (no goodbye frame)

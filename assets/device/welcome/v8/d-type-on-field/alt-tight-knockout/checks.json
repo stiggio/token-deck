@@ -1,0 +1,260 @@
+{
+  "outside_tiles": 0,
+  "darker_than_ink": 0,
+  "rim": 0,
+  "jpeg_bytes": 18833,
+  "halo_count": 0,
+  "halo_worst": 3.2,
+  "lime": {
+    "lime_pixels": 369,
+    "mean_dev": 31.2,
+    "max_dev": 82
+  },
+  "hard_rules_pass": true,
+  "layout": {
+    "candidate": "d-type-on-field",
+    "seed": 263,
+    "layout": {
+      "key1": "logo",
+      "key2": "art: the stream arrives from key 3 and falls",
+      "key3": "art: the source block and its debris",
+      "key4": "URL printed over the field, landed tokens",
+      "key5": "art: the stream turns toward the URL",
+      "key6": "slogan"
+    },
+    "logo": {
+      "box_excl": [
+        20,
+        50,
+        80,
+        67
+      ],
+      "centre_offset_vs_window": [
+        -0.5,
+        0.0
+      ]
+    },
+    "url": {
+      "size_px": 10.5,
+      "leading_px": 13,
+      "tracking_px": -0.06,
+      "pen_x": 28,
+      "cap_top": 156,
+      "align": "left",
+      "line_ink_excl": [
+        [
+          28,
+          156,
+          72,
+          166
+        ],
+        [
+          28,
+          169,
+          61,
+          179
+        ]
+      ],
+      "ink_excl": [
+        28,
+        156,
+        72,
+        179
+      ],
+      "centre_offset_vs_window": [
+        -0.5,
+        -0.5
+      ],
+      "ink_incl_antialias_excl": [
+        27,
+        156,
+        72,
+        179
+      ],
+      "centre_offset_incl_antialias": [
+        -1.0,
+        -0.5
+      ],
+      "knockout": {
+        "dilate_px_side_vertical": [
+          1,
+          1
+        ],
+        "cells_left_out": 44,
+        "min_gap_px_to_ink": {
+          "left": 3,
+          "right": 4,
+          "above": 2,
+          "below": 2,
+          "any": 2
+        },
+        "lit_clearance_px": 5,
+        "punctuation_zone_px": 15
+      }
+    },
+    "slogan": {
+      "size_px": 9.5,
+      "leading_px": 12,
+      "tracking_px": -0.06,
+      "right_edge_excl": 291,
+      "cap_top": 152,
+      "align": "right",
+      "line_ink_excl": [
+        [
+          234,
+          152,
+          291,
+          161
+        ],
+        [
+          234,
+          164,
+          291,
+          173
+        ],
+        [
+          256,
+          176,
+          291,
+          183
+        ]
+      ],
+      "ink_excl": [
+        234,
+        152,
+        291,
+        183
+      ],
+      "centre_offset_vs_window": [
+        -4.5,
+        -0.5
+      ],
+      "width_weighted_centre_offset_x": -1.9
+    },
+    "source": {
+      "key": 3,
+      "cells_a_b_cols_rows": [
+        6,
+        3,
+        4,
+        6
+      ],
+      "px": [
+        269,
+        43,
+        286,
+        70
+      ],
+      "lit_cells": 19,
+      "eroded": 1
+    },
+    "tokens": {
+      "key3": {
+        "lime": 6,
+        "white": 6,
+        "source_lime": 19,
+        "depth_639840": 0,
+        "unlit_2C2F2B": 112,
+        "left_out_under_url": 0,
+        "board_x0_y0_cols_rows": [
+          239,
+          28,
+          11,
+          13
+        ],
+        "board_px": [
+          239,
+          28,
+          291,
+          90
+        ],
+        "board_centre_offset_vs_window": [
+          -1.5,
+          1.0
+        ]
+      },
+      "key2": {
+        "lime": 7,
+        "white": 10,
+        "source_lime": 0,
+        "depth_639840": 0,
+        "unlit_2C2F2B": 139,
+        "left_out_under_url": 0,
+        "board_x0_y0_cols_rows": [
+          130,
+          28,
+          12,
+          13
+        ],
+        "board_px": [
+          130,
+          28,
+          187,
+          90
+        ],
+        "board_centre_offset_vs_window": [
+          0.0,
+          1.0
+        ]
+      },
+      "key5": {
+        "lime": 5,
+        "white": 8,
+        "source_lime": 0,
+        "depth_639840": 1,
+        "unlit_2C2F2B": 118,
+        "left_out_under_url": 0,
+        "board_x0_y0_cols_rows": [
+          130,
+          141,
+          12,
+          11
+        ],
+        "board_px": [
+          130,
+          141,
+          187,
+          193
+        ],
+        "board_centre_offset_vs_window": [
+          0.0,
+          -0.5
+        ]
+      },
+      "key4": {
+        "lime": 4,
+        "white": 0,
+        "source_lime": 0,
+        "depth_639840": 0,
+        "unlit_2C2F2B": 84,
+        "left_out_under_url": 44,
+        "board_x0_y0_cols_rows": [
+          21,
+          141,
+          12,
+          11
+        ],
+        "board_px": [
+          21,
+          141,
+          78,
+          193
+        ],
+        "board_centre_offset_vs_window": [
+          -0.5,
+          -0.5
+        ]
+      }
+    },
+    "bright_total": 65,
+    "white_share_of_bright": 0.369,
+    "art_fails": [],
+    "bezel_continuity_0_18": 16
+  },
+  "rgb_halo_worst": [
+    5,
+    4,
+    7
+  ],
+  "rgb_halo_pixels_over_4": 29
+}

@@ -1,0 +1,16 @@
+deck present now: True; waiting for unplug + replug
++249s unplugged
++256s back; settling 8 s
+running: python -u /Users/gemanor/Library/Application Support/Claude/scratch-workspaces/87e2a23b-6eb1-4ed2-8f16-42d28c93ad7f/50b75cba-044a-4773-8b68-1ef7e8621cea/scratch-2026-10-06-95ecc8/after-tokens-launch/_source/n3-probe/log_test.py card --tiles --fit-bytes 11139 --wait-before-stp 10 --hold 20
+device: HOTSPOTEKUSB HID DEMO 81D0DA782A24 firmware: V3.VSDN3_PXL.02.010
+image: card, q24, 11093 bytes as 240x320 JPEG, 11 chunks
+after handshake: no input reports
+six tiles sent (1,3,5 lime; 2,4,6 white) + STP
+after tiles: no input reports
+LOG sent in 0.01 s (chunk gap 0 ms)
+write report: ack code=0x00 state=0 at +0.13s [41434b00004f4b000000000000000000]
+write report: YES
+STP sent
+after STP: no input reports
+closed (no goodbye frame)
+exit=0

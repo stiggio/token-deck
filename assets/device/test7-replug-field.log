@@ -1,0 +1,12 @@
+deck present now: True; waiting for unplug + replug
++32s unplugged
++40s back; settling 3 s
+running: python -u /Users/gemanor/Library/Application Support/Claude/scratch-workspaces/87e2a23b-6eb1-4ed2-8f16-42d28c93ad7f/50b75cba-044a-4773-8b68-1ef7e8621cea/scratch-2026-10-06-95ecc8/after-tokens-launch/_source/n3-probe/log_test.py field --wait-before-stp 6 --hold 10
+device: HOTSPOTEKUSB HID DEMO 81D0DA782A24 firmware: V3.VSDN3_PXL.02.010
+after handshake: no input reports
+LOG field: 11139 bytes as 240x320 JPEG sent in 0.01 s
+after LOG (before STP): no input reports
+STP sent
+after STP: no input reports
+closed (no goodbye frame)
+exit=0

@@ -1,0 +1,29 @@
+deck present now: True; waiting for unplug + replug
++1452s unplugged
++1457s back; settling 15 s
+running: python -u /Users/gemanor/Library/Application Support/Claude/scratch-workspaces/87e2a23b-6eb1-4ed2-8f16-42d28c93ad7f/50b75cba-044a-4773-8b68-1ef7e8621cea/scratch-2026-10-06-95ecc8/after-tokens-launch/_source/n3-probe/log_test.py ruler --tiles --quality 90 --wait-before-stp 10 --frame420 5 --frame444 6 --hold 180
+device: HOTSPOTEKUSB HID DEMO 81D0DA782A24 firmware: V3.VSDN3_PXL.02.010
+image: ruler, q90, 22307 bytes as 240x320 JPEG, 22 chunks
+after handshake: no input reports
+six tiles sent (1,3,5 lime; 2,4,6 white) + STP
+after tiles: no input reports
+LOG sent in 0.01 s (chunk gap 0 ms)
+write report: ack code=0x00 state=0 at +0.26s [41434b00004f4b000000000000000000]
+write report: YES
+STP sent
+after STP: no input reports
+frame tile on key 5 (4:2:0, 6045 bytes) + STP
+after frame tile: no input reports
+frame tile on key 6 (4:4:4, 6681 bytes) + STP
+after frame tile: no input reports
+Traceback (most recent call last):
+  File "/Users/gemanor/Library/Application Support/Claude/scratch-workspaces/87e2a23b-6eb1-4ed2-8f16-42d28c93ad7f/50b75cba-044a-4773-8b68-1ef7e8621cea/scratch-2026-10-06-95ecc8/after-tokens-launch/_source/n3-probe/log_test.py", line 169, in <module>
+    deck.cmd(b"CONNECT"); beat = time.time()
+    ~~~~~~~~^^^^^^^^^^^^
+  File "/Users/gemanor/Library/Application Support/Claude/scratch-workspaces/87e2a23b-6eb1-4ed2-8f16-42d28c93ad7f/50b75cba-044a-4773-8b68-1ef7e8621cea/scratch-2026-10-06-95ecc8/after-tokens-launch/_source/n3-probe/burn_logo.py", line 62, in cmd
+    self.write(b"CRT\x00\x00" + tag + tail)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gemanor/Library/Application Support/Claude/scratch-workspaces/87e2a23b-6eb1-4ed2-8f16-42d28c93ad7f/50b75cba-044a-4773-8b68-1ef7e8621cea/scratch-2026-10-06-95ecc8/after-tokens-launch/_source/n3-probe/burn_logo.py", line 59, in write
+    raise RuntimeError("hid write failed: %s" % self.h.error())
+RuntimeError: hid write failed: Device is disconnected
+exit=1

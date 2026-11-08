@@ -1,0 +1,265 @@
+{
+  "outside_tiles": 0,
+  "darker_than_ink": 0,
+  "rim": 0,
+  "jpeg_bytes": 18949,
+  "halo_count": 0,
+  "halo_worst": 3.2,
+  "lime": {
+    "lime_pixels": 414,
+    "mean_dev": 31.3,
+    "max_dev": 78
+  },
+  "hard_rules_pass": true,
+  "layout": {
+    "version": "v8a burst reaches url",
+    "seed": 309,
+    "layout": {
+      "key1": "logo",
+      "key2": "the plume",
+      "key3": "the dust",
+      "key4": "URL + landed debris",
+      "key5": "the source block and the radial blast",
+      "key6": "slogan"
+    },
+    "logo": {
+      "xy": [
+        20,
+        50
+      ],
+      "size": [
+        60,
+        17
+      ],
+      "bbox_offset_vs_window": [
+        -0.5,
+        0.0
+      ]
+    },
+    "boards": {
+      "key5": {
+        "board": [
+          130,
+          141,
+          12,
+          11
+        ],
+        "px": [
+          130,
+          141,
+          187,
+          193
+        ],
+        "offset_vs_window": [
+          0.0,
+          -0.5
+        ]
+      },
+      "key2": {
+        "board": [
+          130,
+          28,
+          12,
+          13
+        ],
+        "px": [
+          130,
+          28,
+          187,
+          90
+        ],
+        "offset_vs_window": [
+          0.0,
+          1.0
+        ]
+      },
+      "key3": {
+        "board": [
+          239,
+          28,
+          11,
+          13
+        ],
+        "px": [
+          239,
+          28,
+          291,
+          90
+        ],
+        "offset_vs_window": [
+          -1.5,
+          1.0
+        ]
+      },
+      "key4": {
+        "board": [
+          21,
+          141,
+          12,
+          11
+        ],
+        "px": [
+          21,
+          141,
+          78,
+          193
+        ],
+        "offset_vs_window": [
+          -0.5,
+          -0.5
+        ]
+      }
+    },
+    "url": {
+      "size": 10.5,
+      "leading": 13,
+      "tracking": -0.06,
+      "pen_x": 28,
+      "cap_top": 157,
+      "align": "left",
+      "clearing_cells": 54,
+      "clear_margin_px": 3,
+      "lit_margin_px": 3,
+      "ink": [
+        28,
+        157,
+        71,
+        179
+      ],
+      "line_ink": [
+        [
+          28,
+          157,
+          72,
+          167
+        ],
+        [
+          28,
+          170,
+          61,
+          180
+        ]
+      ],
+      "bbox_offset_vs_window": [
+        -0.5,
+        0.5
+      ],
+      "ink_centroid_offset_vs_window": [
+        -2.6,
+        -0.2
+      ]
+    },
+    "slogan": {
+      "size": 9.5,
+      "leading": 12,
+      "tracking": -0.06,
+      "align": "right",
+      "pen_x": 292,
+      "cap_top": 152,
+      "ink": [
+        235,
+        152,
+        291,
+        182
+      ],
+      "line_ink": [
+        [
+          235,
+          152,
+          292,
+          161
+        ],
+        [
+          235,
+          164,
+          292,
+          173
+        ],
+        [
+          257,
+          176,
+          292,
+          183
+        ]
+      ],
+      "bbox_offset_vs_window": [
+        -3.5,
+        -0.5
+      ],
+      "ink_centroid_offset_vs_window": [
+        -1.0,
+        -1.5
+      ]
+    },
+    "source": {
+      "cells": [
+        6,
+        4,
+        5,
+        6
+      ],
+      "px": [
+        160,
+        161,
+        182,
+        188
+      ],
+      "lit": 24
+    },
+    "tokens": {
+      "key5": {
+        "lime": 7,
+        "white": 4,
+        "source_lime": 24,
+        "depth_639840": 0,
+        "drawn": 132,
+        "unlit_2C2F2B": 97
+      },
+      "key2": {
+        "lime": 6,
+        "white": 10,
+        "source_lime": 0,
+        "depth_639840": 0,
+        "drawn": 156,
+        "unlit_2C2F2B": 140
+      },
+      "key3": {
+        "lime": 4,
+        "white": 8,
+        "source_lime": 0,
+        "depth_639840": 2,
+        "drawn": 143,
+        "unlit_2C2F2B": 129
+      },
+      "key4": {
+        "lime": 5,
+        "white": 3,
+        "source_lime": 0,
+        "depth_639840": 0,
+        "drawn": 78,
+        "unlit_2C2F2B": 70
+      }
+    },
+    "bright_flying": {
+      "5": 11,
+      "2": 16,
+      "3": 12,
+      "4": 8
+    },
+    "white_share_of_bright": 0.352,
+    "frame_above_beside_below_right": [
+      4,
+      1,
+      3,
+      7
+    ],
+    "continuity_0_15": 15,
+    "art_fails": []
+  },
+  "rgb_halo_worst": [
+    6,
+    5,
+    8
+  ],
+  "rgb_halo_pixels_over_4": 77
+}

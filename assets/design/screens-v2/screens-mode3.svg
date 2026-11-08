@@ -1,0 +1,182 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 78">
+<!-- Mode 3 Models & Usage screens v2 in n3-line.svg coordinates. Designed for the device at 0.85x-1.0x: names 2.6 mm (6.3 pt at 0.85x), labels 2.15 mm (5.2 pt at 0.85x). Pools: Opus, Sonnet, Haiku, Fable shared (5H 62%, 7D 41%); Astra own (24%, 58%); Grok own (9%, 17%). Bars: 10 tokens, nearest 10%. -->
+<g id="m3-screens">
+<g id="m3-screen-1" data-screen="1" transform="translate(14.7 12.2)">
+<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
+<rect x="0.6" y="0.6" width="14.8" height="3.4" rx="0.5" ry="0.5" fill="#92e759"/>
+<text x="1.404" y="3.233" font-family="Soehne Buch" font-size="2.6" letter-spacing="-0.026" fill="#131512">Opus</text>
+<text x="1.41" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">5H</text>
+<text x="10.54" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">62%</text>
+<rect x="1.5" y="7.044" width="1" height="1" fill="#92e759"/>
+<rect x="2.833" y="7.044" width="1" height="1" fill="#92e759"/>
+<rect x="4.167" y="7.044" width="1" height="1" fill="#92e759"/>
+<rect x="5.5" y="7.044" width="1" height="1" fill="#92e759"/>
+<rect x="6.833" y="7.044" width="1" height="1" fill="#92e759"/>
+<rect x="8.167" y="7.044" width="1" height="1" fill="#92e759"/>
+<rect x="9.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="10.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="12.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="13.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<text x="1.403" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">7D</text>
+<text x="10.54" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">41%</text>
+<rect x="1.5" y="11.087" width="1" height="1" fill="#92e759"/>
+<rect x="2.833" y="11.087" width="1" height="1" fill="#92e759"/>
+<rect x="4.167" y="11.087" width="1" height="1" fill="#92e759"/>
+<rect x="5.5" y="11.087" width="1" height="1" fill="#92e759"/>
+<rect x="6.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="8.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="9.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="10.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="12.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="13.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="1.5" y="13.359" width="1" height="1" fill="#92e759"/>
+<text x="3.079" y="14.631" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">SHARED</text>
+</g>
+<g id="m3-screen-2" data-screen="1" transform="translate(33.5 12.2)">
+<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
+<text x="1.49" y="3.233" font-family="Soehne Buch" font-size="2.6" letter-spacing="-0.026" fill="#ffffff">Sonnet</text>
+<text x="1.41" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">5H</text>
+<text x="10.54" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">62%</text>
+<rect x="1.5" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="2.833" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="4.167" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="5.5" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="6.833" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="8.167" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="9.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="10.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="12.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="13.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<text x="1.403" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">7D</text>
+<text x="10.54" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">41%</text>
+<rect x="1.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="2.833" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="4.167" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="5.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="6.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="8.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="9.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="10.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="12.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="13.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="1.5" y="13.359" width="1" height="1" fill="#838682"/>
+<text x="3.079" y="14.631" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">SHARED</text>
+</g>
+<g id="m3-screen-3" data-screen="1" transform="translate(52.3 12.2)">
+<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
+<text x="1.295" y="3.233" font-family="Soehne Buch" font-size="2.6" letter-spacing="-0.026" fill="#ffffff">Haiku</text>
+<text x="1.41" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">5H</text>
+<text x="10.54" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">62%</text>
+<rect x="1.5" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="2.833" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="4.167" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="5.5" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="6.833" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="8.167" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="9.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="10.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="12.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="13.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<text x="1.403" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">7D</text>
+<text x="10.54" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">41%</text>
+<rect x="1.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="2.833" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="4.167" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="5.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="6.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="8.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="9.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="10.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="12.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="13.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="1.5" y="13.359" width="1" height="1" fill="#838682"/>
+<text x="3.079" y="14.631" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">SHARED</text>
+</g>
+<g id="m3-screen-4" data-screen="1" transform="translate(14.7 30.7)">
+<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
+<text x="1.295" y="3.233" font-family="Soehne Buch" font-size="2.6" letter-spacing="-0.026" fill="#ffffff">Fable</text>
+<text x="1.41" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">5H</text>
+<text x="10.54" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">62%</text>
+<rect x="1.5" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="2.833" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="4.167" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="5.5" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="6.833" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="8.167" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="9.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="10.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="12.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="13.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<text x="1.403" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">7D</text>
+<text x="10.54" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">41%</text>
+<rect x="1.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="2.833" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="4.167" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="5.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="6.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="8.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="9.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="10.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="12.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="13.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="1.5" y="13.359" width="1" height="1" fill="#838682"/>
+<text x="3.079" y="14.631" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">SHARED</text>
+</g>
+<g id="m3-screen-5" data-screen="1" transform="translate(33.5 30.7)">
+<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
+<text x="1.458" y="3.233" font-family="Soehne Buch" font-size="2.6" letter-spacing="-0.026" fill="#ffffff">Astra</text>
+<text x="1.41" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">5H</text>
+<text x="10.54" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">24%</text>
+<rect x="1.5" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="2.833" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="4.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="5.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="6.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="8.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="9.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="10.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="12.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="13.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<text x="1.403" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">7D</text>
+<text x="10.54" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">58%</text>
+<rect x="1.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="2.833" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="4.167" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="5.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="6.833" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="8.167" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="9.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="10.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="12.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="13.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+</g>
+<g id="m3-screen-6" data-screen="1" transform="translate(52.3 30.7)">
+<rect x="0.16" y="0.16" width="15.68" height="15.18" rx="0.84" ry="0.84" fill="#131512"/>
+<text x="1.404" y="3.233" font-family="Soehne Buch" font-size="2.6" letter-spacing="-0.026" fill="#ffffff">Grok</text>
+<text x="1.41" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">5H</text>
+<text x="11.894" y="6.544" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">9%</text>
+<rect x="1.5" y="7.044" width="1" height="1" fill="#9ea19d"/>
+<rect x="2.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="4.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="5.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="6.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="8.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="9.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="10.833" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="12.167" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<rect x="13.5" y="7.044" width="1" height="1" fill="#3c3e3a"/>
+<text x="1.403" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#838682">7D</text>
+<text x="10.54" y="10.587" font-family="Soehne Mono Buch" font-size="2.15" letter-spacing="0.065" fill="#ffffff">17%</text>
+<rect x="1.5" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="2.833" y="11.087" width="1" height="1" fill="#9ea19d"/>
+<rect x="4.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="5.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="6.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="8.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="9.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="10.833" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="12.167" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+<rect x="13.5" y="11.087" width="1" height="1" fill="#3c3e3a"/>
+</g>
+</g>
+</svg>

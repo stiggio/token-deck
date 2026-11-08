@@ -1,0 +1,14 @@
+{
+  "outside_tiles": 0,
+  "darker_than_ink": 0,
+  "rim": 0,
+  "jpeg_bytes": 15927,
+  "halo_count": 0,
+  "halo_worst": 3.2,
+  "lime": {
+    "lime_pixels": 1552,
+    "mean_dev": 3.2,
+    "max_dev": 12
+  },
+  "hard_rules_pass": true
+}

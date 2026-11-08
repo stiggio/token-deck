@@ -1,0 +1,332 @@
+{
+  "outside_tiles": 0,
+  "darker_than_ink": 0,
+  "rim": 0,
+  "jpeg_bytes": 18653,
+  "halo_count": 0,
+  "halo_worst": 3.2,
+  "lime": {
+    "lime_pixels": 369,
+    "mean_dev": 31.5,
+    "max_dev": 82
+  },
+  "hard_rules_pass": true,
+  "layout": {
+    "candidate": "c-quiet-landing",
+    "seed": 995,
+    "layout": {
+      "key1": "logo",
+      "key2": "the plume",
+      "key3": "the dust",
+      "key4": "URL on a calm board",
+      "key5": "the source block and its debris",
+      "key6": "slogan"
+    },
+    "logo": {
+      "xy": [
+        20,
+        50
+      ],
+      "size": [
+        60,
+        17
+      ],
+      "box_centre_offset_vs_window": [
+        -0.5,
+        0.0
+      ]
+    },
+    "url": {
+      "size_px": 9.5,
+      "leading_px": 12,
+      "tracking_px": -0.06,
+      "align": "left",
+      "pen_x": 30,
+      "cap_top": 157,
+      "cap_height_px": 7,
+      "lines": [
+        "io.stigg.io",
+        "/usage"
+      ],
+      "line_ink": [
+        [
+          30,
+          157,
+          70,
+          166
+        ],
+        [
+          30,
+          169,
+          60,
+          178
+        ]
+      ],
+      "ink_inclusive": [
+        30,
+        157,
+        69,
+        177
+      ],
+      "size": [
+        40,
+        21
+      ],
+      "box_centre_offset_vs_window": [
+        -0.5,
+        -0.5
+      ],
+      "ink_mass_offset_vs_window": [
+        -1.1,
+        -0.8
+      ],
+      "clean_rect_inclusive": [
+        24,
+        149,
+        75,
+        185
+      ],
+      "margins_ink_to_tokens_lrtb": [
+        6,
+        6,
+        8,
+        8
+      ]
+    },
+    "slogan": {
+      "size_px": 9.5,
+      "leading_px": 12,
+      "tracking_px": -0.06,
+      "align": "right",
+      "right_ink_edge": 291,
+      "cap_top": 152,
+      "cap_height_px": 7,
+      "lines": [
+        "The AI Usage",
+        "Management",
+        "Console"
+      ],
+      "line_ink": [
+        [
+          235,
+          152,
+          292,
+          161
+        ],
+        [
+          235,
+          164,
+          292,
+          173
+        ],
+        [
+          257,
+          176,
+          292,
+          183
+        ]
+      ],
+      "ink_inclusive": [
+        235,
+        152,
+        291,
+        182
+      ],
+      "size": [
+        57,
+        31
+      ],
+      "box_centre_offset_vs_window": [
+        -3.5,
+        -0.5
+      ],
+      "ink_mass_offset_vs_window": [
+        -1.0,
+        -1.5
+      ]
+    },
+    "boards": {
+      "key2": {
+        "x0_y0_cols_rows": [
+          130,
+          28,
+          12,
+          13
+        ],
+        "px_inclusive": [
+          130,
+          28,
+          187,
+          90
+        ],
+        "centre_offset_vs_window": [
+          0.0,
+          1.0
+        ]
+      },
+      "key3": {
+        "x0_y0_cols_rows": [
+          239,
+          28,
+          11,
+          13
+        ],
+        "px_inclusive": [
+          239,
+          28,
+          291,
+          90
+        ],
+        "centre_offset_vs_window": [
+          -1.5,
+          1.0
+        ]
+      },
+      "key4": {
+        "x0_y0_cols_rows": [
+          21,
+          141,
+          12,
+          11
+        ],
+        "px_inclusive": [
+          21,
+          141,
+          78,
+          193
+        ],
+        "centre_offset_vs_window": [
+          -0.5,
+          -0.5
+        ]
+      },
+      "key5": {
+        "x0_y0_cols_rows": [
+          130,
+          141,
+          12,
+          11
+        ],
+        "px_inclusive": [
+          130,
+          141,
+          187,
+          193
+        ],
+        "centre_offset_vs_window": [
+          0.0,
+          -0.5
+        ]
+      }
+    },
+    "key4_clearing": {
+      "cols": [
+        1,
+        10
+      ],
+      "rows": [
+        2,
+        8
+      ],
+      "cells": 70,
+      "shape": "frame"
+    },
+    "key4_settled": [
+      [
+        6,
+        9,
+        "lime"
+      ],
+      [
+        8,
+        1,
+        "white"
+      ],
+      [
+        10,
+        9,
+        "lime"
+      ]
+    ],
+    "source_block": {
+      "cells_a_b_cols_rows": [
+        1,
+        4,
+        4,
+        6
+      ],
+      "px_inclusive": [
+        135,
+        161,
+        152,
+        188
+      ],
+      "lit_cells": 19
+    },
+    "tokens": {
+      "key2": {
+        "lime": 8,
+        "white": 11,
+        "depth_639840": 0,
+        "source_lime": 0,
+        "unlit_2C2F2B": 137,
+        "not_drawn_clearing": 0,
+        "bright_axis_deg_elongation": [
+          -119.0,
+          2.43
+        ]
+      },
+      "key3": {
+        "lime": 5,
+        "white": 9,
+        "depth_639840": 3,
+        "source_lime": 0,
+        "unlit_2C2F2B": 126,
+        "not_drawn_clearing": 0,
+        "bright_axis_deg_elongation": [
+          -49.1,
+          1.96
+        ]
+      },
+      "key4": {
+        "lime": 2,
+        "white": 1,
+        "depth_639840": 0,
+        "source_lime": 0,
+        "unlit_2C2F2B": 59,
+        "not_drawn_clearing": 70,
+        "bright_axis_deg_elongation": [
+          90.0,
+          2.31
+        ]
+      },
+      "key5": {
+        "lime": 7,
+        "white": 4,
+        "depth_639840": 0,
+        "source_lime": 19,
+        "unlit_2C2F2B": 102,
+        "not_drawn_clearing": 0,
+        "bright_axis_deg_elongation": [
+          -166.6,
+          1.7
+        ]
+      }
+    },
+    "bright_per_key": {
+      "2": 19,
+      "3": 14,
+      "4": 3,
+      "5": 30
+    },
+    "white_share_of_bright": 0.379,
+    "bezel_continuity_0_12": 12,
+    "art_fails": []
+  },
+  "rgb_halo_worst": [
+    5,
+    4,
+    7
+  ],
+  "rgb_halo_pixels_over_4": 28
+}

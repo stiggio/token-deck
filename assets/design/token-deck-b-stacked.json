@@ -1,0 +1,81 @@
+{
+  "file": "token-deck-b-stacked.svg",
+  "units": "mm",
+  "words": {
+    "plain": "Token",
+    "pixel": "Deck",
+    "order": "plain-pixel"
+  },
+  "layout": "stacked",
+  "viewBox": [
+    0,
+    0,
+    103.74,
+    73.84
+  ],
+  "bbox": {
+    "x": 0,
+    "y": 0.0244,
+    "w": 103.74,
+    "h": 73.8156
+  },
+  "lettersBox": {
+    "x": 0,
+    "y": 0.0244,
+    "w": 100.2134,
+    "h": 66.0156
+  },
+  "baselinePlain": 31.2,
+  "baselinePixel": 66.3,
+  "capHeight": 31.1756,
+  "capHeightPlain": 31.1756,
+  "capTop": 35.1244,
+  "nominalCap": 30.42,
+  "pitch": 1.3,
+  "square": 1.04,
+  "gap": 0.26,
+  "gridOrigin": {
+    "x": -3.9,
+    "y": 33.8
+  },
+  "rows": 24,
+  "font": {
+    "family": "Soehne Buch",
+    "size": 43.42,
+    "letterSpacing": -3.1697,
+    "tracking": -0.073,
+    "fill": "#ffffff"
+  },
+  "plainX": -0.7381,
+  "counts": {
+    "letterSquares": 598,
+    "explosionSquares": 47,
+    "flying": 27,
+    "spray": 30,
+    "droppedByKeepout": 4,
+    "droppedAtEdge": 0
+  },
+  "params": {
+    "cap": 30.42,
+    "rows": 23.4,
+    "capdev": 117,
+    "seed": 245,
+    "reachX": 0.6,
+    "reachUp": 0.45,
+    "reachDown": 0.45,
+    "spray": 1.1,
+    "erode": null,
+    "explode": null,
+    "burst": 2,
+    "keepout": 1,
+    "snap": true,
+    "gap": null,
+    "lead": null,
+    "align": "ink",
+    "pixelKern": {
+      "De": 0.025,
+      "ec": 0.03
+    },
+    "crop": 0
+  }
+}

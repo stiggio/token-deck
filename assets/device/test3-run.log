@@ -1,0 +1,19 @@
+device: HOTSPOTEKUSB HID DEMO 81D0DA782A24 firmware: V3.VSDN3_PXL.02.010
+after handshake: no input reports
+six tiles sent (1,3,5 lime; 2,4,6 white) + STP
+after tiles: no input reports
+LOG lime: 1830 bytes as 240x320 JPEG sent in 0.00 s
+after LOG (before STP): ack code=0x00 state=0
+STP sent
+after STP: no input reports
+Traceback (most recent call last):
+  File "/Users/gemanor/Library/Application Support/Claude/scratch-workspaces/87e2a23b-6eb1-4ed2-8f16-42d28c93ad7f/50b75cba-044a-4773-8b68-1ef7e8621cea/scratch-2026-10-06-95ecc8/after-tokens-launch/_source/n3-probe/log_test.py", line 74, in <module>
+    deck.cmd(b"CONNECT"); beat = time.time()
+    ~~~~~~~~^^^^^^^^^^^^
+  File "/Users/gemanor/Library/Application Support/Claude/scratch-workspaces/87e2a23b-6eb1-4ed2-8f16-42d28c93ad7f/50b75cba-044a-4773-8b68-1ef7e8621cea/scratch-2026-10-06-95ecc8/after-tokens-launch/_source/n3-probe/burn_logo.py", line 60, in cmd
+    self.write(b"CRT\x00\x00" + tag + tail)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/gemanor/Library/Application Support/Claude/scratch-workspaces/87e2a23b-6eb1-4ed2-8f16-42d28c93ad7f/50b75cba-044a-4773-8b68-1ef7e8621cea/scratch-2026-10-06-95ecc8/after-tokens-launch/_source/n3-probe/burn_logo.py", line 57, in write
+    raise RuntimeError("hid write failed: %s" % self.h.error())
+RuntimeError: hid write failed: Device is disconnected
+exit=1

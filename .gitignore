@@ -1,8 +1,7 @@
-# The build plan and its kit stay on disk, untracked: the repo is public, and the kit holds Söhne
-# (Klim licence: no third-party download) and Stigg-internal files. PLAN.md section 2 copies the
-# public subset into brand-kit/.
-/PLAN.md
-/assets/
+# The build plan and its kit are committed (PLAN.md section 2, Nov 8), except the two private kit
+# folders: Söhne (Klim licence: no third-party download) and the Stigg design system (internal only).
+/assets/site-fonts/
+/assets/brand/stigg-ds/
 # Local working files for the coding agent
 /.cursor/
 /PROGRESS.md

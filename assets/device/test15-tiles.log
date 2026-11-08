@@ -1,0 +1,3 @@
+device: HOTSPOTEKUSB HID DEMO 81D0DA782A24 firmware: V3.VSDN3_PXL.02.010
+after handshake: no input reports
+frame tiles on keys [1, 2, 3, 4, 5, 6] + STP; holding 1800 s

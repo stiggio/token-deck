@@ -1,0 +1,12 @@
+device: HOTSPOTEKUSB HOTSPOTEKUSB HID DEMO 81D0DA782A24
+firmware: V3.VSDN3_PXL.02.010
+jpeg: 10930 bytes, 11 chunks
+after handshake: no input reports
+six tile crops + STP sent
+after tiles: no input reports
+LOG sent in 0.01 s; waiting up to 10 s for the write report (libtransport: 3 s)
+after LOG: ack code=0x00 state=0 at +0.13s [41434b00004f4b000000000000000000]
+STP sent
+after STP: no input reports
+closed with no goodbye frame. Look at the deck now, then unplug and replug it with nothing
+running: the image must be there both times. The result goes into NOTES.md.

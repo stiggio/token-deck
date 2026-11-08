@@ -1,0 +1,7 @@
+device: HOTSPOTEKUSB HID DEMO 81D0DA782A24 firmware: V3.VSDN3_PXL.02.010
+settle after handshake: no input reports
+-- lime q90: 1830 bytes, 2 chunks
+   report: no input reports
+   NO REPORT
+stopping at the first failure (the device may now be waiting for image bytes; replug before the next run)
+summary: lime q90 (1830 B): no report

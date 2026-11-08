@@ -1,0 +1,153 @@
+{
+  "outside_tiles": 0,
+  "darker_than_ink": 0,
+  "rim": 0,
+  "jpeg_bytes": 15089,
+  "halo_count": 0,
+  "halo_worst": 3.2,
+  "lime": {
+    "lime_pixels": 252,
+    "mean_dev": 31.2,
+    "max_dev": 80
+  },
+  "hard_rules_pass": true,
+  "variant": "a-slogan-under-logo-rise",
+  "seed": 14772,
+  "layout": {
+    "key1": "logo",
+    "key4": "slogan (flush left on the logo's x)",
+    "key6": "URL",
+    "art": [
+      2,
+      3,
+      5
+    ],
+    "burst": "source low-left in key 5, rising through key 2 into key 3"
+  },
+  "type": {
+    "font": "Soehne Buch",
+    "size_px": 10.4,
+    "leading_px": 13,
+    "cap_height_px": 7,
+    "slogan_lines": [
+      "The AI Usage",
+      "Management",
+      "Console"
+    ],
+    "slogan_pen_x": 20.05,
+    "slogan_cap_top": 152,
+    "slogan_ink_box": [
+      20,
+      152,
+      81,
+      184
+    ],
+    "slogan_offset_from_window_centre": [
+      0.5,
+      0.5
+    ],
+    "url_lines": [
+      "io.stigg.io",
+      "/usage"
+    ],
+    "url_pen_x": 245.0,
+    "url_cap_top": 157,
+    "url_ink_box": [
+      245,
+      157,
+      289,
+      178
+    ],
+    "url_offset_from_window_centre": [
+      0.5,
+      0.0
+    ]
+  },
+  "logo": {
+    "box": [
+      20,
+      50,
+      79,
+      66
+    ],
+    "offset_from_window_centre": [
+      -0.5,
+      0.0
+    ]
+  },
+  "lattice": {
+    "pitch": 5,
+    "square": 3,
+    "origin": "x = 5i, y = 5j + 4",
+    "areas": {
+      "key2": [
+        135,
+        34,
+        182,
+        81
+      ],
+      "key3": [
+        245,
+        34,
+        287,
+        81
+      ],
+      "key5": [
+        135,
+        144,
+        182,
+        191
+      ]
+    },
+    "area_offset_from_window_centre": {
+      "key2": [
+        0.0,
+        -0.5
+      ],
+      "key3": [
+        -0.5,
+        -0.5
+      ],
+      "key5": [
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "colours": {
+    "lime": "#92E759",
+    "white": "#FFFFFF",
+    "depth_lime": "#639840",
+    "unlit": "#3C3E3A"
+  },
+  "tokens": {
+    "key2": {
+      "lit": 15,
+      "lime": 4,
+      "depth_lime": 3,
+      "white": 8,
+      "unlit": 85
+    },
+    "key3": {
+      "lit": 8,
+      "lime": 3,
+      "depth_lime": 1,
+      "white": 4,
+      "unlit": 82
+    },
+    "key5": {
+      "lit": 30,
+      "lime": 21,
+      "depth_lime": 1,
+      "white": 8,
+      "unlit": 70
+    }
+  },
+  "tokens_lit_total": 53,
+  "lit_mix": {
+    "lime_incl_depth_pct": 62.3,
+    "white_pct": 37.7
+  },
+  "source_cells_lit": 13,
+  "layout_checks": "pass"
+}

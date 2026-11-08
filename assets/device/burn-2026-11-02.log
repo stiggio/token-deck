@@ -1,0 +1,7 @@
+device: HOTSPOTEKUSB HOTSPOTEKUSB HID DEMO 81D0DA782A24
+firmware: V3.VSDN3_PXL.02.010
+jpeg: 11139 bytes, 11 chunks
+settle after handshake: no input reports
+LOG sent in 0.01 s; waiting up to 20 s for the write report (libtransport: 3 s)
+after LOG: no input reports
+no write report within 20 s: nothing refreshed. Replug the deck and retry.
