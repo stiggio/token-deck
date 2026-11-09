@@ -49,7 +49,8 @@ jobs:
             TokenDeck-mac-x64.zip TokenDeck-mac-x64.zip.sha256 TokenDeck-mac-x64.dmg \
             latest-mac.yml \
             --clobber
-          gh release edit "${GITHUB_REF_NAME}" --draft=false --latest
+          # A release started from the GitHub page can be a pre-release, and GitHub refuses to make one latest.
+          gh release edit "${GITHUB_REF_NAME}" --draft=false --prerelease=false --latest
   windows:
     runs-on: windows-latest
     env:
