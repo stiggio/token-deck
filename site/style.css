@@ -84,6 +84,13 @@ code, pre, kbd { font-family: var(--mono); }
 }
 .eyebrow::before { content: ""; width: 6px; height: 6px; background: currentColor; flex: none; }
 .eyebrow .sub { color: var(--n500); }
+/* a label, as on a box: the eyebrow's type and square inside a hairline frame */
+.tag {
+  display: inline-flex; align-items: center; gap: 10px; padding: 6px 10px;
+  border: 1px solid var(--n700); border-radius: 4px;
+  font: 400 12px/1.4 var(--mono); letter-spacing: .03em; text-transform: uppercase; color: var(--n300);
+}
+.tag::before { content: ""; width: 6px; height: 6px; background: var(--lime); flex: none; }
 
 .display {
   font: 400 clamp(34px, 2.6vw + 18px, 54px)/1.06 var(--sans);
@@ -143,7 +150,7 @@ code.inline { font-size: .875em; color: var(--ink); background: var(--surface); 
 /* ---------- Hero ---------- */
 
 .hero { padding-top: clamp(40px, 5vw, 72px); padding-bottom: var(--section); }
-.hero > .eyebrow { margin-bottom: 28px; }
+.hero > .tag { margin-bottom: 28px; }
 .hero-intro { display: grid; gap: 32px var(--col-gap); grid-template-columns: minmax(0, 1fr); }
 .hero-copy { display: grid; gap: 20px; }
 .lockup { width: min(100%, 380px); }
@@ -161,8 +168,22 @@ code.inline { font-size: .875em; color: var(--ink); background: var(--surface); 
 }
 @media (min-width: 1180px) {
   /* both hero rows share one 5/7 split, so the statement and the device start on the same line */
-  .hero-intro { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: end; }
+  .hero-intro {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: stretch;
+    container-type: inline-size;
+    --lockup: calc((100cqw - var(--col-gap)) * 5 / 12); /* the first column's width, which the lockup fills */
+  }
   .hero-main { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+  /* The lockup fills its column, as wide as the install card under it, and the statement spans its
+     height: the headline's capitals start level with the top of the T and the lead's last line sits on
+     the baseline of "Deck". The T starts 5.2 and the baseline sits .52 of the lockup's 108.94 units
+     from its edges; .185em and .375em are Söhne's cap and baseline offsets at these line heights. */
+  .lockup { width: 100%; align-self: end; }
+  .hero-copy { align-content: space-between; }
+  .hero-copy .display { margin-top: calc(var(--lockup) * 5.2 / 108.94 - .185em); }
+  .hero-copy .lead { margin-bottom: calc(var(--lockup) * .52 / 108.94 - .375em); }
+  /* the note for phones and Linux goes under the statement, so the row above stays aligned */
+  .hero-intro > .away { grid-column: 2; }
 }
 
 /* ---------- Install card ---------- */
@@ -409,12 +430,8 @@ code.inline { font-size: .875em; color: var(--ink); background: var(--surface); 
 .foot-art svg { width: min(100% + var(--gutter), 860px); height: auto; margin-left: calc(-1 * var(--gutter)); }
 .footer { padding-top: 56px; padding-bottom: 48px; display: grid; gap: 48px var(--col-gap); grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 860px) { .footer { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); } }
-.event { display: grid; gap: 18px; align-content: start; }
-.event .at { width: min(100%, 300px); }
-.event .at svg { width: 100%; height: auto; overflow: visible; }
-.event .date { font: 400 12px/1.6 var(--mono); letter-spacing: .03em; text-transform: uppercase; color: var(--n400); }
-.event .date span { color: var(--n600); }
-.event .blurb { font-size: 16px; color: var(--n500); }
+.colophon { display: grid; gap: 14px; align-content: start; }
+.colophon .blurb { font-size: 16px; color: var(--n500); max-width: 30em; text-wrap: pretty; }
 .foot-links { display: grid; gap: 40px var(--col-gap); grid-template-columns: repeat(2, minmax(0, max-content)); align-content: start; }
 .links h2 { font: 400 12px/1.5 var(--mono); letter-spacing: .03em; text-transform: uppercase; color: var(--n500); margin-bottom: 16px; }
 .links ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font: 400 14px/1.4 var(--sans); }

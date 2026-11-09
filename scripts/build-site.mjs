@@ -159,7 +159,8 @@ const icon = {
 
 // ---- The page -----------------------------------------------------------------------------------------
 
-const description = 'Token Deck is the free app for the deck in your After Tokens box. It puts your Claude Code, Codex and OpenCode sessions on the keys, takes you to the one that needs you, and shows how much of your 5-hour and weekly limits you have used. For macOS and Windows.'
+const SLOGAN = 'The AI Usage Management Console'
+const description = 'Token Deck is the AI usage management console. See how much of your 5-hour and weekly limits you have used, pick the model and effort your next session starts with, and jump to the session that needs you. Free for macOS and Windows.'
 
 const legend = (rows) => `<dl class="legend">${rows.map(([n, term, text]) => `<div><dt><span class="num" aria-hidden="true">${n}</span>${term}</dt><dd>${text}</dd></div>`).join('')}</dl>`
 
@@ -168,19 +169,19 @@ const html = `<!DOCTYPE html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Token Deck by Stigg</title>
+<title>Token Deck by Stigg · ${SLOGAN}</title>
 <meta name="description" content="${esc(description)}">
 <meta name="theme-color" content="#131512">
 <link rel="canonical" href="${SITE}/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Stigg">
 <meta property="og:url" content="${SITE}/">
-<meta property="og:title" content="Token Deck">
+<meta property="og:title" content="Token Deck: ${SLOGAN}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:image" content="${SITE}/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="The Token Deck logo next to a drawing of the deck showing six coding sessions">
+<meta property="og:image:alt" content="The Token Deck logo and “${SLOGAN}” next to a drawing of the deck showing six coding sessions">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -218,17 +219,17 @@ ${defs}
 
 <main id="main">
 <section class="hero wrap rule" aria-labelledby="title">
-  <p class="eyebrow">The AI Usage Management Console</p>
+  <p class="tag">Exclusive After Tokens swag</p>
   <div class="hero-intro">
     <h1 id="title" class="lockup"><span class="visually-hidden">Token Deck</span>${svg('brand-kit/design/token-deck-d-stacked-pixel-token.svg', 'aria-hidden="true" focusable="false"')}</h1>
     <div class="hero-copy">
-      <p class="display">Your coding agents, on six keys and three knobs<span class="dot">.</span></p>
-      <p class="lead">Token Deck is the free app for the deck in your After Tokens box. It puts your Claude Code, Codex and OpenCode sessions on the keys, takes you to the one that needs you, and shows how much of your 5&#8209;hour and weekly limits you’ve used.</p>
-      <div class="away" hidden>
-        <p>Token Deck runs on macOS and Windows. Open <span class="mono">usage.stigg.io</span> on your Mac or PC to install it.</p>
-        <button class="btn btn-sm btn-ghost" type="button" data-copy="site-url" aria-label="Copy the link to this page">${icon.copy}${icon.check}<span class="idle">Copy link</span><span class="done">Copied</span></button>
-        <span id="site-url" hidden>${SITE}</span>
-      </div>
+      <p class="display">${SLOGAN}<span class="dot">.</span></p>
+      <p class="lead">See how much of your 5&#8209;hour and weekly limits you’ve used, pick the model and effort your next session starts with, and jump to the session that needs you. Free, for Claude Code, Codex and OpenCode.</p>
+    </div>
+    <div class="away" hidden>
+      <p>Token Deck runs on macOS and Windows. Open <span class="mono">usage.stigg.io</span> on your Mac or PC to install it.</p>
+      <button class="btn btn-sm btn-ghost" type="button" data-copy="site-url" aria-label="Copy the link to this page">${icon.copy}${icon.check}<span class="idle">Copy link</span><span class="done">Copied</span></button>
+      <span id="site-url" hidden>${SITE}</span>
     </div>
   </div>
   <div class="hero-main">
@@ -274,7 +275,7 @@ ${defs}
 <section class="section wrap rule" id="modes" aria-labelledby="modes-title">
   <div class="section-head">
     <p class="eyebrow">How it works</p>
-    <h2 class="h2" id="modes-title">The metal buttons pick the mode. <span class="dim">The mode sets what the keys show and what the knobs do.</span></h2>
+    <h2 class="h2" id="modes-title">Your agents, sessions and usage in one console. <span class="dim">Each metal button opens a mode.</span></h2>
   </div>
 
   <article class="mode" aria-labelledby="agents-title">
@@ -323,8 +324,8 @@ ${defs}
   <article class="mode" aria-labelledby="models-title">
     <div class="mode-head">
       <p class="eyebrow">03 Models &amp; Usage <span class="sub">· Right button</span></p>
-      <h3 class="h3" id="models-title">Pick the next model. <span class="dim">Live 5H and 7D limits.</span></h3>
-      <p class="body">This mode shows one agent at a time: Claude Code, Codex or OpenCode. The first key shows how much of that agent’s 5&#8209;hour and weekly limits you’ve used, and the other keys are its models, with the current one in lime.</p>
+      <h3 class="h3" id="models-title">Live 5&#8209;hour and weekly limits. <span class="dim">Pick the next model.</span></h3>
+      <p class="body">The first key shows how much of each limit you’ve used. The other keys are the models your next session can start on, with the current one in lime. The mode shows one agent at a time: Claude Code, Codex or OpenCode.</p>
     </div>
     <figure class="mode-fig">${deck('models', 'models', heroLabels.models, [[1, 'keys'], [2, 'main'], [3, 'left'], [4, 'right'], [5, 'buttons']])}</figure>
     <div class="mode-legend">
@@ -461,10 +462,9 @@ ${defs}
 <footer>
   <div class="foot-art wrap rule" aria-hidden="true">${svg('brand-kit/design/explosion-b-rise.svg', 'focusable="false" preserveAspectRatio="xMinYMid meet"').replace('viewBox="0 0 162 65"', 'viewBox="9.2 9.7 139.6 45.6"')}</div>
   <div class="footer wrap">
-    <div class="event">
-      <a class="at" href="https://www.stigg.io/after-tokens" aria-label="After Tokens">${svg('brand-kit/design/at-logo.svg', 'aria-hidden="true" focusable="false"')}</a>
-      <p class="date">Nov 10, 2026 <span>·</span> Terra, San Francisco</p>
-      <p class="blurb">Made by Stigg for everyone at After Tokens.</p>
+    <div class="colophon">
+      <p class="eyebrow">${SLOGAN}</p>
+      <p class="blurb">Token Deck is made by Stigg. The app is free and open source, for macOS and Windows. The deck is exclusive After Tokens swag.</p>
     </div>
     <div class="foot-links">
     <nav class="links" aria-label="Token Deck">

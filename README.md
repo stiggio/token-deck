@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://usage.stigg.io"><img src="site/og.png" width="760" alt="Token Deck: your coding agents, on six keys and three knobs"></a>
+  <a href="https://usage.stigg.io"><img src="site/og.png" width="760" alt="Token Deck: The AI Usage Management Console"></a>
 </p>
 
 # Token Deck
